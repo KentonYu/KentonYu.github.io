@@ -198,10 +198,10 @@
 <li><p>垃圾收集器（GC），iOS系统中没有GC，MAC OS X 10.8之前有GC，但是之后也正式废弃了，所以目前OC中不存在GC。</p>
 </li>
 <li><p>如果有非Objective-C的对象，比如CoreFoundation中的对象或由malloc()分配在堆中的内存，那么需要在dealloc中清理。dealloc中还需要取消原来订阅的“KVO”或NSNotificationCenter等通知。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)dealloc &#123;</span><br><span class="line">   CFRelease(_coreFoundationObject);</span><br><span class="line">   free(_heapAllocatedMemoryBlob);</span><br><span class="line">   [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">   // [super dealloc];  //ARC中不需要调用super</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)dealloc &#123;</span><br><span class="line">   CFRelease(_coreFoundationObject);</span><br><span class="line">   free(_heapAllocatedMemoryBlob);</span><br><span class="line">   [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">   // [super dealloc];  //ARC中不需要调用super</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>通过自动释放池块来降低内存峰值。是否应该用池来优化效率，完全取决于具体的应用程序。首先应该监控内存用量，如果有必要优化，再通过池来优化。尽管自动释放池的开销不太大，但毕竟是有的。所以不要简历额外的自动释放池。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for(int i=0; i&lt;100000; i++) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">         [self doSomethingWithInt:i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(int i=0; i&lt;100000; i++) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">         [self doSomethingWithInt:i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>向已回收的对象发送消息是不安全的。这么做有时可以，有时不行。具体可行与否，完全取决于对象所占的内存有没有被其他内存内容所重写。而这块内存有没有被移作它用又不确定，因此程序会偶尔奔溃。<br>在没有奔溃的情况下有两种可能：</p>
 <ul>
@@ -230,11 +230,11 @@
 <li>如果第一阶段结束，那么接收者就无法再以动态新增方法的手段来响应该消息了。此时，运行期系统会请求接收者看看有没有其他对象能处理该消息。若有，则运行期系统会把消息转发给那个对象。然后消息转发过程结束。若没有“备援的接收者”，运行期系统会把与消息有关的全部细节都封装到NSInvocation对象中，再给接收者最后一次机会来处理这条消息。</li>
 </ul>
 <p>动态方法解析：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//实例方法</span><br><span class="line"> + (BOOL)resolveInstanceMethod:(SEL)selector</span><br><span class="line">//类方法</span><br><span class="line"> + (BOOL)resolveClassMethod:(SEL)selector</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//实例方法</span><br><span class="line"> + (BOOL)resolveInstanceMethod:(SEL)selector</span><br><span class="line">//类方法</span><br><span class="line"> + (BOOL)resolveClassMethod:(SEL)selector</span><br></pre></td></tr></table></figure>
 <p> 备援接收者：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//有备援对象则返回，无则返回nil</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)selector</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//有备援对象则返回，无则返回nil</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)selector</span><br></pre></td></tr></table></figure>
 <p> 完整的消息转发：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> //可以改变消息内容，比如追加一个参数，或更换选择子等等</span><br><span class="line"> - (id)forwardInvocation:(NSInvocation *)invocation</span><br><span class="line">//动态添加方法(第三个参数为函数指针，指向待添加的函数，第四个参数为添加方法的类型编码，第一个表示方法的返回值类型，后面表示方法的参数类型)</span><br><span class="line">class_addMethod(Class, selector, IMP, typeEncoding);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> //可以改变消息内容，比如追加一个参数，或更换选择子等等</span><br><span class="line"> - (id)forwardInvocation:(NSInvocation *)invocation</span><br><span class="line">//动态添加方法(第三个参数为函数指针，指向待添加的函数，第四个参数为添加方法的类型编码，第一个表示方法的返回值类型，后面表示方法的参数类型)</span><br><span class="line">class_addMethod(Class, selector, IMP, typeEncoding);</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <p><img src="http://upload-images.jianshu.io/upload_images/1155692-38a34cc2739f4452.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="类型编码表"></p>
