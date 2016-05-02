@@ -13,11 +13,11 @@
 
     <title>
         
-          About - KentonYu的博客 | KentonYu&#39;s Blog
+          对 Git Flow 开发模型的理解 - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://kentonyu.github.io/about/">
+    <link rel="canonical" href="http://kentonyu.github.io/2016/03/05/git-Flow-开发模型/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -140,62 +140,184 @@
 
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://kentonyu.github.io/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('post-bg-js-module.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>About</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">Hey, this is Kaijun.</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                        
+                          <a class="tag" href="/tags/#iOS开发" title="iOS开发">iOS开发</a>
+                        
+                          <a class="tag" href="/tags/#SourceTree" title="SourceTree">SourceTree</a>
+                        
+
+                    </div>
+                    <h1>对 Git Flow 开发模型的理解</h1>
+                    <h2 class="subheading">undefined</h2>
+                    <span class="meta">
+                        Posted by Hux on
+                        2016-03-05
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
-
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。</p>
+<a id="more"></a>
+<p>ps:图片无法显示请点击：<a href="http://www.jianshu.com/p/c9d7e16744e0" target="_blank" rel="external">“传送门”</a><br>最近一个项目，因为需求上比较容易（开发时间比较充裕），所以尝试了通过Git Flow来管理项目源代码，从而探索下是否可以提高整体开发效率。在这之前，公司用的只是dev + master，几个开发同时在dev上开发，时不时就会有冲突，特别是项目中的xib文件较多时，很容易发生xib冲突（头疼。。。当然只要在commit之前看下文件变更记录，把不需要的变更放弃掉，但是难免会有疏忽的时候）。</p>
+<h1 id="Git-Flow-介绍"><a href="#Git-Flow-介绍" class="headerlink" title="Git Flow 介绍"></a>Git Flow 介绍</h1><blockquote>
+<p>Git Flow是构建在Git之上的一个组织软件开发活动的模型，是在Git之上构建的一项软件开发最佳实践。Git Flow是一套使用Git进行源代码管理时的一套行为规范和简化部分Git操作的工具。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow01YiLAQQnlPV.jpg" alt="Git Flow 全貌"></p>
+</blockquote>
+<p>其实学习Git Flow，主要还是理解几个分支的用处，在使用时通过严格的分割，将冲突概率降到最低，提高开发效率。下面我就按自己的理解来描述下主要的几种分支。</p>
+<ul>
+<li><p>master<br>这个分支上只存在上线版本，每个commit都应该对应一个版本号。</p>
+<blockquote>
+<p>仅在发布新的可供部署的代码时才更新master分支上的代码</p>
+</blockquote>
+</li>
+<li><p>develop<br>dev分支简单来说就是开发分支，它保存着开发过程中的最新版本。也就是说每当完成一个需求（feature）就应该合并到dev分支上。</p>
+</li>
+<li><p>feature<br>feature：功能。这个分支显而易见，是用来存每一个新功能（需求）的。每一个功能模块（较复杂的最好拆分下）可以做为一个feature。一般情况，每一轮迭代结束后的feature分支都应被合到dev分支上。这类分支也可以是做为实验性分支，比如在上面尝试一些开发，如果达不到预期效果也可以放弃该分支。</p>
+</li>
+<li><p>release<br>release分支可以看做是存储上线版本之前的分支。用一个实际情况来描述下，第二轮sprint结束，需要上线一个版本（还未进行测试和fix bugs），这时候第三轮sprint又要开始了。根据之前master的原则，是只存在上线版本的，因此我们可以用release分支，存一个待上线版本，然后dev就可以进行sprint3迭代了。这时候sprint2的bug 就可以在release上修复，当测试通过之后，就可以将release合进master上，同时dev需要merge下release分支。</p>
+</li>
+<li><p>hotfix<br>hotfix：热补丁。它的作用是线上版本出现bug时，可以通过hotfix来fix，然后产生一个新的发布版本，合并到master上，同时dev需要merge hotfix。这样的好处是可以打断dev上正在开发的进度。</p>
+</li>
+</ul>
+<p>以上就是Git Flow模型的大致概念。在实际开发过程中，这个模型并不是一成不变的，根据每个开发团队或每个项目可以进行一定的变化。</p>
+<h1 id="Git-Flow-实际使用"><a href="#Git-Flow-实际使用" class="headerlink" title="Git Flow 实际使用"></a>Git Flow 实际使用</h1><p>日常开发中，使用SourceTree来操作Git居多。SourceTree中自带Git 工作流模型，简单的使用只需要点击应用即可。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow26571850-6A6C-4863-80CF-1E2706FD846A.png" alt="SourceTree 自带工作流"></p>
+<p>当然这边也可以进行自定义，或者说不使用这个模型，自己通过新建分支来实现Git Flow。<br>我实际运用中，大致是这样的：<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlowA73C5C4C-5ADD-4044-908C-D0C659C26440.png" alt="利用group"></p>
+<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>1.dev有更新时，feature分支及时rebase（变基，衍合），不然当合并该feature时可能会出现很多冲突（Q_A_Q）。<br>2.可以复用页面的一些功能模块应该分配给同一个开发去做，不然在页面复用上会有问题。因为每个feature是分割开的。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p>1.基于git的源代码管理模型——git flow <a href="http://www.ituring.com.cn/article/56870" target="_blank" rel="external">http://www.ituring.com.cn/article/56870</a></p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2016/03/05/git-Flow-开发模型/"
+                    data-title="对 Git Flow 开发模型的理解"
+                    data-url="http://kentonyu.github.io/2016/03/05/git-Flow-开发模型/"
+                    data-images="http://kentonyu.github.io/2016/03/05/git-Flow-开发模型/post-bg-js-module.jpg"
+                    data-content="又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。
+
+ps:图... | KentonYu的博客 | KentonYu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
                 
 
-<!-- Chinese Version -->
-<div class="zh post-container">
-    <blockquote>
-<p>写写代码，做做设计，看看产品。<br>世界那么大，多玩玩看看。</p>
-</blockquote>
-<p>9月21日上午，阳光明媚，鲜花斗艳。帕洛阿尔托苹果店里欢声笑语，人头攒动。苹果公司首席执行官蒂姆·库克先生在店长欧阳猛南陪同下，不远千米，深入到一线店面，为那里的员工带去节曰的问候和良好的祝愿。<br><br>“果粉们，你们辛苦了，我代表某果公司，祝你们身体健康，生活幸福，工作成功！”库克亲切慰问广大员工和顾客，并就iOS7、iPhone 5S和iPhone 5C的销售状况进行调研。 <br><br>“您现在每月工资有多少？肾5S拿到了吗？”在店里，库克关切地向果粉们问起这一问题。当听说果粉们排到了5S，库克满意地连连点头。接着他指出，近年来苹果事业发展取得巨大成就，特别是iPhone影响剧增，老百姓对iOS满意度逐步提高，在这个转变过程中，果粉的辛勤工作功不可没。<br><br>库克看到一个中国小朋友在排队买iPhone 5S，亲切的问：“5288元一台能承受不？”小朋友回答到：“能！”当得知这位小朋友卖了一个肾来买iPhone 5S时，库克叮嘱道：“在支持苹果的同时，也要爱护身体。”<br><br>库克与购买苹果手机的果粉们兴致勃勃地参观了苹果专卖店，和员工们拉了拉家常，并饶有兴趣地玩了四盘切西瓜游戏，与普通员工同乐。<br><br>在交谈中，库克多次关心地强调：“有了iPhone 5C，就不卖iPhone 5了。”并对顾客说：“好好休息，身体是革命的本钱嘛！”会谈始终在亲切友好的气氛中进行。<br><br>顾客们就库克的讲话达成了广泛的共识，并承认世界上只有iOS最流畅，要紧紧的团结在以库克先生为首席执行官的苹果公司集体周围，一心一意抓学习，聚精会神谋发展。<br><br><br>帕洛阿尔托苹果专卖店当日原则通过《蒂姆·库克首席执行官在加州新苹果店的讲话纪要》，并下发各分店认真学习、研讨。</p>
-<p style="text-align:right;"><br>    —— <a href="http://www.zhihu.com/question/19687065" target="_blank" rel="external">李书航 － 什么是「共产中文腔调」？ </a><br></p>
-</div>
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/22/Objective-C-三大新特性/" data-toggle="tooltip" data-placement="top" title="Objective-C 三大新特性">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
 
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/03/05/git-Flow-开发模型/"
+                        data-title="对 Git Flow 开发模型的理解"
+                        data-url="http://kentonyu.github.io/2016/03/05/git-Flow-开发模型/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
 
+                
 
+            </div>
 
+    <!-- Sidebar Container -->
 
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
-<!-- 多说评论框 start -->
-<div class="comment">
-    <div class="ds-thread"
-        data-thread-key="about/index.html"
-        data-title="About"
-        data-url="http://kentonyu.github.io/about/index.html" >
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        <a class="tag-link" href="/tags/Git/">Git</a><a class="tag-link" href="/tags/Nodejs/">Nodejs</a><a class="tag-link" href="/tags/Objective-C/">Objective-C</a><a class="tag-link" href="/tags/Socket-io/">Socket.io</a><a class="tag-link" href="/tags/SourceTree/">SourceTree</a><a class="tag-link" href="/tags/iOS/">iOS</a><a class="tag-link" href="/tags/iOS开发/">iOS开发</a><a class="tag-link" href="/tags/开发/">开发</a><a class="tag-link" href="/tags/码字/">码字</a><a class="tag-link" href="/tags/随笔/">随笔</a>
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks">KentonYu&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="#">Foo</a></li>
+                    
+                        <li><a href="#">Bar</a></li>
+                    
+                        <li><a href="#">Example Friends</a></li>
+                    
+                        <li><a href="#">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
     </div>
-</div>
+</article>
+
+
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
     // dynamic User by Hux
@@ -219,158 +341,40 @@
 
 
 
-            </div>
-    <!-- Sidebar Container -->
-            <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#iOS开发" title="iOS开发" rel="2">iOS开发</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                    </div>
-                </section>
-                
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-
-                        
-                            <img src="/img/avatar.jpg" />
-                        
-
-                        
-                            <p>To Be A Full Stack Developer!</p>
-                        
-
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://twitter.com/Demonbane_x">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://www.zhihu.com/people/Demonbane">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-
-                            
-                                <li>
-                                    <a target="_blank" href="http://weibo.com/Demonbane">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-
-                            
-                                <li>
-                                    <a target="_blank" href="https://www.facebook.com/demonbane.cn">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-
-                            
-                                <li>
-                                    <a target="_blank"  href="https://github.com/Kaijun">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                            
-                            
-                                <li>
-                                    <a target="_blank"  href="https://www.linkedin.com/in/kaijun-chen-42089354">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                        </ul>
-                    </div>
-                </section>
-                
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://blog.kaijun.rocks">KentonYu&#39;s Blog</a></li>
-                    
-                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
-                    
-                        <li><a href="#">Foo</a></li>
-                    
-                        <li><a href="#">Bar</a></li>
-                    
-                        <li><a href="#">Example Friends</a></li>
-                    
-                        <li><a href="#">It helps SEO</a></li>
-                    
-                </ul>
-                
-            </div>
-        
-    </div>
-</div>
 
 
     <!-- Footer -->

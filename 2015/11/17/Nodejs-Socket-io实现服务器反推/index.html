@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Nodejs&amp;Socket.io实现简单的服务器反推 - KentonYu的博客 | KentonYu&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://kentonyu.github.io/2015/11/17/Nodejs-Socket-io实现服务器反推/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KentonYu&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://kentonyu.github.io/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#开发" title="开发">开发</a>
+                        
+                          <a class="tag" href="/tags/#Nodejs" title="Nodejs">Nodejs</a>
+                        
+                          <a class="tag" href="/tags/#Socket.io" title="Socket.io">Socket.io</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+
+                    </div>
+                    <h1>Nodejs&amp;Socket.io实现简单的服务器反推</h1>
+                    <h2 class="subheading">undefined</h2>
+                    <span class="meta">
+                        Posted by Kenton Yu on
+                        2015-11-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>期末临近，由于课程设计需要做一个匿名投票，签到的功能，打算通过Nodejs&amp;socket.io来简单地实现长连接。第一篇技术相关，有点小激动。。。<br><a id="more"></a></p>
+<h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><ol>
+<li>Nodejs的环境十分简单，从<a href="https://nodejs.org/en/" target="_blank" rel="external">https://nodejs.org/en/</a>下载pkg，然后一路next。搞定后打开Terminal，输入<code>node -v</code>,查看Nodejs版本。</li>
+<li>安装模块，例如安装express模块，则在Terminal中输入<code>npm install express </code>（npm：node package manage），这是在当前路径下安装模块，如果要安装全局模块，则需要执行<code>npm install -g express</code>,卸载模块则是<code>npm uninstall express</code>。操作起来十分方便。通过<code>npm list</code>可以查看当前所安装的模块。</li>
+<li>既然是基于socket.io，那当然得安装socket.io模块。<code>npm install socket.io</code>。</li>
+</ol>
+<h1 id="socket-io简单介绍"><a href="#socket-io简单介绍" class="headerlink" title="socket.io简单介绍"></a>socket.io简单介绍</h1><p>   在使用Node的http模块创建服务器同时还要Express应用，因为这个服务器对象需要同时充当Express服务和Socket.io服务。可以通过如下代码创建一个socket监听。<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> http    = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">var</span> socket  = <span class="built_in">require</span>(<span class="string">'socket.io'</span>);</span><br><span class="line"><span class="keyword">var</span> app     = express(); <span class="comment">//express实例</span></span><br><span class="line"><span class="keyword">var</span> server  = http.createServer(app);</span><br><span class="line">server.listen(<span class="number">3700</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> </span>)</span>&#123;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'监听端口3700'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">var</span> io      = socket.listen(server);</span><br></pre></td></tr></table></figure></p>
+<p>就这样就可以创建一个监听localhost:3700的应用了。<br>在后面接着输入这一部分代码，就可以接收到get请求了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"> app.get(<span class="string">'/'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'Get请求一次'</span>);</span><br><span class="line">   res.send(<span class="string">'你好'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>当然post也是可以的，<code>app.post()</code>就可以了。<br>关于Nodejs和express的基本用法，大家都可以在搜索引擎中搜索到。<br>socket.io模块相关文档可以到<a href="http://socket.io" target="_blank" rel="external">socket.io</a>上查看。</p>
+<p>接下来讲讲签到的需求。场景：会议开始，用户扫码签到，每当一个用户签到完成，所有参加同一个会议的客户端UI当前在线人数进行更新。<br>然后分析下整个过程主要可以分成那几个部分：</p>
+<ol>
+<li>扫码之前，用户发起请求，建立Websocket连接，利用socket.io的房间功能，将每一个会议设置为一个房间，相关的用户加入相关的房间。</li>
+<li>用户扫码进行签到，发起一个post请求，服务端接收post请求后，对数据库（mysql）进行操作，然后返回结果，同时通过socket.io反推客户端当前在线人数。</li>
+<li>客户端（iOS）对相关事件进行监听，事件触发时，刷新相关UI。</li>
+</ol>
+<p>分析完成，那就先开始实现服务端吧。</p>
+<ul>
+<li>首先像之前一个，通过express和socket.io创建一个服务监听相应端口，然后通过io监听connection事件。<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//会议相关socket服务</span></span><br><span class="line">io.of(<span class="string">'/meeting'</span>).on(<span class="string">'connection'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">socket</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'一个客户端已连接meeting'</span>);</span><br><span class="line">    socket.emit(<span class="string">'message'</span>,<span class="string">'成功连接'</span>);</span><br><span class="line">    <span class="comment">//进入会议室</span></span><br><span class="line">    socket.on(<span class="string">'comeInMeeting'</span>,<span class="function"><span class="keyword">function</span> (<span class="params">obj</span>)</span>&#123;</span><br><span class="line">        socket.name = obj.userID; <span class="comment">//socketName 设置为userID</span></span><br><span class="line">        <span class="keyword">var</span> roomName = obj.meetingID;</span><br><span class="line">        socket.join(roomName);</span><br><span class="line">        <span class="built_in">console</span>.log(obj.userID+<span class="string">'进入会议室'</span>+obj.meetingID);</span><br><span class="line">        socket.emit(<span class="string">"comeInMeeting"</span>,&#123;code:<span class="number">200</span>&#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//离开会议室</span></span><br><span class="line">    socket.on(<span class="string">'comeOutMeeting'</span>,<span class="function"><span class="keyword">function</span> (<span class="params">obj</span>)</span>&#123;</span><br><span class="line">        socket.leave(obj.meetingID);</span><br><span class="line">        <span class="built_in">console</span>.log(socket.name+<span class="string">'离开会议室内'</span>+obj.meetingID);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    socket.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'用户发了一个消息'</span>+obj);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以上用到了命名空间(<code>of(‘/meeting’)</code>)，相关知识，可以查看搜索引擎。通过<code>socket.join()</code>可以加入一个房间。<code>socket.leave()</code>离开一个房间。</p>
+<ul>
+<li>接下来添加一个post请求处理函数。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.post(<span class="string">'/conferenceRegister'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</span><br><span class="line">    req.on(<span class="string">'data'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> obj = <span class="built_in">JSON</span>.parse(data.toString());</span><br><span class="line">  <span class="comment">//sqlOperation为自己写的操作数据库模块 暂时可以忽略  </span></span><br><span class="line">   sqlOperation.meetingRegistration(obj.userID,obj.meetingID,<span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"签到成功"</span>+result);</span><br><span class="line">            <span class="keyword">if</span> (result.result == <span class="number">200</span>)&#123;</span><br><span class="line">                <span class="keyword">var</span> roomName = obj.meetingID;</span><br><span class="line">                <span class="comment">//广播当前已签到人数</span></span><br><span class="line">                io.of(<span class="string">'/meeting'</span>).sockets[<span class="number">0</span>].to(roomName).emit(<span class="string">'meetingRegisterNum'</span>, &#123;registerNum:result.data.OnlineCountNum&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            res.send(result);</span><br><span class="line">        &#125;,<span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'签到失败'</span>);</span><br><span class="line">            res.send(result);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>其中的数据库操作部分暂且忽略。<code>io.of(‘/meeting’).sockets[0].to(roomName).emit(‘meetingRegisterNum’, {registerNum:result.data.OnlineCountNum});</code>此处也是由于添加了命名空间，所以有<code>of(‘/meeting’)</code>。socket.io的广播方法有很多，socket.to只是其中一种，但是我尝试其他的方法和命名空间配合使用，都无法像客户端推送数据。<em>望大神帮忙解决！！！</em></p>
+<hr>
+<p>服务端解决了（虽然实际花了很多时间QAQ），然后就是客户端了。iOS的socket.io Client 是swift语言编写的，在<a href="https://github.com/socketio/socket.io-client-swift" target="_blank" rel="external">https://github.com/socketio/socket.io-client-swift</a>clone下来，当然可以直接用CocoaPods<code>pod ‘Socket.IO-Client-Swift’, ‘~&gt; 4.1.2’</code>。通过<code>#import “&lt;#项目名#&gt;-Swift.h”</code>导入项目。因为我用的是OC，所以需要在引用文件名后加上Swift,使用桥接文件，这个桥接文件默认编译器会自动生成。<br>接下来的工作就很简单了，跟服务端差不多的操作。进入页面，在ViewDidLoad的时候实例化socket.io。然后添加命名空间，最后进行连接。具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#import &quot;socketDemo-Swift.h&quot;</span><br><span class="line">@interface IndexViewController ()</span><br><span class="line">@property(nonatomic,strong)    SocketIOClient* socket;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation IndexViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">     self.socket = [[SocketIOClient alloc] initWithSocketURL:@&quot;http://localhost:3700&quot; opts:nil];</span><br><span class="line">    [self.socket joinNamespace:@&quot;/meeting&quot;];</span><br><span class="line">    [self.socket on:@&quot;connect&quot; callback:^(NSArray* data, SocketAckEmitter* ack) &#123;</span><br><span class="line">        NSLog(@&quot;socket connected&quot;);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.socket connect];</span><br><span class="line">    [self.socket on:@&quot;message&quot; callback:^(NSArray* data, SocketAckEmitter* ack) &#123;</span><br><span class="line">        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@&quot;dsd&quot; message:@&quot;socket连接&quot; delegate:self cancelButtonTitle:@&quot;queren&quot; otherButtonTitles:nil];</span><br><span class="line">        [alert show];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>添加一个点击方法来触发服务端的comeInMeeting事件，然后再添加监听meetingRegisterNum事件，来刷新UI。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)clickButton:(id)sender &#123;</span><br><span class="line">    [self.socket emit:@&quot;comeInMeeting&quot; withItems:@[@&#123;@&quot;meetingID&quot;:@&quot;f9a893a94d1c1225014d1c5620bc0200&quot;,@&quot;userID&quot;:@&quot;f9a893a94d1c1225014d1c5620bc0999&quot;&#125;]];</span><br><span class="line">    [self.socket on:@&quot;comeInMeeting&quot; callback:^(NSArray *data,SocketAckEmitter* ack)&#123;</span><br><span class="line">        NSLog(@&quot;socket1 进入会议&quot;);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.socket on:@&quot;meetingRegisterNum&quot; callback:^(NSArray *data,SocketAckEmitter* ack)&#123;</span><br><span class="line">        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@&quot;dsd&quot; message:@&quot;socket接收到在线人数&quot; delegate:self cancelButtonTitle:@&quot;queren&quot; otherButtonTitles:nil];</span><br><span class="line">        [alert show];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样点击按钮之后就可以加入服务端对应的房间中，当同一房间中有人进行签到，则会收到最新的在线人数。</p>
+<p>其中的post请求部分未涉及，由于是demo，所以我是通过火狐的poster来发起post请求的。</p>
+<p>差不多就这些步骤，新手接触Nodejs，只是用到了冰山一角，希望有Node大神指导。</p>
+<h1 id="webStorm的配置"><a href="#webStorm的配置" class="headerlink" title="webStorm的配置"></a>webStorm的配置</h1><p>我尝试了下用WebStorm来写Nodejs程序，通过一些配置，可以实现所有引用框架的智能提醒。</p>
+<ol>
+<li><p>首先点击WebStrom 的设置按钮，弹出设置页面。</p>
+<p><img src="http://i12.tietuku.com/66169131d341b02c.jpg" alt="点击设置按钮"></p>
+</li>
+<li><p>选择右侧菜单的languages&amp;frameWorks–&gt;libraries,就会看到如下界面。</p>
+<p><img src="http://ww3.sinaimg.cn/large/74311666jw1ey53q0ib1uj21kw10xq9i.jpg" alt="点击libraries"></p>
+</li>
+<li><p>看到了很多选项，然后点击download按钮，可以看到如下图，上面可以选择下载很多配置文件（用来实现智能提醒的）。其中的TypeScript中的配置文件都是一些第三方的智能提醒，以上我们用到的express和socket.io都在这里面。<br><img src="http://i12.tietuku.com/2f3f36e8c51a9590.jpg" alt="点击download"></p>
+</li>
+<li><p>如果说我们再typeScript中选中文件点击Download and install ，那么你中招啦。等上半小时也不会下载完成。那么具体原因呢？<a href="">传送门</a></p>
+<blockquote>
+<p>咦才那么一点点？按照视频的操作，可以下拉那个“Official libraries”，切换到“TypeScript community stubs”，就会出现很多很多东东。然后你做了，然后即使等半小时，也是空空如也！！怒了，是被墙了吗？？我抓了一下包，神奇的，如果是Official libraries，会去亚马逊云上取xml数据，但是这个TypeScript community stubs却不会触发网络活动，神奇了！！难道是我用的daoban的原因？？不得而知。</p>
+</blockquote>
+<p>知道原因了，那么我们直接去对应git clone相应配置文件就好啦。例如我们去git上将express的配置文件<a href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/express/express.d.ts" target="_blank" rel="external">copy</a>下来。然后放在一个安全的目录下，不要丢桌面，不小心删了就没啦。（我是放在了webstorm的包文件夹内，生死共存亡）。然后就是回到原来的界面咯。</p>
+</li>
+<li>如下图，回到刚才的界面，不选择download，选择add，然后自己取一个名字，添加刚才git上搞下来的.d.ts文件，然后点击ok—&gt;apply，最后神奇的发现，真的能提醒我express相关方法啦！！！<br><img src="http://i5.tietuku.com/f28a202b1958a8ab.jpg" alt="不要点download。。点击Add"></li>
+</ol>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2015/11/17/Nodejs-Socket-io实现服务器反推/"
+                    data-title="Nodejs&amp;Socket.io实现简单的服务器反推"
+                    data-url="http://kentonyu.github.io/2015/11/17/Nodejs-Socket-io实现服务器反推/"
+                    data-images=""
+                    data-content="期末临近，由于课程设计需要做一个匿名投票，签到的功能，打算通过Nodejs&amp;socke... | KentonYu的博客 | KentonYu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/11/22/Objective-C-三大新特性/" data-toggle="tooltip" data-placement="top" title="Objective-C 三大新特性">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/15/MyFirstBlog/" data-toggle="tooltip" data-placement="top" title="My first blog">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2015/11/17/Nodejs-Socket-io实现服务器反推/"
+                        data-title="Nodejs&amp;Socket.io实现简单的服务器反推"
+                        data-url="http://kentonyu.github.io/2015/11/17/Nodejs-Socket-io实现服务器反推/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        <a class="tag-link" href="/tags/Git/">Git</a><a class="tag-link" href="/tags/Nodejs/">Nodejs</a><a class="tag-link" href="/tags/Objective-C/">Objective-C</a><a class="tag-link" href="/tags/Socket-io/">Socket.io</a><a class="tag-link" href="/tags/SourceTree/">SourceTree</a><a class="tag-link" href="/tags/iOS/">iOS</a><a class="tag-link" href="/tags/iOS开发/">iOS开发</a><a class="tag-link" href="/tags/开发/">开发</a><a class="tag-link" href="/tags/码字/">码字</a><a class="tag-link" href="/tags/随笔/">随笔</a>
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks">KentonYu&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="#">Foo</a></li>
+                    
+                        <li><a href="#">Bar</a></li>
+                    
+                        <li><a href="#">Example Friends</a></li>
+                    
+                        <li><a href="#">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'kaijun';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/Demonbane_x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/demonbane.cn">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Kaijun">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kaijun-chen-42089354">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KentonYu&#39;s Blog 2016 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://kentonyu.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'huangxuan.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://kentonyu.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

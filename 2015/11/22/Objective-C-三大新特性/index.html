@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Objective-C 三大新特性 - KentonYu的博客 | KentonYu&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://kentonyu.github.io/2015/11/22/Objective-C-三大新特性/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KentonYu&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://kentonyu.github.io/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#iOS开发" title="iOS开发">iOS开发</a>
+                        
+                          <a class="tag" href="/tags/#Objective-C" title="Objective-C">Objective-C</a>
+                        
+
+                    </div>
+                    <h1>Objective-C 三大新特性</h1>
+                    <h2 class="subheading">undefined</h2>
+                    <span class="meta">
+                        Posted by Kenton Yu on
+                        2015-11-22
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>2015年的 WWDC 中介绍了几个 Objective-C 语言的新特性，有新特性，那么我们就去了解它们下吧。</p>
+<a id="more"></a>
+<h1 id="Nullability"><a href="#Nullability" class="headerlink" title="Nullability"></a>Nullability</h1><p>Nullability其实在Xcode6.3里就已经出现了。</p>
+<pre><code>@property (nonatomic, copy, nonnull) NSString *str;
+@property (nonatomic, copy, readonly, nullable) NSArray *arr;
++ (nullable NSString *)confirmWithString:(nonnull NSString *)str;
+</code></pre><p>上面的两个属性和一个方法的声明中添加了 <code>nonnull</code> 和 <code>nullable</code> ,很明显，前者是不可空，后者是可空的意思。<br>当然在给变量添加修饰时，就能在前面加上两个下划线了，就如   <code> __nullable </code> 一样。例：</p>
+<pre><code>@interface TestClass() {
+   NSString * __nullable str;
+}
+</code></pre><p>除此之外还有一个 <code>null_resettable</code> ,它意思是setter nullable，但是 getter nonnull。简单来说就是可以赋值为nil，但是你获取的值必定不是nil。</p>
+<p>在代码里重复写nonnull一定是一件非常蛋疼的事情，毕竟coding的原则是DRY，所以 <code> NS_ASSUME_NONNULL_BEGIN </code> , <code> NS_ASSUME_NONNULL_END </code> 这对宏就出现了。它的意思是把它们之间的对象都设置为nonnull，如果是nullable，那么我们得显式声明下。</p>
+<pre><code>NS_ASSUME_NONNULL_BEGIN
+@interface TestClass : NSObject
+@property (nonatomic, copy, nullable) NSString *str;
+@property (nonatomic, copy) NSArray *arr;
+- (nullable NSString *)getString;
+@end
+NS_ASSUME_NONNULL_END
+</code></pre><blockquote>
+<p>Nullability 在编译器层面提供了空值的类型检查，在类型不符时给出 warning，方便开发者第一时间发现潜在问题。不过我想更大的意义在于能够更加清楚的描述接口，是主调者和被调者间的一个协议，比多少句文档描述都来得清晰。</p>
+</blockquote>
+<h1 id="Lightweight-Generics"><a href="#Lightweight-Generics" class="headerlink" title="Lightweight Generics"></a>Lightweight Generics</h1><blockquote>
+<p>Lightweight Generics 轻量级泛型，轻量是因为这是个纯编译器的语法支持（llvm 7.0），和 Nullability 一样，没有借助任何 objc runtime 的升级，也就是说，这个新语法在 Xcode 7 上可以使用且完全向下兼容（更低的 iOS 版本）</p>
+</blockquote>
+<p>看到上面对 Lightweight Generics 的描述，是不是特别爽，以后可以用泛型拉！泛型拉！！泛型拉！！！因为之前学过用C#写web，超级享受泛型带来的代码智能提醒。那么Objective-C的泛型会不会带来这种体验，Let’s try it！</p>
+<p>类ClassOne</p>
+<pre><code>@interface ClassOne : NSObject
+@property (nonatomic, copy) NSString *classOneDes;
+@end
+</code></pre><p>ViewController</p>
+<pre><code>@interface ViewController ()
+@property (nonatomic, strong) NSMutableArray&lt;ClassOne *&gt; *testArr;
+@end
+</code></pre><p><img src="http://i5.tietuku.com/2c321fc78fe04018.jpg" alt="智能提醒"></p>
+<p>竟然真的支持智能提醒！！爽的不要不要的。再也不用担心强转了！！！！</p>
+<p>竟然在取值有智能提醒了，那么在赋值时，会不会有提醒呢？仍旧是上面的属性：</p>
+<pre><code>[self.testArr addObject:&lt;#(nonnull ClassOne *)#&gt;]
+</code></pre><p>提示我们 <code>self.testArr</code>中必须是添加一个 <code>ClassOne</code>对象。假设我们添加一个NSString：</p>
+<pre><code>[self.testArr addObject:@&quot;1&quot;];
+</code></pre><p>接着，编译器出现警告啦。<br><img src="http://i12.tietuku.com/3fdc5654795063d3.jpg" alt="警告"></p>
+<p>其实泛型和之前的 Nullability最重要的作用是丰富了接口描述信息，例如</p>
+<pre><code>@property (readonly) NSArray&lt;NSString *&gt; *imageURLs;
+@property (readonly) NSArray&lt;NSURL *&gt; *avatarURLs;
+</code></pre><p>这样就可以描述清楚 imageURLs 存的是NSString，而 avatarURLs 存的则是 NSURL 。</p>
+<p>在Objective-C中常用的容器类型都增加了泛型支持，甚至连 NSEnumerator 都支持了。那么我们是否可以自定义泛型类呢？？？try try try。</p>
+<p>我们先看一下NSArray的头文件定义的属性：</p>
+<pre><code> @interface NSArray&lt;__covariant ObjectType&gt; : NSObject &lt;NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration&gt;
+
+ @property (readonly) NSUInteger count;
+ - (ObjectType)objectAtIndex:(NSUInteger)index;
+ - (instancetype)init NS_DESIGNATED_INITIALIZER;
+ - (instancetype)initWithObjects:(const ObjectType [])objects count:(NSUInteger)cnt NS_DESIGNATED_INITIALIZER;
+ - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+@end
+</code></pre><p>NSArray的头文件中，多了一个 ObjectType ，从字面意思来讲是<strong>对象类型</strong>，在NSArray中声明的方法中也使用到了 ObjectType ，猜测它的作用类似C#泛型中的 <strong>T</strong> 。<br>那么我们来验证下，按照NSArray的定义方式来自定义一个容器类。</p>
+<pre><code>@interface Container &lt;ObjectType&gt; : NSObject
+- (void)pushObject:(ObjectType)object;
+- (ObjectType)popObject;
+@property (nonatomic, readonly) NSArray&lt;ObjectType&gt; *allObjects;
+@end
+</code></pre><p>定义这样一个头文件，并实现。然后我们尝试使用这个自定义泛型类。</p>
+<pre><code>@interface ViewController ()
+@property (nonatomic, strong) Contanier&lt;NSString *&gt; *contanier;
+@end
+</code></pre><p><img src="http://i5.tietuku.com/ad95ccf490d0adad.jpg" alt="哇塞，可以，可以"></p>
+<p>的确，可以实现自定义泛型，具体的使用，大家可以尝试下。<br>自定义泛型类中的 ObjectType 在 @interface 和 @end 区间的作用域有效，可以把它作为入参、出参、甚至内部 NSArray 属性的泛型类型。</p>
+<p>大家一定看到了 NSArray 的头文件中ObjectType前面有一个 <code> __covariant </code> 修饰符，那么这个是什么意思呢？<br>不指定泛型类型的 Stack 可以和任意泛型类型转化，但指定了泛型类型后，两个不同类型间是不可以强转的，假如你希望主动控制转化关系，就需要使用泛型的协变性和逆变性修饰符了：</p>
+<h3 id="协变性"><a href="#协变性" class="headerlink" title="协变性"></a>协变性</h3><p>__covariant - 协变性，子类型可以强转到父类型。</p>
+<h3 id="逆变性"><a href="#逆变性" class="headerlink" title="逆变性"></a>逆变性</h3><p>__contravariant - 逆变性，父类型可以强转到子类型。</p>
+<p>协变性用的比较多，例如将 NSArray <nsstring *=""> <em> 类型的对象赋值给 NSArray </em> ，假设不设置NSArray泛型的协变性那将会导致警告。当然NSArray泛型带有协变性，所以这样转换是没有问题的。</nsstring></p>
+<p>那么逆变性呢？将一个父类型转换成子类型。这是一个具有风险的事情。比如 你将一个NSArray <em> 的对象赋值给NSArray&lt;NSNumber </em>&gt; * 对象，很明显，前者的对象中可能是 NSString 类型，这时如果设置具有逆变性，那么赋值将会出现问题。</p>
+<p>所以逆变性慎用！！！</p>
+<h1 id="kindof"><a href="#kindof" class="headerlink" title=" __kindof "></a><code> __kindof </code></h1><blockquote>
+<p><code><strong>kindof</strong></code> 这修饰符还是很实用的，解决了一个长期以来的小痛点，拿原来的 UITableView 的这个方法来说：<br><code>- (id)dequeueReusableCellWithIdentifier:(NSString *)identifier;</code><br>使用时前面基本会使用 UITableViewCell 子类型的指针来接收返回值，所以这个 API 为了让开发者不必每次都蛋疼的写显式强转，把返回值定义成了 id 类型，而这个 API 实际上的意思是返回一个 UITableViewCell 或 UITableViewCell 子类的实例，于是新的 kindof 关键字解决了这个问题：<br><code>- (__kindof UITableViewCell <em>)dequeueReusableCellWithIdentifier:(NSString </em>)identifier;</code><br>既明确表明了返回值，又让使用者不必写强转。再举个带泛型的例子，UIView 的 subviews 属性被修改成了：<br><code>@property (nonatomic, readonly, copy) NSArray <em>subviews;</em></code><br>这样，写下面的代码时就没有任何警告了：<br><code><br>UIButton button = view.subviews.lastObject;<br></code></p>
+</blockquote>
+<p>References:</p>
+<ul>
+<li><p><a href="http://www.cocoachina.com/ios/20150615/12148.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20150615/12148.html</a></p>
+</li>
+<li><p><a href="https://msdn.microsoft.com/zh-cn/library/dd799517.aspx" target="_blank" rel="external">https://msdn.microsoft.com/zh-cn/library/dd799517.aspx</a></p>
+</li>
+</ul>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2015/11/22/Objective-C-三大新特性/"
+                    data-title="Objective-C 三大新特性"
+                    data-url="http://kentonyu.github.io/2015/11/22/Objective-C-三大新特性/"
+                    data-images=""
+                    data-content="2015年的 WWDC 中介绍了几个 Objective-C 语言的新特性，有新特性，那么我们... | KentonYu的博客 | KentonYu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/03/05/git-Flow-开发模型/" data-toggle="tooltip" data-placement="top" title="对 Git Flow 开发模型的理解">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/17/Nodejs-Socket-io实现服务器反推/" data-toggle="tooltip" data-placement="top" title="Nodejs&Socket.io实现简单的服务器反推">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2015/11/22/Objective-C-三大新特性/"
+                        data-title="Objective-C 三大新特性"
+                        data-url="http://kentonyu.github.io/2015/11/22/Objective-C-三大新特性/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        <a class="tag-link" href="/tags/Git/">Git</a><a class="tag-link" href="/tags/Nodejs/">Nodejs</a><a class="tag-link" href="/tags/Objective-C/">Objective-C</a><a class="tag-link" href="/tags/Socket-io/">Socket.io</a><a class="tag-link" href="/tags/SourceTree/">SourceTree</a><a class="tag-link" href="/tags/iOS/">iOS</a><a class="tag-link" href="/tags/iOS开发/">iOS开发</a><a class="tag-link" href="/tags/开发/">开发</a><a class="tag-link" href="/tags/码字/">码字</a><a class="tag-link" href="/tags/随笔/">随笔</a>
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks">KentonYu&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="#">Foo</a></li>
+                    
+                        <li><a href="#">Bar</a></li>
+                    
+                        <li><a href="#">Example Friends</a></li>
+                    
+                        <li><a href="#">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'kaijun';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/Demonbane_x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/demonbane.cn">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Kaijun">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kaijun-chen-42089354">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KentonYu&#39;s Blog 2016 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://kentonyu.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'huangxuan.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://kentonyu.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
