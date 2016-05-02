@@ -13,11 +13,11 @@
 
     <title>
         
-          About - KentonYu的博客 | KentonYu&#39;s Blog
+          如何Copy框架：自定义Xcode Template - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://KentonYu.github.io/about/">
+    <link rel="canonical" href="http://KentonYu.github.io/2016/04/27/如何Copy框架：自定义Xcode Template/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -140,164 +140,145 @@
 
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://KentonYu.github.io/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>About</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">Hey, this is KentonYu.</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                          <a class="tag" href="/tags/#Xcode" title="Xcode">Xcode</a>
+                        
+
+                    </div>
+                    <h1>如何Copy框架：自定义Xcode Template</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by KentonYu on
+                        2016-04-27
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
-
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>每次开始一个新项目，大家都是怎么搭项目框架的？我只知道下面这两种方法，欢迎大家补充～</p>
+<ol>
+<li>通过从Git/SVN上pull公司的项目框架，修改相关配置文件。</li>
+<li>command+c 、 command+v ？？</li>
+<li>所有的公有组件都做成私有pods库？好像也可以凸^-^凸</li>
+</ol>
+<p>The first one感觉效率已经很高了吧。我只要<code>git clone</code>,修改下工程名，搞定。但是我们回头想想，假如我们约定的是每个项目内的文件都统一前缀。GG。所有class手动rename。。。。。。。<br>好，终于rename完成了。咦，那个文件头部版权信息怎么办，跟我的工程名不一样呀，哎呀，有一些连公司名都不一样，这样的code怎么show出去。感觉就给人一种代码搬运工的feel～～（当然第三方的当然不能去改人家的版权信息昂）<br>second one 同上，更累点<br>The third one，倒也可以吧，实际没有操作过，但是版权信息的问题还是变不了滴～～而且自己所有可复用的组件都打成Pods库，想想也不简单吧。</p>
+<p>好吧，我说完了，个人见解QAQ，回到主题——通过Xcode 的Project Template 创建项目。</p>
+<p>大家可以到这个目录底下（<code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates/Project Templates/iOS/Application/Single View Application.xctemplate/TemplateInfo.plist</code>），看下<code>TemplateInfo.plist</code>这个plist文件。这个文件就是Project Template的配置文件。我们先来了解下这个plist中的主要的几个key。</p>
+<ul>
+<li>Kind：required key。这个key的value不会从父模板继承下来，所以自己定义的一个新模板，必须设置Kind，当设置错误或者不设置将会导致你不能在创建工程的时候看到你的模板或者创建的时候Xcode crash，Kind有以下几种类型：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Xcode.Xcode3.ProjectTemplateUnitKind</td>
+<td style="text-align:center">指定该模板是工程模板</td>
+</tr>
+<tr>
+<td style="text-align:center">Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</td>
+<td style="text-align:center">指定该模板是文件模板</td>
+</tr>
+<tr>
+<td style="text-align:center">more</td>
+<td style="text-align:center">more</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Identifier：required key。唯一标识。不能重复。For example: com.yourcompany.yourtemplate.templatename。</p>
+</li>
+<li><p>Ancestors：该模板的父类。可以自己选择继承一个或多个。具体可以看Xcode自带模板Identifier。</p>
+</li>
+<li><p>Concrete：该Key设置为YES的模板才可以显示在new project的dialog中，此时这个模板不能被其他模板继承。</p>
+</li>
+<li><p>Definitions 和 Nodes：这两个Key具体描述不清楚，Nodes里定义的是工程中的文件目录结构，Definitions中的Path定义的是该模板文件的位置。</p>
+</li>
+<li><p>SortOrder：在dialog中的位置，越大越前面</p>
+</li>
+</ul>
+<p>其实了解这些Key差不多就可以自定义 Template Project啦。。。。大家可以动手来have a try 。</p>
+<p>如果需要更多相关内容，自行Google。</p>
+<p>附上一个[自制小工具 ]<br>(<a href="http://7xtamz.com2.z0.glb.clouddn.com/plistRelease.zip)。" target="_blank" rel="external">http://7xtamz.com2.z0.glb.clouddn.com/plistRelease.zip)。</a><br>可以把你制作的模板文件导成模板plist，移入Xcode目录中就可以用了。</p>
+<p>考虑貌似用的storyboard也不多，干脆就不继承storyboard模板了，有需要的可以自己在数据源文件夹自己加Main. storyboard,然后在build setting设置interface 为Main。</p>
+<p><del>1.目前文件夹中没生成Main.storyboard。工程创建之后需要手动复制一个Main.storyboard到生成的<code>KentonYuApplication.xctemplate</code>文件夹里。<br>2.或者手动从工程的project.pbxproj中移除storyboard相关的引用。</del></p>
+<p>里面也可以用Podfile,只需要把你的Podfile文件放在数据源第一级目录里，然后创建的工程执行<code>pod install</code>。</p>
+<p>欢淫评论bugs～～。</p>
+
+
+                <hr>
+
                 
 
-<!-- Chinese Version -->
-<div class="zh post-container">
-    <blockquote>
-<p>世界那么大，想出去看看。</p>
-</blockquote>
-<hr>
-<h2 id="个人信息"><a href="#个人信息" class="headerlink" title="个人信息"></a>个人信息</h2><ul>
-<li>俞凯波 / 男 / 1995</li>
-<li>本科 / 浙江科技学院 / 数字媒体技术 </li>
-<li>毕业时间：2017年06月</li>
-<li>手机：13588266404 </li>
-<li>Email：KentonYu@KentonYu.com</li>
-<li>个人博客：<a href="http://KentonYu.github.io">http://KentonYu.github.io</a></li>
-<li>Github：<a href="http://github.com/KentonYu" target="_blank" rel="external">http://github.com/KentonYu</a></li>
-<li>期望职位：iOS实习生</li>
-</ul>
-<hr>
-<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><h3 id="杭州触梦智能科技有限公司-（-2015年5月-至今-）"><a href="#杭州触梦智能科技有限公司-（-2015年5月-至今-）" class="headerlink" title="杭州触梦智能科技有限公司 （ 2015年5月 ~ 至今 ）"></a>杭州触梦智能科技有限公司 （ 2015年5月 ~ 至今 ）</h3><h4 id="人人红包项目（2015-09-～-至今）"><a href="#人人红包项目（2015-09-～-至今）" class="headerlink" title="人人红包项目（2015/09 ～ 至今）"></a>人人红包项目（2015/09 ～ 至今）</h4><p>一共参与了该项目的四次版本迭代，总体负责了1/3的工作量。</p>
-<p>项目中主要解决的问题有：九宫格图片，不定行描述文字的列表显示优化及封装；模仿淘宝彩票猜大小游戏的原生实现；GitFlow探索实践；</p>
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/03/27/Effective Objective-C 读书笔记/" data-toggle="tooltip" data-placement="top" title="Effective Objective-C 读书笔记">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
 
-<h4 id="德洛客户服务平台（2016-01-2016-04）"><a href="#德洛客户服务平台（2016-01-2016-04）" class="headerlink" title="德洛客户服务平台（2016/01 ~ 2016/04）"></a>德洛客户服务平台（2016/01 ~ 2016/04）</h4><p>iOS项目负责人，负责项目的框架搭建，进度把控。</p>
-<p>该项目中无特殊技术难点，展示信息为主，从中主要学习了如何控制一个App的开发进度。</p>
+                
 
-<hr>
-<h2 id="技能清单"><a href="#技能清单" class="headerlink" title="技能清单"></a>技能清单</h2><ul>
-<li>iOS开发：Objective-C / Xcode / Charles / SQLite / CocoaPods </li>
-<li>Web开发：ASP.NET MVC / Web API 2.0 / RESTful API 设计 / SQL Server / HTML / Bootstrap / Node.js</li>
-<li>其他：Git / MarkDown / PhotoShop / </li>
-</ul>
-<hr>
-
-</div>
-
-
-
-
-
-
-
-
-
+                
 
             </div>
+
     <!-- Sidebar Container -->
+
             <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
                 <!-- Featured Tags -->
                 
                 <section>
                     <!-- no hr -->
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
-                            
-                        
-                            
-                            <a href="/tags/#iOS" title="iOS" rel="5">iOS</a>
-                            
-                        
-                            
-                            <a href="/tags/#Objective-C" title="Objective-C" rel="2">Objective-C</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
+                        <a class="tag-link" href="/tags/Git/">Git</a><a class="tag-link" href="/tags/Node-js/">Node.js</a><a class="tag-link" href="/tags/Objective-C/">Objective-C</a><a class="tag-link" href="/tags/Socket-io/">Socket.io</a><a class="tag-link" href="/tags/SourceTree/">SourceTree</a><a class="tag-link" href="/tags/Xcode/">Xcode</a><a class="tag-link" href="/tags/iOS/">iOS</a><a class="tag-link" href="/tags/码字/">码字</a><a class="tag-link" href="/tags/读书笔记/">读书笔记</a>
                     </div>
                 </section>
                 
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-
-                        
-                            <img src="/img/avatar.jpg" />
-                        
-
-                        
-                            <p>To Be A Full Stack Developer!</p>
-                        
-
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                            
-
-                            
-
-                            
-
-                            
-                                <li>
-                                    <a target="_blank"  href="https://github.com/KentonYu">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
-                
                 <!-- Friends Blog -->
                 
                 <hr>
@@ -312,9 +293,51 @@
                 </ul>
                 
             </div>
-        
+
+        </div>
     </div>
-</div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->

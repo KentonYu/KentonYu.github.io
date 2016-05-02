@@ -13,11 +13,11 @@
 
     <title>
         
-          对 Git Flow 开发模型的理解 - KentonYu的博客 | KentonYu&#39;s Blog
+          Effective Objective-C 读书笔记 - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://KentonYu.github.io/2016/03/05/git-Flow-开发模型/">
+    <link rel="canonical" href="http://KentonYu.github.io/2016/03/27/Effective Objective-C 读书笔记/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -160,17 +160,17 @@
                         
                           <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
                         
-                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                          <a class="tag" href="/tags/#Objective-C" title="Objective-C">Objective-C</a>
                         
-                          <a class="tag" href="/tags/#SourceTree" title="SourceTree">SourceTree</a>
+                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
                         
 
                     </div>
-                    <h1>对 Git Flow 开发模型的理解</h1>
+                    <h1>Effective Objective-C 读书笔记</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by KentonYu on
-                        2016-03-05
+                        2016-03-27
                     </span>
                 </div>
             </div>
@@ -189,31 +189,59 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。<br>ps:图片无法显示请点击：<a href="http://www.jianshu.com/p/c9d7e16744e0" target="_blank" rel="external">“传送门”</a><br>最近一个项目，因为需求上比较容易（开发时间比较充裕），所以尝试了通过Git Flow来管理项目源代码，从而探索下是否可以提高整体开发效率。在这之前，公司用的只是dev + master，几个开发同时在dev上开发，时不时就会有冲突，特别是项目中的xib文件较多时，很容易发生xib冲突（头疼。。。当然只要在commit之前看下文件变更记录，把不需要的变更放弃掉，但是难免会有疏忽的时候）。</p>
-<h1 id="Git-Flow-介绍"><a href="#Git-Flow-介绍" class="headerlink" title="Git Flow 介绍"></a>Git Flow 介绍</h1><blockquote>
-<p>Git Flow是构建在Git之上的一个组织软件开发活动的模型，是在Git之上构建的一项软件开发最佳实践。Git Flow是一套使用Git进行源代码管理时的一套行为规范和简化部分Git操作的工具。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow01YiLAQQnlPV.jpg" alt="Git Flow 全貌"></p>
-</blockquote>
-<p>其实学习Git Flow，主要还是理解几个分支的用处，在使用时通过严格的分割，将冲突概率降到最低，提高开发效率。下面我就按自己的理解来描述下主要的几种分支。</p>
+                <p>时间什么的，挤挤就有了。Effective这本书在iOS编程领域知名度还是蛮高的＝_＝。这篇文章就来记录一些读书笔记吧。</p>
+<ol>
+<li><p>关于常量的命名法：常量局限于某“编译单元”（也就是在实现文件.m之内），则前面加字母k；若常量在类之外可见，则通常已类名做为前缀。</p>
+</li>
+<li><p><code>//file .m<br>static const NSTimeInterval kAnimationDuration = 0.3;<br></code><br>假如上面的变量不声明static，则编译器会为它创建一个“外部符号”（external symbol）。此时在另外文件申明了同名的变量，编译器就会报错。<br><code><br>duplicate symbol _kAnimationDuration in:……<br></code><br>事实上，一个静态（static）不可变（const）变量，编译器不会创建符号，会像define一样进行替换，但是它有类型信息。</p>
+</li>
+<li><p>垃圾收集器（GC），iOS系统中没有GC，MAC OS X 10.8之前有GC，但是之后也正式废弃了，所以目前OC中不存在GC。</p>
+</li>
+<li><p>如果有非Objective-C的对象，比如CoreFoundation中的对象或由malloc()分配在堆中的内存，那么需要在dealloc中清理。dealloc中还需要取消原来订阅的“KVO”或NSNotificationCenter等通知。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)dealloc &#123;</span><br><span class="line">   CFRelease(_coreFoundationObject);</span><br><span class="line">   free(_heapAllocatedMemoryBlob);</span><br><span class="line">   [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">   // [super dealloc];  //ARC中不需要调用super</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过自动释放池块来降低内存峰值。是否应该用池来优化效率，完全取决于具体的应用程序。首先应该监控内存用量，如果有必要优化，再通过池来优化。尽管自动释放池的开销不太大，但毕竟是有的。所以不要简历额外的自动释放池。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for(int i=0; i&lt;100000; i++) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">         [self doSomethingWithInt:i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>向已回收的对象发送消息是不安全的。这么做有时可以，有时不行。具体可行与否，完全取决于对象所占的内存有没有被其他内存内容所重写。而这块内存有没有被移作它用又不确定，因此程序会偶尔奔溃。<br>在没有奔溃的情况下有两种可能：</p>
 <ul>
-<li><p>master<br>这个分支上只存在上线版本，每个commit都应该对应一个版本号。</p>
-<blockquote>
-<p>仅在发布新的可供部署的代码时才更新master分支上的代码</p>
-</blockquote>
-</li>
-<li><p>develop<br>dev分支简单来说就是开发分支，它保存着开发过程中的最新版本。也就是说每当完成一个需求（feature）就应该合并到dev分支上。</p>
-</li>
-<li><p>feature<br>feature：功能。这个分支显而易见，是用来存每一个新功能（需求）的。每一个功能模块（较复杂的最好拆分下）可以做为一个feature。一般情况，每一轮迭代结束后的feature分支都应被合到dev分支上。这类分支也可以是做为实验性分支，比如在上面尝试一些开发，如果达不到预期效果也可以放弃该分支。</p>
-</li>
-<li><p>release<br>release分支可以看做是存储上线版本之前的分支。用一个实际情况来描述下，第二轮sprint结束，需要上线一个版本（还未进行测试和fix bugs），这时候第三轮sprint又要开始了。根据之前master的原则，是只存在上线版本的，因此我们可以用release分支，存一个待上线版本，然后dev就可以进行sprint3迭代了。这时候sprint2的bug 就可以在release上修复，当测试通过之后，就可以将release合进master上，同时dev需要merge下release分支。</p>
-</li>
-<li><p>hotfix<br>hotfix：热补丁。它的作用是线上版本出现bug时，可以通过hotfix来fix，然后产生一个新的发布版本，合并到master上，同时dev需要merge hotfix。这样的好处是可以打断dev上正在开发的进度。</p>
-</li>
+<li>那块内存只被复用了其中一部分，所以对象中有效的某些二进制数据依旧有效。</li>
+<li>那块内存对象恰好为另外一个有效且存活的对象所占据。<br>这样的问题可以通过用“僵尸对象”调试，开启方法：编辑应用的scheme，在对话框的左侧选择Run，切换到Diagnostics分页，勾选Enable Zombie Objects。<br>当然这种情况普遍存在于MRC时期，在ARC时期需要通过比较复杂的代码才能把僵尸对象表现出来。我的理解就是MRC中的野指针。因此在MRC中release对象后，最好将指针置空来避免这个问题。</li>
 </ul>
-<p>以上就是Git Flow模型的大致概念。在实际开发过程中，这个模型并不是一成不变的，根据每个开发团队或每个项目可以进行一定的变化。</p>
-<h1 id="Git-Flow-实际使用"><a href="#Git-Flow-实际使用" class="headerlink" title="Git Flow 实际使用"></a>Git Flow 实际使用</h1><p>日常开发中，使用SourceTree来操作Git居多。SourceTree中自带Git 工作流模型，简单的使用只需要点击应用即可。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow26571850-6A6C-4863-80CF-1E2706FD846A.png" alt="SourceTree 自带工作流"></p>
-<p>当然这边也可以进行自定义，或者说不使用这个模型，自己通过新建分支来实现Git Flow。<br>我实际运用中，大致是这样的：<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlowA73C5C4C-5ADD-4044-908C-D0C659C26440.png" alt="利用group"></p>
-<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>1.dev有更新时，feature分支及时rebase（变基，衍合），不然当合并该feature时可能会出现很多冲突（Q_A_Q）。<br>2.可以复用页面的一些功能模块应该分配给同一个开发去做，不然在页面复用上会有问题。因为每个feature是分割开的。</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p>1.基于git的源代码管理模型——git flow <a href="http://www.ituring.com.cn/article/56870" target="_blank" rel="external">http://www.ituring.com.cn/article/56870</a></p>
+</li>
+<li><p>关于实例变量和属性的问题：</p>
+<ul>
+<li>在对象内部读取数据时，应该直接通过实例变量来读取，而进行赋值时，则应该通过属性来写。</li>
+<li>在初始化方法或dealloc中，应该用实例变量。</li>
+<li>用懒加载来配置某份数据时，应该用属性来读取。</li>
+</ul>
+</li>
+<li><p>objc_msgSend的作用<br> C语言使用“静态绑定”，编译器就能决定运行时所应调用的函数。<br> OC使用的是“动态绑定”，所有调用的函数直到运行期才能确定。<br> OC中给某个对象发送消息，发生的步骤如下：</p>
+<ul>
+<li>调用objc_msgSend(id self, SEL cmd, …)</li>
+<li>该函数从接收对象所属的类中搜寻它的”方法列表”，如果能找到则会跳到相应的实现代码，否则沿着继承体系继续往上查找，找到之后进行跳转。</li>
+<li>如果最终没找到，则会执行“消息转发”。</li>
+</ul>
+<p>通过以上几步才能完成一次消息的发送，因此objc_msgSend()有一张“快速映射表”来缓存已经匹配的结果，所以给对象发送相同的消息，那么执行起来就很快了。</p>
+</li>
+<li><p>消息转发(message forwarding)机制<br> 消息转发分两个阶段：</p>
+<ul>
+<li>先征询接收者所属的类，看其是否能动态添加方法，以处理当前这个“未知的选择子”，这叫做“动态方法解析”。</li>
+<li>如果第一阶段结束，那么接收者就无法再以动态新增方法的手段来响应该消息了。此时，运行期系统会请求接收者看看有没有其他对象能处理该消息。若有，则运行期系统会把消息转发给那个对象。然后消息转发过程结束。若没有“备援的接收者”，运行期系统会把与消息有关的全部细节都封装到NSInvocation对象中，再给接收者最后一次机会来处理这条消息。</li>
+</ul>
+<p>动态方法解析：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//实例方法</span><br><span class="line"> + (BOOL)resolveInstanceMethod:(SEL)selector</span><br><span class="line">//类方法</span><br><span class="line"> + (BOOL)resolveClassMethod:(SEL)selector</span><br></pre></td></tr></table></figure>
+<p> 备援接收者：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//有备援对象则返回，无则返回nil</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)selector</span><br></pre></td></tr></table></figure>
+<p> 完整的消息转发：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> //可以改变消息内容，比如追加一个参数，或更换选择子等等</span><br><span class="line"> - (id)forwardInvocation:(NSInvocation *)invocation</span><br><span class="line">//动态添加方法(第三个参数为函数指针，指向待添加的函数，第四个参数为添加方法的类型编码，第一个表示方法的返回值类型，后面表示方法的参数类型)</span><br><span class="line">class_addMethod(Class, selector, IMP, typeEncoding);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/1155692-38a34cc2739f4452.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="类型编码表"></p>
+<ol>
+<li>方法调配(method swizzling)<br>Method Swizzling：在运行期改变给定的选择子名称对应的方法。<br>获得方法的实现<br><code><br>Method class_getInstanceMethod(Class aClass, SEL aSelector)<br></code><br>交换两个方法的函数<br><code><br>void method_exchangeImplementations(Method m1, Method m2)<br></code></li>
+</ol>
+<p>通过这两个方法可以为“完全不知道其具体实现的”黑盒方法增加日志记录功能，非常有助于调试。</p>
 
 
                 <hr>
@@ -223,12 +251,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/03/27/Effective Objective-C 读书笔记/" data-toggle="tooltip" data-placement="top" title="Effective Objective-C 读书笔记">&larr; Previous Post</a>
+                            <a href="/2016/04/27/如何Copy框架：自定义Xcode Template/" data-toggle="tooltip" data-placement="top" title="如何Copy框架：自定义Xcode Template">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2015/11/22/Objective-C-三大新特性/" data-toggle="tooltip" data-placement="top" title="Objective-C 三大新特性">Next Post &rarr;</a>
+                            <a href="/2016/03/05/git-Flow-开发模型/" data-toggle="tooltip" data-placement="top" title="对 Git Flow 开发模型的理解">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
