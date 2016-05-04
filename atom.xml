@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>KentonYu&#39;s Blog</title>
+  <subtitle>To Be A Full Stack Developer !</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="/"/>
+  <updated>2016-05-02T03:21:34.000Z</updated>
+  <id>/</id>
+  
+  <author>
+    <name>Kenton Yu</name>
+    <email>KentonYu@KentonYu.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何Copy框架：自定义Xcode Template</title>
+    <link href="/2016/04/27/%E5%A6%82%E4%BD%95Copy%E6%A1%86%E6%9E%B6%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89Xcode%20Template/"/>
+    <id>/2016/04/27/如何Copy框架：自定义Xcode Template/</id>
+    <published>2016-04-27T04:22:07.000Z</published>
+    <updated>2016-05-02T03:21:34.000Z</updated>
+    
+    <content type="html">&lt;p&gt;每次开始一个新项目，大家都是怎么搭项目框架的？我只知道下面这两种方法，欢迎大家补充～&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过从Git/SVN上pull公司的项目框架，修改相关配置文件。&lt;/li&gt;
+&lt;li&gt;command+c 、 command+v ？？&lt;/li&gt;
+&lt;li&gt;所有的公有组件都做成私有pods库？好像也可以凸^-^凸&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The first one感觉效率已经很高了吧。我只要&lt;code&gt;git clone&lt;/code&gt;,修改下工程名，搞定。但是我们回头想想，假如我们约定的是每个项目内的文件都统一前缀。GG。所有class手动rename。。。。。。。&lt;br&gt;好，终于rename完成了。咦，那个文件头部版权信息怎么办，跟我的工程名不一样呀，哎呀，有一些连公司名都不一样，这样的code怎么show出去。感觉就给人一种代码搬运工的feel～～（当然第三方的当然不能去改人家的版权信息昂）&lt;br&gt;second one 同上，更累点&lt;br&gt;The third one，倒也可以吧，实际没有操作过，但是版权信息的问题还是变不了滴～～而且自己所有可复用的组件都打成Pods库，想想也不简单吧。&lt;/p&gt;
+&lt;p&gt;好吧，我说完了，个人见解QAQ，回到主题——通过Xcode 的Project Template 创建项目。&lt;/p&gt;
+&lt;p&gt;大家可以到这个目录底下（&lt;code&gt;/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates/Project Templates/iOS/Application/Single View Application.xctemplate/TemplateInfo.plist&lt;/code&gt;），看下&lt;code&gt;TemplateInfo.plist&lt;/code&gt;这个plist文件。这个文件就是Project Template的配置文件。我们先来了解下这个plist中的主要的几个key。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Kind：required key。这个key的value不会从父模板继承下来，所以自己定义的一个新模板，必须设置Kind，当设置错误或者不设置将会导致你不能在创建工程的时候看到你的模板或者创建的时候Xcode crash，Kind有以下几种类型：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&quot;text-align:center&quot;&gt;类型&lt;/th&gt;
+&lt;th style=&quot;text-align:center&quot;&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;Xcode.Xcode3.ProjectTemplateUnitKind&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;指定该模板是工程模板&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;Xcode.IDEFoundation.TextSubstitutionFileTemplateKind&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;指定该模板是文件模板&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;more&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;more&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Identifier：required key。唯一标识。不能重复。For example: com.yourcompany.yourtemplate.templatename。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Ancestors：该模板的父类。可以自己选择继承一个或多个。具体可以看Xcode自带模板Identifier。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Concrete：该Key设置为YES的模板才可以显示在new project的dialog中，此时这个模板不能被其他模板继承。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Definitions 和 Nodes：这两个Key具体描述不清楚，Nodes里定义的是工程中的文件目录结构，Definitions中的Path定义的是该模板文件的位置。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SortOrder：在dialog中的位置，越大越前面&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其实了解这些Key差不多就可以自定义 Template Project啦。。。。大家可以动手来have a try 。&lt;/p&gt;
+&lt;p&gt;如果需要更多相关内容，自行Google。&lt;/p&gt;
+&lt;p&gt;附上一个&lt;a href=&quot;http://7xtamz.com2.z0.glb.clouddn.com/plistRelease.zip&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;自制小工具&lt;/a&gt;。&lt;br&gt;可以把你制作的模板文件导成模板plist，移入Xcode目录中就可以用了。&lt;/p&gt;
+&lt;p&gt;考虑貌似用的storyboard也不多，干脆就不继承storyboard模板了，有需要的可以自己在数据源文件夹自己加Main. storyboard,然后在build setting设置interface 为Main。&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;1.目前文件夹中没生成Main.storyboard。工程创建之后需要手动复制一个Main.storyboard到生成的&lt;code&gt;KentonYuApplication.xctemplate&lt;/code&gt;文件夹里。&lt;br&gt;2.或者手动从工程的project.pbxproj中移除storyboard相关的引用。&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;里面也可以用Podfile,只需要把你的Podfile文件放在数据源第一级目录里，然后创建的工程执行&lt;code&gt;pod install&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;欢淫评论bugs～～。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;每次开始一个新项目，大家都是怎么搭项目框架的？我只知道下面这两种方法，欢迎大家补充～&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过从Git/SVN上pull公司的项目框架，修改相关配置文件。&lt;/li&gt;
+&lt;li&gt;command+c 、 command+v ？？&lt;/li&gt;
+&lt;li&gt;所有的公有
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Xcode" scheme="/tags/Xcode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Effective Objective-C 读书笔记</title>
+    <link href="/2016/03/27/Effective%20Objective-C%20%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    <id>/2016/03/27/Effective Objective-C 读书笔记/</id>
+    <published>2016-03-27T02:22:07.000Z</published>
+    <updated>2016-05-02T02:44:14.000Z</updated>
+    
+    <content type="html">&lt;p&gt;时间什么的，挤挤就有了。Effective这本书在iOS编程领域知名度还是蛮高的＝_＝。这篇文章就来记录一些读书笔记吧。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;关于常量的命名法：常量局限于某“编译单元”（也就是在实现文件.m之内），则前面加字母k；若常量在类之外可见，则通常已类名做为前缀。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;//file .m&lt;br&gt;static const NSTimeInterval kAnimationDuration = 0.3;&lt;br&gt;&lt;/code&gt;&lt;br&gt;假如上面的变量不声明static，则编译器会为它创建一个“外部符号”（external symbol）。此时在另外文件申明了同名的变量，编译器就会报错。&lt;br&gt;&lt;code&gt;&lt;br&gt;duplicate symbol _kAnimationDuration in:……&lt;br&gt;&lt;/code&gt;&lt;br&gt;事实上，一个静态（static）不可变（const）变量，编译器不会创建符号，会像define一样进行替换，但是它有类型信息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;垃圾收集器（GC），iOS系统中没有GC，MAC OS X 10.8之前有GC，但是之后也正式废弃了，所以目前OC中不存在GC。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果有非Objective-C的对象，比如CoreFoundation中的对象或由malloc()分配在堆中的内存，那么需要在dealloc中清理。dealloc中还需要取消原来订阅的“KVO”或NSNotificationCenter等通知。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;- (void)dealloc &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   CFRelease(_coreFoundationObject);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   free(_heapAllocatedMemoryBlob);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   [[NSNotificationCenter defaultCenter] removeObserver:self];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   // [super dealloc];  //ARC中不需要调用super&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;通过自动释放池块来降低内存峰值。是否应该用池来优化效率，完全取决于具体的应用程序。首先应该监控内存用量，如果有必要优化，再通过池来优化。尽管自动释放池的开销不太大，但毕竟是有的。所以不要简历额外的自动释放池。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;for(int i=0; i&amp;lt;100000; i++) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    @autoreleasepool &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;         [self doSomethingWithInt:i];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;向已回收的对象发送消息是不安全的。这么做有时可以，有时不行。具体可行与否，完全取决于对象所占的内存有没有被其他内存内容所重写。而这块内存有没有被移作它用又不确定，因此程序会偶尔奔溃。&lt;br&gt;在没有奔溃的情况下有两种可能：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;那块内存只被复用了其中一部分，所以对象中有效的某些二进制数据依旧有效。&lt;/li&gt;
+&lt;li&gt;那块内存对象恰好为另外一个有效且存活的对象所占据。&lt;br&gt;这样的问题可以通过用“僵尸对象”调试，开启方法：编辑应用的scheme，在对话框的左侧选择Run，切换到Diagnostics分页，勾选Enable Zombie Objects。&lt;br&gt;当然这种情况普遍存在于MRC时期，在ARC时期需要通过比较复杂的代码才能把僵尸对象表现出来。我的理解就是MRC中的野指针。因此在MRC中release对象后，最好将指针置空来避免这个问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;关于实例变量和属性的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在对象内部读取数据时，应该直接通过实例变量来读取，而进行赋值时，则应该通过属性来写。&lt;/li&gt;
+&lt;li&gt;在初始化方法或dealloc中，应该用实例变量。&lt;/li&gt;
+&lt;li&gt;用懒加载来配置某份数据时，应该用属性来读取。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;objc_msgSend的作用&lt;br&gt; C语言使用“静态绑定”，编译器就能决定运行时所应调用的函数。&lt;br&gt; OC使用的是“动态绑定”，所有调用的函数直到运行期才能确定。&lt;br&gt; OC中给某个对象发送消息，发生的步骤如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;调用objc_msgSend(id self, SEL cmd, …)&lt;/li&gt;
+&lt;li&gt;该函数从接收对象所属的类中搜寻它的”方法列表”，如果能找到则会跳到相应的实现代码，否则沿着继承体系继续往上查找，找到之后进行跳转。&lt;/li&gt;
+&lt;li&gt;如果最终没找到，则会执行“消息转发”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;通过以上几步才能完成一次消息的发送，因此objc_msgSend()有一张“快速映射表”来缓存已经匹配的结果，所以给对象发送相同的消息，那么执行起来就很快了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;消息转发(message forwarding)机制&lt;br&gt; 消息转发分两个阶段：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先征询接收者所属的类，看其是否能动态添加方法，以处理当前这个“未知的选择子”，这叫做“动态方法解析”。&lt;/li&gt;
+&lt;li&gt;如果第一阶段结束，那么接收者就无法再以动态新增方法的手段来响应该消息了。此时，运行期系统会请求接收者看看有没有其他对象能处理该消息。若有，则运行期系统会把消息转发给那个对象。然后消息转发过程结束。若没有“备援的接收者”，运行期系统会把与消息有关的全部细节都封装到NSInvocation对象中，再给接收者最后一次机会来处理这条消息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;动态方法解析：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;//实例方法&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; + (BOOL)resolveInstanceMethod:(SEL)selector&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;//类方法&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; + (BOOL)resolveClassMethod:(SEL)selector&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt; 备援接收者：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;//有备援对象则返回，无则返回nil&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (id)forwardingTargetForSelector:(SEL)selector&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt; 完整的消息转发：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt; //可以改变消息内容，比如追加一个参数，或更换选择子等等&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - (id)forwardInvocation:(NSInvocation *)invocation&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;//动态添加方法(第三个参数为函数指针，指向待添加的函数，第四个参数为添加方法的类型编码，第一个表示方法的返回值类型，后面表示方法的参数类型)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;class_addMethod(Class, selector, IMP, typeEncoding);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/1155692-38a34cc2739f4452.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;类型编码表&quot;&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;方法调配(method swizzling)&lt;br&gt;Method Swizzling：在运行期改变给定的选择子名称对应的方法。&lt;br&gt;获得方法的实现&lt;br&gt;&lt;code&gt;&lt;br&gt;Method class_getInstanceMethod(Class aClass, SEL aSelector)&lt;br&gt;&lt;/code&gt;&lt;br&gt;交换两个方法的函数&lt;br&gt;&lt;code&gt;&lt;br&gt;void method_exchangeImplementations(Method m1, Method m2)&lt;br&gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过这两个方法可以为“完全不知道其具体实现的”黑盒方法增加日志记录功能，非常有助于调试。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;时间什么的，挤挤就有了。Effective这本书在iOS编程领域知名度还是蛮高的＝_＝。这篇文章就来记录一些读书笔记吧。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;关于常量的命名法：常量局限于某“编译单元”（也就是在实现文件.m之内），则前面加字母k；若常量在类之外可见，则通常已类名
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Objective-C" scheme="/tags/Objective-C/"/>
+    
+      <category term="读书笔记" scheme="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>对 Git Flow 开发模型的理解</title>
+    <link href="/2016/03/05/git-Flow-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B/"/>
+    <id>/2016/03/05/git-Flow-开发模型/</id>
+    <published>2016-03-05T00:57:07.000Z</published>
+    <updated>2016-05-02T02:34:32.000Z</updated>
+    
+    <content type="html">&lt;p&gt;又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。&lt;br&gt;ps:图片无法显示请点击：&lt;a href=&quot;http://www.jianshu.com/p/c9d7e16744e0&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;“传送门”&lt;/a&gt;&lt;br&gt;最近一个项目，因为需求上比较容易（开发时间比较充裕），所以尝试了通过Git Flow来管理项目源代码，从而探索下是否可以提高整体开发效率。在这之前，公司用的只是dev + master，几个开发同时在dev上开发，时不时就会有冲突，特别是项目中的xib文件较多时，很容易发生xib冲突（头疼。。。当然只要在commit之前看下文件变更记录，把不需要的变更放弃掉，但是难免会有疏忽的时候）。&lt;/p&gt;
+&lt;h1 id=&quot;Git-Flow-介绍&quot;&gt;&lt;a href=&quot;#Git-Flow-介绍&quot; class=&quot;headerlink&quot; title=&quot;Git Flow 介绍&quot;&gt;&lt;/a&gt;Git Flow 介绍&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Git Flow是构建在Git之上的一个组织软件开发活动的模型，是在Git之上构建的一项软件开发最佳实践。Git Flow是一套使用Git进行源代码管理时的一套行为规范和简化部分Git操作的工具。&lt;br&gt;&lt;img src=&quot;http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow01YiLAQQnlPV.jpg&quot; alt=&quot;Git Flow 全貌&quot;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;其实学习Git Flow，主要还是理解几个分支的用处，在使用时通过严格的分割，将冲突概率降到最低，提高开发效率。下面我就按自己的理解来描述下主要的几种分支。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;master&lt;br&gt;这个分支上只存在上线版本，每个commit都应该对应一个版本号。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;仅在发布新的可供部署的代码时才更新master分支上的代码&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;develop&lt;br&gt;dev分支简单来说就是开发分支，它保存着开发过程中的最新版本。也就是说每当完成一个需求（feature）就应该合并到dev分支上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;feature&lt;br&gt;feature：功能。这个分支显而易见，是用来存每一个新功能（需求）的。每一个功能模块（较复杂的最好拆分下）可以做为一个feature。一般情况，每一轮迭代结束后的feature分支都应被合到dev分支上。这类分支也可以是做为实验性分支，比如在上面尝试一些开发，如果达不到预期效果也可以放弃该分支。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;release&lt;br&gt;release分支可以看做是存储上线版本之前的分支。用一个实际情况来描述下，第二轮sprint结束，需要上线一个版本（还未进行测试和fix bugs），这时候第三轮sprint又要开始了。根据之前master的原则，是只存在上线版本的，因此我们可以用release分支，存一个待上线版本，然后dev就可以进行sprint3迭代了。这时候sprint2的bug 就可以在release上修复，当测试通过之后，就可以将release合进master上，同时dev需要merge下release分支。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hotfix&lt;br&gt;hotfix：热补丁。它的作用是线上版本出现bug时，可以通过hotfix来fix，然后产生一个新的发布版本，合并到master上，同时dev需要merge hotfix。这样的好处是可以打断dev上正在开发的进度。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以上就是Git Flow模型的大致概念。在实际开发过程中，这个模型并不是一成不变的，根据每个开发团队或每个项目可以进行一定的变化。&lt;/p&gt;
+&lt;h1 id=&quot;Git-Flow-实际使用&quot;&gt;&lt;a href=&quot;#Git-Flow-实际使用&quot; class=&quot;headerlink&quot; title=&quot;Git Flow 实际使用&quot;&gt;&lt;/a&gt;Git Flow 实际使用&lt;/h1&gt;&lt;p&gt;日常开发中，使用SourceTree来操作Git居多。SourceTree中自带Git 工作流模型，简单的使用只需要点击应用即可。&lt;br&gt;&lt;img src=&quot;http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow26571850-6A6C-4863-80CF-1E2706FD846A.png&quot; alt=&quot;SourceTree 自带工作流&quot;&gt;&lt;/p&gt;
+&lt;p&gt;当然这边也可以进行自定义，或者说不使用这个模型，自己通过新建分支来实现Git Flow。&lt;br&gt;我实际运用中，大致是这样的：&lt;br&gt;&lt;img src=&quot;http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlowA73C5C4C-5ADD-4044-908C-D0C659C26440.png&quot; alt=&quot;利用group&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;心得&quot;&gt;&lt;a href=&quot;#心得&quot; class=&quot;headerlink&quot; title=&quot;心得&quot;&gt;&lt;/a&gt;心得&lt;/h1&gt;&lt;p&gt;1.dev有更新时，feature分支及时rebase（变基，衍合），不然当合并该feature时可能会出现很多冲突（Q_A_Q）。&lt;br&gt;2.可以复用页面的一些功能模块应该分配给同一个开发去做，不然在页面复用上会有问题。因为每个feature是分割开的。&lt;/p&gt;
+&lt;h1 id=&quot;引用&quot;&gt;&lt;a href=&quot;#引用&quot; class=&quot;headerlink&quot; title=&quot;引用&quot;&gt;&lt;/a&gt;引用&lt;/h1&gt;&lt;p&gt;1.基于git的源代码管理模型——git flow &lt;a href=&quot;http://www.ituring.com.cn/article/56870&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.ituring.com.cn/article/56870&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。&lt;br&gt;ps:图片无法显示请点击：&lt;a href=&quot;http://www.jianshu.com/p/c9d7e16744e0&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Git" scheme="/tags/Git/"/>
+    
+      <category term="SourceTree" scheme="/tags/SourceTree/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Objective-C 三大新特性</title>
+    <link href="/2015/11/22/Objective-C-%E4%B8%89%E5%A4%A7%E6%96%B0%E7%89%B9%E6%80%A7/"/>
+    <id>/2015/11/22/Objective-C-三大新特性/</id>
+    <published>2015-11-22T14:34:39.000Z</published>
+    <updated>2016-05-02T02:09:28.000Z</updated>
+    
+    <content type="html">&lt;p&gt;2015年的 WWDC 中介绍了几个 Objective-C 语言的新特性，有新特性，那么我们就去了解它们下吧。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h1 id=&quot;Nullability&quot;&gt;&lt;a href=&quot;#Nullability&quot; class=&quot;headerlink&quot; title=&quot;Nullability&quot;&gt;&lt;/a&gt;Nullability&lt;/h1&gt;&lt;p&gt;Nullability其实在Xcode6.3里就已经出现了。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@property (nonatomic, copy, nonnull) NSString *str;
+@property (nonatomic, copy, readonly, nullable) NSArray *arr;
++ (nullable NSString *)confirmWithString:(nonnull NSString *)str;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上面的两个属性和一个方法的声明中添加了 &lt;code&gt;nonnull&lt;/code&gt; 和 &lt;code&gt;nullable&lt;/code&gt; ,很明显，前者是不可空，后者是可空的意思。&lt;br&gt;当然在给变量添加修饰时，就能在前面加上两个下划线了，就如   &lt;code&gt; __nullable &lt;/code&gt; 一样。例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@interface TestClass() {
+   NSString * __nullable str;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;除此之外还有一个 &lt;code&gt;null_resettable&lt;/code&gt; ,它意思是setter nullable，但是 getter nonnull。简单来说就是可以赋值为nil，但是你获取的值必定不是nil。&lt;/p&gt;
+&lt;p&gt;在代码里重复写nonnull一定是一件非常蛋疼的事情，毕竟coding的原则是DRY，所以 &lt;code&gt; NS_ASSUME_NONNULL_BEGIN &lt;/code&gt; , &lt;code&gt; NS_ASSUME_NONNULL_END &lt;/code&gt; 这对宏就出现了。它的意思是把它们之间的对象都设置为nonnull，如果是nullable，那么我们得显式声明下。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NS_ASSUME_NONNULL_BEGIN
+@interface TestClass : NSObject
+@property (nonatomic, copy, nullable) NSString *str;
+@property (nonatomic, copy) NSArray *arr;
+- (nullable NSString *)getString;
+@end
+NS_ASSUME_NONNULL_END
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;Nullability 在编译器层面提供了空值的类型检查，在类型不符时给出 warning，方便开发者第一时间发现潜在问题。不过我想更大的意义在于能够更加清楚的描述接口，是主调者和被调者间的一个协议，比多少句文档描述都来得清晰。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;Lightweight-Generics&quot;&gt;&lt;a href=&quot;#Lightweight-Generics&quot; class=&quot;headerlink&quot; title=&quot;Lightweight Generics&quot;&gt;&lt;/a&gt;Lightweight Generics&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Lightweight Generics 轻量级泛型，轻量是因为这是个纯编译器的语法支持（llvm 7.0），和 Nullability 一样，没有借助任何 objc runtime 的升级，也就是说，这个新语法在 Xcode 7 上可以使用且完全向下兼容（更低的 iOS 版本）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;看到上面对 Lightweight Generics 的描述，是不是特别爽，以后可以用泛型拉！泛型拉！！泛型拉！！！因为之前学过用C#写web，超级享受泛型带来的代码智能提醒。那么Objective-C的泛型会不会带来这种体验，Let’s try it！&lt;/p&gt;
+&lt;p&gt;类ClassOne&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@interface ClassOne : NSObject
+@property (nonatomic, copy) NSString *classOneDes;
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ViewController&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@interface ViewController ()
+@property (nonatomic, strong) NSMutableArray&amp;lt;ClassOne *&amp;gt; *testArr;
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&quot;http://i5.tietuku.com/2c321fc78fe04018.jpg&quot; alt=&quot;智能提醒&quot;&gt;&lt;/p&gt;
+&lt;p&gt;竟然真的支持智能提醒！！爽的不要不要的。再也不用担心强转了！！！！&lt;/p&gt;
+&lt;p&gt;竟然在取值有智能提醒了，那么在赋值时，会不会有提醒呢？仍旧是上面的属性：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[self.testArr addObject:&amp;lt;#(nonnull ClassOne *)#&amp;gt;]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;提示我们 &lt;code&gt;self.testArr&lt;/code&gt;中必须是添加一个 &lt;code&gt;ClassOne&lt;/code&gt;对象。假设我们添加一个NSString：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[self.testArr addObject:@&amp;quot;1&amp;quot;];
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接着，编译器出现警告啦。&lt;br&gt;&lt;img src=&quot;http://i12.tietuku.com/3fdc5654795063d3.jpg&quot; alt=&quot;警告&quot;&gt;&lt;/p&gt;
+&lt;p&gt;其实泛型和之前的 Nullability最重要的作用是丰富了接口描述信息，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@property (readonly) NSArray&amp;lt;NSString *&amp;gt; *imageURLs;
+@property (readonly) NSArray&amp;lt;NSURL *&amp;gt; *avatarURLs;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这样就可以描述清楚 imageURLs 存的是NSString，而 avatarURLs 存的则是 NSURL 。&lt;/p&gt;
+&lt;p&gt;在Objective-C中常用的容器类型都增加了泛型支持，甚至连 NSEnumerator 都支持了。那么我们是否可以自定义泛型类呢？？？try try try。&lt;/p&gt;
+&lt;p&gt;我们先看一下NSArray的头文件定义的属性：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; @interface NSArray&amp;lt;__covariant ObjectType&amp;gt; : NSObject &amp;lt;NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration&amp;gt;
+
+ @property (readonly) NSUInteger count;
+ - (ObjectType)objectAtIndex:(NSUInteger)index;
+ - (instancetype)init NS_DESIGNATED_INITIALIZER;
+ - (instancetype)initWithObjects:(const ObjectType [])objects count:(NSUInteger)cnt NS_DESIGNATED_INITIALIZER;
+ - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;NSArray的头文件中，多了一个 ObjectType ，从字面意思来讲是&lt;strong&gt;对象类型&lt;/strong&gt;，在NSArray中声明的方法中也使用到了 ObjectType ，猜测它的作用类似C#泛型中的 &lt;strong&gt;T&lt;/strong&gt; 。&lt;br&gt;那么我们来验证下，按照NSArray的定义方式来自定义一个容器类。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@interface Container &amp;lt;ObjectType&amp;gt; : NSObject
+- (void)pushObject:(ObjectType)object;
+- (ObjectType)popObject;
+@property (nonatomic, readonly) NSArray&amp;lt;ObjectType&amp;gt; *allObjects;
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;定义这样一个头文件，并实现。然后我们尝试使用这个自定义泛型类。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@interface ViewController ()
+@property (nonatomic, strong) Contanier&amp;lt;NSString *&amp;gt; *contanier;
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&quot;http://i5.tietuku.com/ad95ccf490d0adad.jpg&quot; alt=&quot;哇塞，可以，可以&quot;&gt;&lt;/p&gt;
+&lt;p&gt;的确，可以实现自定义泛型，具体的使用，大家可以尝试下。&lt;br&gt;自定义泛型类中的 ObjectType 在 @interface 和 @end 区间的作用域有效，可以把它作为入参、出参、甚至内部 NSArray 属性的泛型类型。&lt;/p&gt;
+&lt;p&gt;大家一定看到了 NSArray 的头文件中ObjectType前面有一个 &lt;code&gt; __covariant &lt;/code&gt; 修饰符，那么这个是什么意思呢？&lt;br&gt;不指定泛型类型的 Stack 可以和任意泛型类型转化，但指定了泛型类型后，两个不同类型间是不可以强转的，假如你希望主动控制转化关系，就需要使用泛型的协变性和逆变性修饰符了：&lt;/p&gt;
+&lt;h3 id=&quot;协变性&quot;&gt;&lt;a href=&quot;#协变性&quot; class=&quot;headerlink&quot; title=&quot;协变性&quot;&gt;&lt;/a&gt;协变性&lt;/h3&gt;&lt;p&gt;__covariant - 协变性，子类型可以强转到父类型。&lt;/p&gt;
+&lt;h3 id=&quot;逆变性&quot;&gt;&lt;a href=&quot;#逆变性&quot; class=&quot;headerlink&quot; title=&quot;逆变性&quot;&gt;&lt;/a&gt;逆变性&lt;/h3&gt;&lt;p&gt;__contravariant - 逆变性，父类型可以强转到子类型。&lt;/p&gt;
+&lt;p&gt;协变性用的比较多，例如将 NSArray &lt;nsstring *=&quot;&quot;&gt; &lt;em&gt; 类型的对象赋值给 NSArray &lt;/em&gt; ，假设不设置NSArray泛型的协变性那将会导致警告。当然NSArray泛型带有协变性，所以这样转换是没有问题的。&lt;/nsstring&gt;&lt;/p&gt;
+&lt;p&gt;那么逆变性呢？将一个父类型转换成子类型。这是一个具有风险的事情。比如 你将一个NSArray &lt;em&gt; 的对象赋值给NSArray&amp;lt;NSNumber &lt;/em&gt;&amp;gt; * 对象，很明显，前者的对象中可能是 NSString 类型，这时如果设置具有逆变性，那么赋值将会出现问题。&lt;/p&gt;
+&lt;p&gt;所以逆变性慎用！！！&lt;/p&gt;
+&lt;h1 id=&quot;kindof&quot;&gt;&lt;a href=&quot;#kindof&quot; class=&quot;headerlink&quot; title=&quot; __kindof &quot;&gt;&lt;/a&gt;&lt;code&gt; __kindof &lt;/code&gt;&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;&lt;strong&gt;kindof&lt;/strong&gt;&lt;/code&gt; 这修饰符还是很实用的，解决了一个长期以来的小痛点，拿原来的 UITableView 的这个方法来说：&lt;br&gt;&lt;code&gt;- (id)dequeueReusableCellWithIdentifier:(NSString *)identifier;&lt;/code&gt;&lt;br&gt;使用时前面基本会使用 UITableViewCell 子类型的指针来接收返回值，所以这个 API 为了让开发者不必每次都蛋疼的写显式强转，把返回值定义成了 id 类型，而这个 API 实际上的意思是返回一个 UITableViewCell 或 UITableViewCell 子类的实例，于是新的 kindof 关键字解决了这个问题：&lt;br&gt;&lt;code&gt;- (__kindof UITableViewCell &lt;em&gt;)dequeueReusableCellWithIdentifier:(NSString &lt;/em&gt;)identifier;&lt;/code&gt;&lt;br&gt;既明确表明了返回值，又让使用者不必写强转。再举个带泛型的例子，UIView 的 subviews 属性被修改成了：&lt;br&gt;&lt;code&gt;@property (nonatomic, readonly, copy) NSArray &lt;em&gt;subviews;&lt;/em&gt;&lt;/code&gt;&lt;br&gt;这样，写下面的代码时就没有任何警告了：&lt;br&gt;&lt;code&gt;&lt;br&gt;UIButton button = view.subviews.lastObject;&lt;br&gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;References:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&quot;http://www.cocoachina.com/ios/20150615/12148.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.cocoachina.com/ios/20150615/12148.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://msdn.microsoft.com/zh-cn/library/dd799517.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://msdn.microsoft.com/zh-cn/library/dd799517.aspx&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;2015年的 WWDC 中介绍了几个 Objective-C 语言的新特性，有新特性，那么我们就去了解它们下吧。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Objective-C" scheme="/tags/Objective-C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Nodejs&amp;Socket.io实现简单的服务器反推</title>
+    <link href="/2015/11/17/Nodejs-Socket-io%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%8D%E6%8E%A8/"/>
+    <id>/2015/11/17/Nodejs-Socket-io实现服务器反推/</id>
+    <published>2015-11-17T12:34:31.000Z</published>
+    <updated>2016-05-02T02:51:06.000Z</updated>
+    
+    <content type="html">&lt;p&gt;期末临近，由于课程设计需要做一个匿名投票，签到的功能，打算通过Nodejs&amp;amp;socket.io来简单地实现长连接。第一篇技术相关，有点小激动。。。&lt;/p&gt;
+&lt;h1 id=&quot;安装环境&quot;&gt;&lt;a href=&quot;#安装环境&quot; class=&quot;headerlink&quot; title=&quot;安装环境&quot;&gt;&lt;/a&gt;安装环境&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;Nodejs的环境十分简单，从&lt;a href=&quot;https://nodejs.org/en/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://nodejs.org/en/&lt;/a&gt;下载pkg，然后一路next。搞定后打开Terminal，输入&lt;code&gt;node -v&lt;/code&gt;,查看Nodejs版本。&lt;/li&gt;
+&lt;li&gt;安装模块，例如安装express模块，则在Terminal中输入&lt;code&gt;npm install express &lt;/code&gt;（npm：node package manage），这是在当前路径下安装模块，如果要安装全局模块，则需要执行&lt;code&gt;npm install -g express&lt;/code&gt;,卸载模块则是&lt;code&gt;npm uninstall express&lt;/code&gt;。操作起来十分方便。通过&lt;code&gt;npm list&lt;/code&gt;可以查看当前所安装的模块。&lt;/li&gt;
+&lt;li&gt;既然是基于socket.io，那当然得安装socket.io模块。&lt;code&gt;npm install socket.io&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;socket-io简单介绍&quot;&gt;&lt;a href=&quot;#socket-io简单介绍&quot; class=&quot;headerlink&quot; title=&quot;socket.io简单介绍&quot;&gt;&lt;/a&gt;socket.io简单介绍&lt;/h1&gt;&lt;p&gt;   在使用Node的http模块创建服务器同时还要Express应用，因为这个服务器对象需要同时充当Express服务和Socket.io服务。可以通过如下代码创建一个socket监听。&lt;br&gt;&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; http    = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&#39;http&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; express = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&#39;express&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; socket  = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&#39;socket.io&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; app     = express(); &lt;span class=&quot;comment&quot;&gt;//express实例&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; server  = http.createServer(app);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;server.listen(&lt;span class=&quot;number&quot;&gt;3700&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; &lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;监听端口3700&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; io      = socket.listen(server);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;就这样就可以创建一个监听localhost:3700的应用了。&lt;br&gt;在后面接着输入这一部分代码，就可以接收到get请求了。&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt; app.get(&lt;span class=&quot;string&quot;&gt;&#39;/&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;req,res&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;Get请求一次&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   res.send(&lt;span class=&quot;string&quot;&gt;&#39;你好&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;当然post也是可以的，&lt;code&gt;app.post()&lt;/code&gt;就可以了。&lt;br&gt;关于Nodejs和express的基本用法，大家都可以在搜索引擎中搜索到。&lt;br&gt;socket.io模块相关文档可以到&lt;a href=&quot;http://socket.io&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;socket.io&lt;/a&gt;上查看。&lt;/p&gt;
+&lt;p&gt;接下来讲讲签到的需求。场景：会议开始，用户扫码签到，每当一个用户签到完成，所有参加同一个会议的客户端UI当前在线人数进行更新。&lt;br&gt;然后分析下整个过程主要可以分成那几个部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;扫码之前，用户发起请求，建立Websocket连接，利用socket.io的房间功能，将每一个会议设置为一个房间，相关的用户加入相关的房间。&lt;/li&gt;
+&lt;li&gt;用户扫码进行签到，发起一个post请求，服务端接收post请求后，对数据库（mysql）进行操作，然后返回结果，同时通过socket.io反推客户端当前在线人数。&lt;/li&gt;
+&lt;li&gt;客户端（iOS）对相关事件进行监听，事件触发时，刷新相关UI。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;分析完成，那就先开始实现服务端吧。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先像之前一个，通过express和socket.io创建一个服务监听相应端口，然后通过io监听connection事件。&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//会议相关socket服务&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;io.of(&lt;span class=&quot;string&quot;&gt;&#39;/meeting&#39;&lt;/span&gt;).on(&lt;span class=&quot;string&quot;&gt;&#39;connection&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;socket&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;一个客户端已连接meeting&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    socket.emit(&lt;span class=&quot;string&quot;&gt;&#39;message&#39;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&#39;成功连接&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;//进入会议室&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    socket.on(&lt;span class=&quot;string&quot;&gt;&#39;comeInMeeting&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;obj&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        socket.name = obj.userID; &lt;span class=&quot;comment&quot;&gt;//socketName 设置为userID&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; roomName = obj.meetingID;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        socket.join(roomName);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(obj.userID+&lt;span class=&quot;string&quot;&gt;&#39;进入会议室&#39;&lt;/span&gt;+obj.meetingID);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        socket.emit(&lt;span class=&quot;string&quot;&gt;&quot;comeInMeeting&quot;&lt;/span&gt;,&amp;#123;code:&lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;//离开会议室&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    socket.on(&lt;span class=&quot;string&quot;&gt;&#39;comeOutMeeting&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;obj&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        socket.leave(obj.meetingID);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(socket.name+&lt;span class=&quot;string&quot;&gt;&#39;离开会议室内&#39;&lt;/span&gt;+obj.meetingID);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    socket.on(&lt;span class=&quot;string&quot;&gt;&#39;message&#39;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;obj&lt;/span&gt;) &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;用户发了一个消息&#39;&lt;/span&gt;+obj);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以上用到了命名空间(&lt;code&gt;of(‘/meeting’)&lt;/code&gt;)，相关知识，可以查看搜索引擎。通过&lt;code&gt;socket.join()&lt;/code&gt;可以加入一个房间。&lt;code&gt;socket.leave()&lt;/code&gt;离开一个房间。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接下来添加一个post请求处理函数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;app.post(&lt;span class=&quot;string&quot;&gt;&#39;/conferenceRegister&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;req,res&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    req.on(&lt;span class=&quot;string&quot;&gt;&#39;data&#39;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;data&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; obj = &lt;span class=&quot;built_in&quot;&gt;JSON&lt;/span&gt;.parse(data.toString());&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;//sqlOperation为自己写的操作数据库模块 暂时可以忽略  &lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   sqlOperation.meetingRegistration(obj.userID,obj.meetingID,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;result&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&quot;签到成功&quot;&lt;/span&gt;+result);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (result.result == &lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; roomName = obj.meetingID;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &lt;span class=&quot;comment&quot;&gt;//广播当前已签到人数&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                io.of(&lt;span class=&quot;string&quot;&gt;&#39;/meeting&#39;&lt;/span&gt;).sockets[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;].to(roomName).emit(&lt;span class=&quot;string&quot;&gt;&#39;meetingRegisterNum&#39;&lt;/span&gt;, &amp;#123;registerNum:result.data.OnlineCountNum&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            res.send(result);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;,&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;result&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;签到失败&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            res.send(result);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;其中的数据库操作部分暂且忽略。&lt;code&gt;io.of(‘/meeting’).sockets[0].to(roomName).emit(‘meetingRegisterNum’, {registerNum:result.data.OnlineCountNum});&lt;/code&gt;此处也是由于添加了命名空间，所以有&lt;code&gt;of(‘/meeting’)&lt;/code&gt;。socket.io的广播方法有很多，socket.to只是其中一种，但是我尝试其他的方法和命名空间配合使用，都无法像客户端推送数据。&lt;em&gt;望大神帮忙解决！！！&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;服务端解决了（虽然实际花了很多时间QAQ），然后就是客户端了。iOS的socket.io Client 是swift语言编写的，在&lt;a href=&quot;https://github.com/socketio/socket.io-client-swift&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/socketio/socket.io-client-swift&lt;/a&gt;clone下来，当然可以直接用CocoaPods&lt;code&gt;pod ‘Socket.IO-Client-Swift’, ‘~&amp;gt; 4.1.2’&lt;/code&gt;。通过&lt;code&gt;#import “&amp;lt;#项目名#&amp;gt;-Swift.h”&lt;/code&gt;导入项目。因为我用的是OC，所以需要在引用文件名后加上Swift,使用桥接文件，这个桥接文件默认编译器会自动生成。&lt;br&gt;接下来的工作就很简单了，跟服务端差不多的操作。进入页面，在ViewDidLoad的时候实例化socket.io。然后添加命名空间，最后进行连接。具体代码如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;#import &amp;quot;socketDemo-Swift.h&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@interface IndexViewController ()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@property(nonatomic,strong)    SocketIOClient* socket;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@end&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@implementation IndexViewController&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (void)viewDidLoad &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [super viewDidLoad];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;     self.socket = [[SocketIOClient alloc] initWithSocketURL:@&amp;quot;http://localhost:3700&amp;quot; opts:nil];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket joinNamespace:@&amp;quot;/meeting&amp;quot;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket on:@&amp;quot;connect&amp;quot; callback:^(NSArray* data, SocketAckEmitter* ack) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        NSLog(@&amp;quot;socket connected&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket connect];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket on:@&amp;quot;message&amp;quot; callback:^(NSArray* data, SocketAckEmitter* ack) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@&amp;quot;dsd&amp;quot; message:@&amp;quot;socket连接&amp;quot; delegate:self cancelButtonTitle:@&amp;quot;queren&amp;quot; otherButtonTitles:nil];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [alert show];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@end&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;添加一个点击方法来触发服务端的comeInMeeting事件，然后再添加监听meetingRegisterNum事件，来刷新UI。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;- (void)clickButton:(id)sender &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket emit:@&amp;quot;comeInMeeting&amp;quot; withItems:@[@&amp;#123;@&amp;quot;meetingID&amp;quot;:@&amp;quot;f9a893a94d1c1225014d1c5620bc0200&amp;quot;,@&amp;quot;userID&amp;quot;:@&amp;quot;f9a893a94d1c1225014d1c5620bc0999&amp;quot;&amp;#125;]];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket on:@&amp;quot;comeInMeeting&amp;quot; callback:^(NSArray *data,SocketAckEmitter* ack)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        NSLog(@&amp;quot;socket1 进入会议&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [self.socket on:@&amp;quot;meetingRegisterNum&amp;quot; callback:^(NSArray *data,SocketAckEmitter* ack)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@&amp;quot;dsd&amp;quot; message:@&amp;quot;socket接收到在线人数&amp;quot; delegate:self cancelButtonTitle:@&amp;quot;queren&amp;quot; otherButtonTitles:nil];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [alert show];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这样点击按钮之后就可以加入服务端对应的房间中，当同一房间中有人进行签到，则会收到最新的在线人数。&lt;/p&gt;
+&lt;p&gt;其中的post请求部分未涉及，由于是demo，所以我是通过火狐的poster来发起post请求的。&lt;/p&gt;
+&lt;p&gt;差不多就这些步骤，新手接触Nodejs，只是用到了冰山一角，希望有Node大神指导。&lt;/p&gt;
+&lt;h1 id=&quot;webStorm的配置&quot;&gt;&lt;a href=&quot;#webStorm的配置&quot; class=&quot;headerlink&quot; title=&quot;webStorm的配置&quot;&gt;&lt;/a&gt;webStorm的配置&lt;/h1&gt;&lt;p&gt;我尝试了下用WebStorm来写Nodejs程序，通过一些配置，可以实现所有引用框架的智能提醒。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先点击WebStrom 的设置按钮，弹出设置页面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://i12.tietuku.com/66169131d341b02c.jpg&quot; alt=&quot;点击设置按钮&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;选择右侧菜单的languages&amp;amp;frameWorks–&amp;gt;libraries,就会看到如下界面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://ww3.sinaimg.cn/large/74311666jw1ey53q0ib1uj21kw10xq9i.jpg&quot; alt=&quot;点击libraries&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;看到了很多选项，然后点击download按钮，可以看到如下图，上面可以选择下载很多配置文件（用来实现智能提醒的）。其中的TypeScript中的配置文件都是一些第三方的智能提醒，以上我们用到的express和socket.io都在这里面。&lt;br&gt;&lt;img src=&quot;http://i12.tietuku.com/2f3f36e8c51a9590.jpg&quot; alt=&quot;点击download&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果说我们再typeScript中选中文件点击Download and install ，那么你中招啦。等上半小时也不会下载完成。那么具体原因呢？&lt;a href=&quot;&quot;&gt;传送门&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;咦才那么一点点？按照视频的操作，可以下拉那个“Official libraries”，切换到“TypeScript community stubs”，就会出现很多很多东东。然后你做了，然后即使等半小时，也是空空如也！！怒了，是被墙了吗？？我抓了一下包，神奇的，如果是Official libraries，会去亚马逊云上取xml数据，但是这个TypeScript community stubs却不会触发网络活动，神奇了！！难道是我用的daoban的原因？？不得而知。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;知道原因了，那么我们直接去对应git clone相应配置文件就好啦。例如我们去git上将express的配置文件&lt;a href=&quot;https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/express/express.d.ts&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;copy&lt;/a&gt;下来。然后放在一个安全的目录下，不要丢桌面，不小心删了就没啦。（我是放在了webstorm的包文件夹内，生死共存亡）。然后就是回到原来的界面咯。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;如下图，回到刚才的界面，不选择download，选择add，然后自己取一个名字，添加刚才git上搞下来的.d.ts文件，然后点击ok—&amp;gt;apply，最后神奇的发现，真的能提醒我express相关方法啦！！！&lt;br&gt;&lt;img src=&quot;http://i5.tietuku.com/f28a202b1958a8ab.jpg&quot; alt=&quot;不要点download。。点击Add&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;期末临近，由于课程设计需要做一个匿名投票，签到的功能，打算通过Nodejs&amp;amp;socket.io来简单地实现长连接。第一篇技术相关，有点小激动。。。&lt;/p&gt;
+&lt;h1 id=&quot;安装环境&quot;&gt;&lt;a href=&quot;#安装环境&quot; class=&quot;headerlink&quot; title=
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Node.js" scheme="/tags/Node-js/"/>
+    
+      <category term="Socket.io" scheme="/tags/Socket-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>My first blog</title>
+    <link href="/2015/11/15/MyFirstBlog/"/>
+    <id>/2015/11/15/MyFirstBlog/</id>
+    <published>2015-11-14T18:54:24.000Z</published>
+    <updated>2016-05-02T02:34:25.000Z</updated>
+    
+    <content type="html">&lt;p&gt;奋战了大半天，终于搭好了这个Blog。&lt;br&gt;用的是基于Nodejs的Hexo框架，使用了它的NexT主题。本机之前搭过Nodejs的环境，所以对于安装Hexo来说比较方便的。在搭建的过程中当然遇到了很多坑，但是搜索引擎可以轻松解决掉。下面是我在搭建过程中参考的一些blog和教程。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;http://theme-next.iissnan.com/five-minutes-setup.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://theme-next.iissnan.com/five-minutes-setup.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/739bf1305e66&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.jianshu.com/p/739bf1305e66&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;既然用了Hexo，当然要用MarkDown啦。新手学习感觉可以找可视化编辑器来用。其中简书网页版中带的可视化编辑器可以用，当然也可以本地下载编辑器咯。&lt;/p&gt;
+&lt;p&gt;—————END—————–&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;奋战了大半天，终于搭好了这个Blog。&lt;br&gt;用的是基于Nodejs的Hexo框架，使用了它的NexT主题。本机之前搭过Nodejs的环境，所以对于安装Hexo来说比较方便的。在搭建的过程中当然遇到了很多坑，但是搜索引擎可以轻松解决掉。下面是我在搭建过程中参考的一些blog
+    
+    </summary>
+    
+    
+      <category term="码字" scheme="/tags/%E7%A0%81%E5%AD%97/"/>
+    
+  </entry>
+  
+</feed>
