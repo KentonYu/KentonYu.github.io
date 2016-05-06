@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-05-06T15:15:51.000Z</updated>
+  <updated>2016-05-06T15:18:08.000Z</updated>
   <id>/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="/2016/05/06/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A5%87%E6%80%AA%E7%9A%84%E9%9D%A2%E8%AF%95%E7%BB%8F%E5%8E%86/"/>
     <id>/2016/05/06/记一次奇怪的面试经历/</id>
     <published>2016-05-06T15:14:01.000Z</published>
-    <updated>2016-05-06T15:15:51.000Z</updated>
+    <updated>2016-05-06T15:18:08.000Z</updated>
     
     <content type="html">&lt;p&gt;周三接到一个HR的电话说他们招 iOS 开发实习生。古人云：参加面试，不论成败，重要的是可以发现自己平时学习的不足，我也就抱着试试的心态去面试了。&lt;a href=&quot;http://www.kujiale.com/about&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;群核云计算(酷家乐)&lt;/a&gt;一个B轮的云计算家装企业。&lt;br&gt;两点半到的那里，简答的参观了下之后，就等面试官来了。结果是一个 Java 工程师来面试（上机测试）。带到了零食储物间，给了我一张A4纸。一道编程题，然后就留我一个人敲。接下来我就讲讲这次奇怪面试唯一的一道题吧。。真的没其他问题了。当然问了我的姓名，实习时间…&lt;br&gt;这道题总得来说就是把 WB 的上网记录同步到公安局（模拟一下，同一个机子的文件拷贝）。下面直接贴图吧。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://7xtamz.com2.z0.glb.clouddn.com/IMG_9608.JPG&quot; alt=&quot;唯一的题目&quot;&gt;&lt;/p&gt;
@@ -38,9 +38,9 @@
     </summary>
     
     
-      <category term="面试" scheme="/tags/%E9%9D%A2%E8%AF%95/"/>
+      <category term="码字" scheme="/tags/%E7%A0%81%E5%AD%97/"/>
     
-      <category term="随笔" scheme="/tags/%E9%9A%8F%E7%AC%94/"/>
+      <category term="面试" scheme="/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
