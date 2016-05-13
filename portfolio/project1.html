@@ -165,9 +165,49 @@
             <br />
             
             <h4>主要知识点</h4>
-            
+            <br>
             <h5>贝塞尔曲线</h5>
-            <p></p>
+            <blockquote>
+                <p>给定n+1个数据点，p0(x0 , y0)  ...  pn(xn , yn)，生成一条曲线，使得该曲线与这些点所连结的折线相近。在数学中，这属于逼近问题。在几何中，可以形象地理解为先用折线段连接这些数据点，勾勒出图形的大致轮廓，然后再用光滑的曲线去尽可能接近地拟合这条  折线。 <br>摘录来自: “A GUIDE TO IOS ANIMATION”</p>
+                
+            </blockquote>
+            <p>UIBezierPath，是 UIKit 对 CoreGraphics 的 path （CGPathRef）的封装。通过 UIBezierPath 可以绘制直线、圆圈、多边形和贝塞尔曲线。 </p>
+            <p>下面是对 UIBezierPath 的简单介绍</p>
+<pre>
+// 以下是四个类方法，用来绘制闭合的特殊路径
+// 矩形
++ (UIBezierPath *)bezierPathWithRect:(CGRect)rect
+
+// 圆角矩形
++ (UIBezierPath *)bezierPathWithRoundedRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius
+
+// 矩形内切圆
++ (UIBezierPath *)bezierPathWithOvalInRect:(CGRect)rect
+
+// 弧形（clockwise 是否顺时针绘制）
++ (UIBezierPath *)bezierPathWithArcCenter:(CGPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle clockwise:(BOOL)clockwise
+</pre>
+
+<pre>
+// 实例方法，可以绘制各种自定义的形状
+// 直线
+- (void)addLineToPoint:(CGPoint)point
+
+// 弧形线段
+- (void)addArcWithCenter:(CGPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle clockwise:(BOOL)clockwise
+
+// 二阶贝塞尔曲线
+- (void)addQuadCurveToPoint:(CGPoint)endPoint controlPoint:(CGPoint)controlPoint
+
+// 三阶贝塞尔曲线
+- (void)addCurveToPoint:(CGPoint)endPoint controlPoint1:(CGPoint)controlPoint1 controlPoint2:(CGPoint)controlPoint2
+</pre>
+        
+            <p>通过贝塞尔曲线可以绘制任何你想要画的形状。我还没用过三阶贝塞尔。这个<a href='http://cubic-bezier.com' target="_blank" style='color:#00d6cf'>网站</a>可以体验下贝塞尔曲线的模型。</p>
+            
+            <h5>CALayer</h5>
+            
+            
             <br />
             <hr />
             <!--            多说评论框 start -->
@@ -258,52 +298,6 @@
         </div>
     </div>
 </footer>    
-    
-<script>
-    $('video').mediaelementplayer({
-	// if the <video width> is not specified, this is the default
-	defaultVideoWidth: 480,
-	// if the <video height> is not specified, this is the default
-	defaultVideoHeight: 270,
-	// if set, overrides <video width>
-	videoWidth: -1,
-	// if set, overrides <video height>
-	videoHeight: -1,
-	// width of audio player
-	audioWidth: 400,
-	// height of audio player
-	audioHeight: 30,
-	// initial volume when the player starts
-	startVolume: 0.8,
-	// useful for <audio> player loops
-	loop: false,
-	// enables Flash and Silverlight to resize to content size
-	enableAutosize: true,
-	// the order of controls you want on the control bar (and other plugins below)
-	features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
-	// Hide controls when playing and mouse is not over the video
-	alwaysShowControls: false,
-	// force iPad's native controls
-	iPadUseNativeControls: false,
-	// force iPhone's native controls
-	iPhoneUseNativeControls: false,	
-	// force Android's native controls
-	AndroidUseNativeControls: false,
-	// forces the hour marker (##:00:00)
-	alwaysShowHours: false,
-	// show framecount in timecode (##:00:00:00)
-	showTimecodeFrameCount: false,
-	// used when showTimecodeFrameCount is set to true
-	framesPerSecond: 25,
-	// turns keyboard support on and off for this instance
-	enableKeyboard: true,
-	// when this player starts, it will pause other players
-	pauseOtherPlayers: true,
-	// array of keyboard commands
-	keyActions: []
-
-     });
-</script>
     
 <!-- Bootstrap Core JavaScript -->
 <script src="/js/bootstrap.min.js"></script>
