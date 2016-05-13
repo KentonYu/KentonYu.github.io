@@ -13,11 +13,11 @@
 
     <title>
         
-          KentonYu的博客 | KentonYu&#39;s Blog
+          轮盘猜大小（仿淘宝彩票App）
         
     </title>
 
-    <link rel="canonical" href="/tags/Xcode/">
+    <link rel="canonical" href="/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -28,12 +28,18 @@
     <!-- Pygments Github CSS -->
     <link rel="stylesheet" href="/css/syntax.css">
 
+    <link rel="stylesheet" href="/css/gifplayer.min.css">
     <!-- Custom Fonts -->
-    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+<!--     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
     <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <!--播放器-->
+    <script src="/js/mediaelement-and-player.min.js"></script>
+    <link rel="stylesheet" href="/css/mediaelementplayer.css" />
+    
     <!-- Hux Delete, sad but pending in China
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
@@ -82,36 +88,15 @@
                     <li>
                         <a href="/">Home</a>
                     </li>
-
-                    
-
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/about/">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/portfolio/">Portfolio</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                    
-                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>   
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li> 
                 </ul>
             </div>
         </div>
@@ -150,10 +135,57 @@
 
 
     <!-- Main Content -->
-    
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1 style="color:#f4f4f4">轮盘猜大小</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">仿淘宝彩票App</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <!-- Footer -->
-    <!-- Footer -->
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+    <!-- Main Content -->
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <p>
+                作品集，其实也谈不上作品吧。都是一些小 Demo 。我觉得有必要把一些觉得有意思的东西放在这里展示一下。让大家来吐槽一下。并不断的改进。但是有一个伤透脑经的问题，App 开发并不好展示，特别是 iOS，当然有值得展示的上架应用就会把 App Store link 放上来，那些小 Demo ，就只能先上录屏了。
+            </p>
+             <hr>
+             <div align="center">
+                <embed src="http://player.youku.com/player.php/sid/XMTU2OTA2NzA1Ng==/v.swf" allowFullScreen="true" quality="high" width="480" height="400" allowScriptAccess="always" type="application/x-shockwave-flash">
+                </embed>
+             </div>
+             <hr>
+             <p></p>
+        
+            <!--            多说评论框 start -->
+            <div class="comment">
+                <div class="ds-thread"
+                    data-thread-key="portfolio/project1.html"
+                    data-title="轮盘猜大小（仿淘宝彩票App）"
+                    data-url="/portfolio/project1.html" >
+                </div>
+            </div>
+            <!--             多说评论框 end -->
+        </div>
+       
+
+    </div>
+</div>
+
+
+
+<!--    Footer -->
 <footer>
     <div class="container">
         <div class="row">
@@ -168,9 +200,7 @@
                         </span>
                     </a>
                 </li>
-                
-                    
-                
+
                     <li>
                         <a target="_blank" href="http://www.jianshu.com/users/1c19630299ce/latest_articles">
                             <span class="fa-stack fa-lg">
@@ -179,13 +209,7 @@
                             </span>
                         </a>
                     </li>
-                
-                    
-                
-                    
-                
-                       
-                
+
                     <li>
                         <a target="_blank" href="http://weibo.com/2696076574">
                             <span class="fa-stack fa-lg">
@@ -194,14 +218,7 @@
                             </span>
                         </a>
                     </li>
-                
-
-                
-
-                
-
-                
-                    
+            
                 
                 <li>
                     <a href="/atom.xml">
@@ -238,18 +255,78 @@
             </div>
         </div>
     </div>
-</footer>
+</footer>    
+    
+<script>
+    $('video').mediaelementplayer({
+	// if the <video width> is not specified, this is the default
+	defaultVideoWidth: 480,
+	// if the <video height> is not specified, this is the default
+	defaultVideoHeight: 270,
+	// if set, overrides <video width>
+	videoWidth: -1,
+	// if set, overrides <video height>
+	videoHeight: -1,
+	// width of audio player
+	audioWidth: 400,
+	// height of audio player
+	audioHeight: 30,
+	// initial volume when the player starts
+	startVolume: 0.8,
+	// useful for <audio> player loops
+	loop: false,
+	// enables Flash and Silverlight to resize to content size
+	enableAutosize: true,
+	// the order of controls you want on the control bar (and other plugins below)
+	features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+	// Hide controls when playing and mouse is not over the video
+	alwaysShowControls: false,
+	// force iPad's native controls
+	iPadUseNativeControls: false,
+	// force iPhone's native controls
+	iPhoneUseNativeControls: false,	
+	// force Android's native controls
+	AndroidUseNativeControls: false,
+	// forces the hour marker (##:00:00)
+	alwaysShowHours: false,
+	// show framecount in timecode (##:00:00:00)
+	showTimecodeFrameCount: false,
+	// used when showTimecodeFrameCount is set to true
+	framesPerSecond: 25,
+	// turns keyboard support on and off for this instance
+	enableKeyboard: true,
+	// when this player starts, it will pause other players
+	pauseOtherPlayers: true,
+	// array of keyboard commands
+	keyActions: []
 
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
-
+     });
+</script>
+    
 <!-- Bootstrap Core JavaScript -->
 <script src="/js/bootstrap.min.js"></script>
 
 <!-- Custom Theme JavaScript -->
 <script src="/js/hux-blog.min.js"></script>
 
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'kentonyu';
 
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+     
 <!-- async load function -->
 <script>
     function async(u, c) {
@@ -261,51 +338,6 @@
       s.parentNode.insertBefore(o, s);
     }
 </script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
-
-
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
 
 
 
@@ -325,8 +357,15 @@
     })();
 </script>
 
-
-
+<!--GIF播放-->
+<script src="/js/jquery.gifplayer.min.js"></script>
+<script>
+    $(document).ready( function(){
+        $('.gifs').gifplayer({
+            label:'&#x25b7;'
+        });
+    });
+</script>
 
 <!-- Image to hack wechat -->
 <!--<img src="/img/icon_wechat.png" width="0" height="0" />-->
