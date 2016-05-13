@@ -28,8 +28,7 @@
 
     <!-- Pygments Github CSS -->
     <link rel="stylesheet" href="/css/syntax.css">
-
-    <link rel="stylesheet" href="/css/gifplayer.min.css">
+    
     <!-- Custom Fonts -->
 <!--     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -37,9 +36,6 @@
 
     <!-- jQuery -->
     <script src="/js/jquery.min.js"></script>
-    <!--播放器-->
-    <script src="/js/mediaelement-and-player.min.js"></script>
-    <link rel="stylesheet" href="/css/mediaelementplayer.css" />
     
     <!-- Hux Delete, sad but pending in China
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -163,15 +159,13 @@
             </p>
              <hr>
              <div align="center">
-                 <iframe height=400 width=100% src="http://player.youku.com/embed/XMTU2OTA2NzA1Ng==" frameborder=0 allowfullscreen>                    </iframe>
-<!--
-                <embed src="http://player.youku.com/player.php/sid/XMTU2OTA2NzA1Ng==/v.swf" allowFullScreen="true" quality="high" width="480" height="400" allowScriptAccess="always" type="application/x-shockwave-flash" alt='轮盘猜大小.mp4'>
-                </embed>
--->
+                 <iframe height=480 width=100% src="http://player.youku.com/embed/XMTU2OTA2NzA1Ng==" frameborder=0 allowfullscreen>                    </iframe>
              </div>
              <hr>
-             <p></p>
-        
+            <h4>主要知识点</h4>
+            <h6>贝塞尔曲线</h6>
+            <p></p>
+            
             <!--            多说评论框 start -->
             <div class="comment">
                 <div class="ds-thread"
@@ -359,16 +353,6 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
-</script>
-
-<!--GIF播放-->
-<script src="/js/jquery.gifplayer.min.js"></script>
-<script>
-    $(document).ready( function(){
-        $('.gifs').gifplayer({
-            label:'&#x25b7;'
-        });
-    });
 </script>
 
 <!-- Image to hack wechat -->
