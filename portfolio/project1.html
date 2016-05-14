@@ -310,18 +310,22 @@ layer.contentsScale = [UIScreen mainScreen].scale;
 
 <p>但是在使用这个方法时，不同于 UIView ，CALayer 不会自动重绘它的内容，需要手动调用 <code>- display</code>。</p>
 
-        <p>总的来说，当使用寄宿了视图的图层的时候，不必实现<code>- displayLayer:</code>和<code>- drawLayer: inContext:</code>方法来绘制寄宿图。通常做法是实现 UIView 的<code>- drawRect:</code>方法，UIView 会做完剩下的工作，包括在需要重绘的时候调用<code>- display</code>方法。</p>
+<p>总的来说，当使用寄宿了视图的图层的时候，不必实现<code>- displayLayer:</code>和<code>- drawLayer: inContext:</code>方法来绘制寄宿图。通常做法是实现 UIView 的<code>- drawRect:</code>方法，UIView 会做完剩下的工作，包括在需要重绘的时候调用<code>- display</code>方法。</p>
+
+<p>这是一篇关于 drawRect 的博文<a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/">《内存恶鬼 drawRect》</a> ，看完可以学到更多关于 drawRect 的知识。</p>  
             
-            <br />
-            <hr />
+        <br />
+        
+        <hr />
             <!--            多说评论框 start -->
-            <div class="comment">
-                <div class="ds-thread"
-                    data-thread-key="portfolio/project1.html"
-                    data-title="轮盘猜大小（仿淘宝彩票App）"
-                    data-url="/portfolio/project1.html" >
-                </div>
+        
+        <div class="comment">
+            <div class="ds-thread"
+                data-thread-key="portfolio/project1.html"
+                data-title="轮盘猜大小（仿淘宝彩票App）"
+                data-url="/portfolio/project1.html" >
             </div>
+        </div>
             <!--             多说评论框 end -->
         </div>
        
