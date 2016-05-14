@@ -164,15 +164,17 @@
             <hr />
             <br />
             
-            <h4>主要知识点</h4>
-            <br>
-            <h5>贝塞尔曲线</h5>
-            <blockquote>
-                <p>给定n+1个数据点，p0(x0 , y0)  ...  pn(xn , yn)，生成一条曲线，使得该曲线与这些点所连结的折线相近。在数学中，这属于逼近问题。在几何中，可以形象地理解为先用折线段连接这些数据点，勾勒出图形的大致轮廓，然后再用光滑的曲线去尽可能接近地拟合这条  折线。 <br>摘录来自: “A GUIDE TO IOS ANIMATION”</p>
-                
-            </blockquote>
-            <p>UIBezierPath，是 UIKit 对 CoreGraphics 的 path （CGPathRef）的封装。通过 UIBezierPath 可以绘制直线、圆圈、多边形和贝塞尔曲线。 </p>
-            <p>下面是对 UIBezierPath 的简单介绍</p>
+            <h2>主要知识点</h2>
+
+<p><br></p>
+
+<h4>贝塞尔曲线</h4>
+
+<blockquote><p>给定n+1个数据点，p0(x0 , y0)  ...  pn(xn , yn)，生成一条曲线，使得该曲线与这些点所连结的折线相近。在数学中，这属于逼近问题。在几何中，可以形象地理解为先用折线段连接这些数据点，勾勒出图形的大致轮廓，然后再用光滑的曲线去尽可能接近地拟合这条折线。摘录来自: “A GUIDE TO IOS ANIMATION”</p></blockquote>
+
+<p>UIBezierPath，是 UIKit 对 CoreGraphics 的 path （CGPathRef）的封装。通过 UIBezierPath 可以绘制直线、圆圈、多边形和贝塞尔曲线。  <br/>
+下面是对 UIBezierPath 的简单介绍</p>
+
 <pre>
 // 以下是四个类方法，用来绘制闭合的特殊路径
 // 矩形
@@ -185,8 +187,9 @@
 + (UIBezierPath *)bezierPathWithOvalInRect:(CGRect)rect
 
 // 弧形（clockwise 是否顺时针绘制）
-+ (UIBezierPath *)bezierPathWithArcCenter:(CGPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle clockwise:(BOOL)clockwise
++ (UIBezierPath *)bezierPathWithArcCenter:(CGPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle       endAngle:(CGFloat)endAngle clockwise:(BOOL)clockwise
 </pre>
+
 
 <pre>
 // 实例方法，可以绘制各种自定义的形状
@@ -202,11 +205,59 @@
 // 三阶贝塞尔曲线
 - (void)addCurveToPoint:(CGPoint)endPoint controlPoint1:(CGPoint)controlPoint1 controlPoint2:(CGPoint)controlPoint2
 </pre>
-        
-            <p>通过贝塞尔曲线可以绘制任何你想要画的形状。我还没用过三阶贝塞尔。这个<a href='http://cubic-bezier.com' target="_blank" style='color:#00d6cf'>网站</a>可以体验下贝塞尔曲线。</p>
-            
-            <h5>CALayer</h5>
-            
+
+
+<p>通过贝塞尔曲线可以绘制任何你想要画的形状。我还没用过三阶贝塞尔。这个<a href='http://cubic-bezier.com' target="_blank" style='color:#00d6cf'>网站</a>可以体验下贝塞尔曲线。</p>
+
+<p><br></p>
+
+<hr>
+
+
+<h4>CALayer</h4>
+
+<p> CALayer 类在概念上和 UIView 类似，同样也是一些被层级关系树管理的矩形块，同样也可以包含一些内容（图片，文本或者背景色），管理子图层的位置。它们有一些方法和属性用来做动画和变换。和 UIView 最大的不同是 CALayer 不处理用户的交互( UIView 继承 UIResponder，CALayer 继承 NSObject )。</p>
+
+<p> <br></p>
+
+<p> CALayer 和 UIView 主要区别：<br/>
+ * 处理触摸事件  <br/>
+ * 阴影、圆角、带颜色的边框   <br/>
+ * 3D 变换 <br/>
+ * 非矩形范围 <br/>
+ * 透明遮罩
+ * 多级非线性动画   <br/>
+ * .....</p>
+
+<p> <br></p>
+
+<p> CALayer 的子类简单介绍：   <br/>
+ * CAShapeLayer：用来绘制各种形状 <br/>
+ * CATextLayer：用来绘制文字    <br/>
+ * CATransformLayer：用来构造一个层级的3D结构    <br/>
+ * CAGradientLayer：用来生成两种或更多颜色平滑渐变  <br/>
+ * CAReplicatorLayer：用来高效地生成许多相似的图层
+ * CAScrollLayer：用来实现图层滑动     <br/>
+ * CATiledLayer：为载入大图造成的性能问题提供一个解决方案，将大图分解成小片然后将它们单独按需载入    <br/>
+ * CAEmitterLayer：高性能的粒子引擎，被用来创建实时粒子动画（烟、火、雨等）    <br/>
+ * CAEAGLLayer：The CAEAGLLayer class supports drawing OpenGL content in iPhone applications   <br/>
+ * AVPlayerLayer：用来在iOS上播放视频的，是 MPMoivePlayer 的底层实现，由 AVFoundation 提供</p>
+
+<p> <b>关于这一部分的具体实践，后续会补上</b>。</p>
+
+<p> <br></p>
+
+<p> 我们什么时候需要使用 CALayer：     <br/>
+ * 开发同时可以运行在 MAC OS 上的跨平台应用   <br/>
+ * 使用多种 CALayer 的子类  <br/>
+ * 做一些对性能要求很高的工作</p>
+
+<p> <br>
+ <hr></p>
+
+<h4>DrawRect</h4>
+
+<p> CALayer 有一个寄宿图，可以通过 contents 属性来赋值，</p>
             
             <br />
             <hr />
