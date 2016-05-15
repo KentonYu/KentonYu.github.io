@@ -38,9 +38,9 @@
     </summary>
     
     
-      <category term="面试" scheme="/tags/%E9%9D%A2%E8%AF%95/"/>
-    
       <category term="码字" scheme="/tags/%E7%A0%81%E5%AD%97/"/>
+    
+      <category term="面试" scheme="/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
@@ -194,9 +194,9 @@
     </summary>
     
     
-      <category term="Objective-C" scheme="/tags/Objective-C/"/>
-    
       <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Objective-C" scheme="/tags/Objective-C/"/>
     
       <category term="读书笔记" scheme="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
@@ -350,9 +350,9 @@ NS_ASSUME_NONNULL_END
     </summary>
     
     
-      <category term="Objective-C" scheme="/tags/Objective-C/"/>
-    
       <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="Objective-C" scheme="/tags/Objective-C/"/>
     
   </entry>
   
