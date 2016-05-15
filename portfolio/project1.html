@@ -313,7 +313,54 @@ layer.contentsScale = [UIScreen mainScreen].scale;
 <p>总的来说，当使用寄宿了视图的图层的时候，不必实现<code>- displayLayer:</code>和<code>- drawLayer: inContext:</code>方法来绘制寄宿图。通常做法是实现 UIView 的<code>- drawRect:</code>方法，UIView 会做完剩下的工作，包括在需要重绘的时候调用<code>- display</code>方法。</p>
 
 <p>这是一篇关于 drawRect 的博文<a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/" target="_blank" style='color:#00d6cf'>《内存恶鬼 drawRect》</a> ，看完可以学到更多关于 drawRect 的知识。</p>  
-            
+        
+<h4>NSTimer  &amp;&amp;  CADisplayLink</h4>
+
+<p>NSTimer 是如何工作的？</p>
+
+<p>当设置一个 NSTimer 时，NSTimer 会被插入到当前的 NSRunloop 中，然后直到指定的时间过去之后才会被执行。但是什么时候启动定时器并没有上限，而且只有当 NSRunloop 的上一个任务结束之后才会被执行，因此通常会导致不定时的延迟。 NSRunloop 主要争对主线程，其中包含的任务有如下几项：</p>
+
+<ul>
+<li>处理触摸事件</li>
+<li>发送和接受网络数据包</li>
+<li>执行使用 GCD 的代码</li>
+<li>处理计时器的行为</li>
+<li>屏幕重绘</li>
+</ul>
+
+
+<p>因此屏幕重绘的频率是60次/秒，但是和定时器一样，如果上一次重绘执行很长的时间，那么也会导致延迟。就不能保证定时器精准的每一秒执行60次。</p>
+
+<p>对于动画的实现可以通过以下这些途径进行优化：</p>
+
+<ul>
+<li>可以用 CADisplayLink 让更新频率严格控制在每次屏幕刷新之后</li>
+<li>基于真实帧的持续时间而不是假设的更新频率来做动画</li>
+<li>调整动画计时器的 RunLoop 模式，这样就不会被别的事件干扰</li>
+</ul>
+
+
+<p>用 CADisplayLink 而不是 NSTimer，会保证帧率足够连续，使得动画看起来更加平滑，但即使 CADisplayLink 也不能保证每一帧都按计划执行，一些失去控制的离散的任务或者事件（例如资源紧张的后台程序）可能会导致动画偶尔地丢帧。</p>
+
+<p>无论是使用 NSTimer 还是 CADisplayLink，我们仍然需要处理一帧的时间超出了预期的1/60秒。由于我们不能够计算出一帧真实的持续时间，所以需要手动测量。我们可以在每帧开始刷新的时候用 CACurrentMediaTime() 记录当前时间，然后和上一帧记录的时间去比较。</p>
+
+<p><br></p>
+
+<hr>
+
+
+<h2>总结</h2>
+
+<p>在这个 Demo 里主要涉及了以上几个知识点，通过 CAShapeLayer 来绘制整个台子，然后通过实现 <code>- drawLayer: inContext:</code> 实现椭圆进度条的效果（在淘宝彩排H5里有个颜色渐变的过程，我没有实现）。通过这个小 Demo，巩固了之前 iOS 动画学习的知识，感觉写动画是一个很有趣的事情。当然不得不说，这个看似简单的小游戏，实际做起来逻辑还是有点复杂的～</p>
+
+<h2>相关资料</h2>
+
+<ul>
+<li><a href="https://www.gitbook.com/book/zsisme/ios-/details" target="_blank" style='color:#00d6cf'>iOS 核心动画高级技巧</a></li>
+<li><a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/" target="_blank" style='color:#00d6cf'>内存恶鬼 drawRect</a></li>
+</ul>
+        
+        
         <br />
         
         <hr />
