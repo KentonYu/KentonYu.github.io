@@ -13,11 +13,11 @@
 
     <title>
         
-          Effective Objective-C 读书笔记 - KentonYu的博客 | KentonYu&#39;s Blog
+          CAShapeLayer 的简单介绍 - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="/2016/03/27/Effective Objective-C 读书笔记/">
+    <link rel="canonical" href="/2016/05/16/CAShapeLayer 的简单介绍/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -167,17 +167,15 @@
                         
                           <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
                         
-                          <a class="tag" href="/tags/#Objective-C" title="Objective-C">Objective-C</a>
-                        
-                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                          <a class="tag" href="/tags/#CALayer" title="CALayer">CALayer</a>
                         
 
                     </div>
-                    <h1>Effective Objective-C 读书笔记</h1>
+                    <h1>CAShapeLayer 的简单介绍</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by KentonYu on
-                        2016-03-27
+                        2016-05-16
                     </span>
                 </div>
             </div>
@@ -196,59 +194,148 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>时间什么的，挤挤就有了。Effective这本书在iOS编程领域知名度还是蛮高的＝_＝。这篇文章就来记录一些读书笔记吧。</p>
-<ol>
-<li><p>关于常量的命名法：常量局限于某“编译单元”（也就是在实现文件.m之内），则前面加字母k；若常量在类之外可见，则通常已类名做为前缀。</p>
-</li>
-<li><p><code>//file .m<br>static const NSTimeInterval kAnimationDuration = 0.3;<br></code><br>假如上面的变量不声明static，则编译器会为它创建一个“外部符号”（external symbol）。此时在另外文件申明了同名的变量，编译器就会报错。<br><code><br>duplicate symbol _kAnimationDuration in:……<br></code><br>事实上，一个静态（static）不可变（const）变量，编译器不会创建符号，会像define一样进行替换，但是它有类型信息。</p>
-</li>
-<li><p>垃圾收集器（GC），iOS系统中没有GC，MAC OS X 10.8之前有GC，但是之后也正式废弃了，所以目前OC中不存在GC。</p>
-</li>
-<li><p>如果有非Objective-C的对象，比如CoreFoundation中的对象或由malloc()分配在堆中的内存，那么需要在dealloc中清理。dealloc中还需要取消原来订阅的“KVO”或NSNotificationCenter等通知。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)dealloc &#123;</span><br><span class="line">   CFRelease(_coreFoundationObject);</span><br><span class="line">   free(_heapAllocatedMemoryBlob);</span><br><span class="line">   [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">   // [super dealloc];  //ARC中不需要调用super</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过自动释放池块来降低内存峰值。是否应该用池来优化效率，完全取决于具体的应用程序。首先应该监控内存用量，如果有必要优化，再通过池来优化。尽管自动释放池的开销不太大，但毕竟是有的。所以不要简历额外的自动释放池。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(int i=0; i&lt;100000; i++) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">         [self doSomethingWithInt:i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>向已回收的对象发送消息是不安全的。这么做有时可以，有时不行。具体可行与否，完全取决于对象所占的内存有没有被其他内存内容所重写。而这块内存有没有被移作它用又不确定，因此程序会偶尔奔溃。<br>在没有奔溃的情况下有两种可能：</p>
+                <h2 id="CAShapeLayer"><a href="#CAShapeLayer" class="headerlink" title="CAShapeLayer"></a>CAShapeLayer</h2><p><br><br>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。可以指定颜色、线宽等属性，用CGPath 来定义想要绘制的图形，最后 CAShapeLayer 就会自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的 CALyer 的内容中绘制一个路径（<code>- drawLayer: inContext:</code>），相比之下，使用 CAShapeLayer 有以下一些优点：    </p>
+<p>&gt;</p>
 <ul>
-<li>那块内存只被复用了其中一部分，所以对象中有效的某些二进制数据依旧有效。</li>
-<li>那块内存对象恰好为另外一个有效且存活的对象所占据。<br>这样的问题可以通过用“僵尸对象”调试，开启方法：编辑应用的scheme，在对话框的左侧选择Run，切换到Diagnostics分页，勾选Enable Zombie Objects。<br>当然这种情况普遍存在于MRC时期，在ARC时期需要通过比较复杂的代码才能把僵尸对象表现出来。我的理解就是MRC中的野指针。因此在MRC中release对象后，最好将指针置空来避免这个问题。</li>
+<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
+<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。</li>
+<li>不会被图层边界剪裁掉。一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉.</li>
+<li>不会出现像素化。当你给 CAShapeLayer 做 3D 变换时，它不像一个有寄宿图的普通图层一样变得像素化。<br><br><h4 id="主要属性"><a href="#主要属性" class="headerlink" title="主要属性"></a>主要属性</h4><br></li>
 </ul>
-</li>
-<li><p>关于实例变量和属性的问题：</p>
-<ul>
-<li>在对象内部读取数据时，应该直接通过实例变量来读取，而进行赋值时，则应该通过属性来写。</li>
-<li>在初始化方法或dealloc中，应该用实例变量。</li>
-<li>用懒加载来配置某份数据时，应该用属性来读取。</li>
-</ul>
-</li>
-<li><p>objc_msgSend的作用<br> C语言使用“静态绑定”，编译器就能决定运行时所应调用的函数。<br> OC使用的是“动态绑定”，所有调用的函数直到运行期才能确定。<br> OC中给某个对象发送消息，发生的步骤如下：</p>
-<ul>
-<li>调用objc_msgSend(id self, SEL cmd, …)</li>
-<li>该函数从接收对象所属的类中搜寻它的”方法列表”，如果能找到则会跳到相应的实现代码，否则沿着继承体系继续往上查找，找到之后进行跳转。</li>
-<li>如果最终没找到，则会执行“消息转发”。</li>
-</ul>
-<p>通过以上几步才能完成一次消息的发送，因此objc_msgSend()有一张“快速映射表”来缓存已经匹配的结果，所以给对象发送相同的消息，那么执行起来就很快了。</p>
-</li>
-<li><p>消息转发(message forwarding)机制<br> 消息转发分两个阶段：</p>
-<ul>
-<li>先征询接收者所属的类，看其是否能动态添加方法，以处理当前这个“未知的选择子”，这叫做“动态方法解析”。</li>
-<li>如果第一阶段结束，那么接收者就无法再以动态新增方法的手段来响应该消息了。此时，运行期系统会请求接收者看看有没有其他对象能处理该消息。若有，则运行期系统会把消息转发给那个对象。然后消息转发过程结束。若没有“备援的接收者”，运行期系统会把与消息有关的全部细节都封装到NSInvocation对象中，再给接收者最后一次机会来处理这条消息。</li>
-</ul>
-<p>动态方法解析：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//实例方法</span><br><span class="line"> + (BOOL)resolveInstanceMethod:(SEL)selector</span><br><span class="line">//类方法</span><br><span class="line"> + (BOOL)resolveClassMethod:(SEL)selector</span><br></pre></td></tr></table></figure>
-<p> 备援接收者：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//有备援对象则返回，无则返回nil</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)selector</span><br></pre></td></tr></table></figure>
-<p> 完整的消息转发：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> //可以改变消息内容，比如追加一个参数，或更换选择子等等</span><br><span class="line"> - (id)forwardInvocation:(NSInvocation *)invocation</span><br><span class="line">//动态添加方法(第三个参数为函数指针，指向待添加的函数，第四个参数为添加方法的类型编码，第一个表示方法的返回值类型，后面表示方法的参数类型)</span><br><span class="line">class_addMethod(Class, selector, IMP, typeEncoding);</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="http://upload-images.jianshu.io/upload_images/1155692-38a34cc2739f4452.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="类型编码表"></p>
-<ol>
-<li>方法调配(method swizzling)<br>Method Swizzling：在运行期改变给定的选择子名称对应的方法。<br>获得方法的实现<br><code><br>Method class_getInstanceMethod(Class aClass, SEL aSelector)<br></code><br>交换两个方法的函数<br><code><br>void method_exchangeImplementations(Method m1, Method m2)<br></code></li>
-</ol>
-<p>通过这两个方法可以为“完全不知道其具体实现的”黑盒方法增加日志记录功能，非常有助于调试。</p>
+<pre>
+// CAShapeLayer 绘制的路径
+@property(nullable) CGPathRef path;
+
+//路径中的填充颜色
+@property(nullable) CGColorRef fillColor;
+
+//填充规则
+@property(copy) NSString *fillRule;
+
+//画笔颜色（路径的颜色，边框颜色）
+@property(nullable) CGColorRef strokeColor;
+
+//这是一组范围值，路径绘制开始和结束的范围（0 -> 1）
+@property CGFloat strokeStart;
+@property CGFloat strokeEnd;
+
+//设置虚线显示的起点距离，设置为8，则显示长度8之后的线
+@property CGFloat lineDashPhase;
+//设置虚线线段的长度和空格的长度，@[@20,@30,@40,@50],画20空30画40空50
+@property(nullable, copy) NSArray<nsnumber *=""> *lineDashPattern;
+
+//以下属性参见 UIBezierPath 的介绍
+@property CGFloat lineWidth;
+@property CGFloat miterLimit;
+@property(copy) NSString *lineCap;
+@property(copy) NSString *lineJoin;
+
+</nsnumber></pre>
+
+<p><br></p>
+<h4 id="Show-You-Code"><a href="#Show-You-Code" class="headerlink" title="Show You Code"></a>Show You Code</h4><p><br></p>
+<p>先上本 Demo 截图。</p>
+<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo.png" alt="效果图"></p>
+<p>1.使用 CAShapeLayer 绘制一个圆角矩形：</p>
+<pre>
+
+#pragma mark Getter
+
+- (UIBezierPath *)path {
+    if (!_path) {
+        _path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 100.f, CGRectGetWidth([UIScreen mainScreen].bounds), 44.f) cornerRadius:22.f];
+    }
+    return _path;
+}
+
+- (CAShapeLayer *)shapeLayer {
+    if (!_shapeLayer) {
+        _shapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path        = self.path.CGPath;
+            layer.lineWidth   = 2.f;
+            layer.strokeColor = [UIColor greenColor].CGColor;
+            layer.fillColor   = [UIColor redColor].CGColor;
+            // strokeStart 绘制起点 strokeEnd 绘制终点  取值是 0-1
+            layer.strokeStart = 0;
+            layer.strokeEnd   = 0.7f;
+            layer;
+        });
+    }
+    return _shapeLayer;
+}
+</pre>
+
+<p>2.绘制一根不同间隔，不同长度的虚线</p>
+<pre>
+
+#pragma mark Getter
+
+- (UIBezierPath *)dashLinePath {
+    if (!_dashLinePath) {
+        _dashLinePath = ({
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(20.f, 180.f)];
+            [path addLineToPoint:CGPointMake(CGRectGetWidth(self.frame) - 20.f, 180.f)];
+            path;
+        });
+    }
+    return _dashLinePath;
+}
+
+- (CAShapeLayer *)dashLineShapeLayer {
+    if (!_dashLineShapeLayer) {
+        _dashLineShapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path = self.dashLinePath.CGPath;
+            layer.lineDashPhase   = 8;
+            layer.lineDashPattern = @[@10, @20, @30, @60];
+            layer.strokeColor = [UIColor greenColor].CGColor;
+            layer.lineWidth   = 2.f;
+            layer;
+        });
+    }
+    return _dashLineShapeLayer;
+}
+</pre>   
+
+<p>lineDashPhase：绘制的虚线显示在屏幕上的起点，比如设置为10，则从整条线的 10 的位置开始才显示。<br>lineDashPattern：绘制虚线的格式，@[@10, @20, @30, @60],画10个点的线空20个点，以此类推。如果只设置一个元素，则线和间隔宽度相等。</p>
+<p>3.使用 fillRule 属性，实现两个区域的取非</p>
+<pre>
+
+# pragma mark Getter
+
+- (UIBezierPath *)fillRulePath {
+    if (!_fillRulePath) {
+        //这里先绘制哪个 Path 效果一样
+        _fillRulePath = [UIBezierPath bezierPathWithRect:CGRectMake(20.f, 200.f, CGRectGetWidth(self.frame)-40.f, 200.f)];
+        [_fillRulePath appendPath:[UIBezierPath bezierPathWithArcCenter:CGPointMake(CGRectGetWidth(self.frame)/2.f, 300.f) radius:50.f startAngle:0 endAngle:2*M_PI clockwise:NO]];
+    }
+    return _fillRulePath;
+}
+
+- (CAShapeLayer *)fillRuleShapeLayer {
+    if (!_fillRuleShapeLayer) {
+        _fillRuleShapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path = self.fillRulePath.CGPath;
+            layer.fillRule = kCAFillRuleEvenOdd;
+            layer.fillColor = [UIColor yellowColor].CGColor;
+            layer;
+        });
+    }
+    return _fillRuleShapeLayer;
+}
+
+</pre>
+
+<p>填充规则介绍：</p>
+<p>kCAFillRuleNonZero：默认值，非零规则，当这个点作任意方法的射线，然后看射线和路径的交点方向，选择一个作为基准方向，如果方向一致则加1，方向不一致则减1。为0时，点不在路径内。      </p>
+<p>kCAFillRuleEvenOdd：奇偶规则，当这个点作任意方法的射线，射线和路径的交点数量是奇数则认为点在内部。</p>
+<p> <img src="http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo-1.png" alt="fillRule"></p>
+<p>如上图（不知道找什么画图软件好，就用了 Sketch ），如果使用 kCAFillRuleNonZero 规则，则该射线和两条路径相交，并且交点方向都是逆时针，所以点在路径内。<br>如果使用 kCAFillRuleEvenOdd 规则，则该射线与路径有两个交点，为偶数，所以该点不在范围内。</p>
+<p><br></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><br><br>CAShapeLayer 基本属性不多，主要还是需要通过不断的实践，结合贝塞尔曲线来实现不同的需求。</p>
 
                 
                 <hr>
@@ -257,13 +344,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/04/27/如何Copy框架：自定义Xcode Template/" data-toggle="tooltip" data-placement="top" title="如何Copy框架：自定义Xcode Template">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/03/05/git-Flow-开发模型/" data-toggle="tooltip" data-placement="top" title="对 Git Flow 开发模型的理解">Next Post &rarr;</a>
+                            <a href="/2016/05/06/记一次奇怪的面试经历/" data-toggle="tooltip" data-placement="top" title="记一次奇怪的面试经历">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -272,9 +355,9 @@
                 <!--多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/03/27/Effective Objective-C 读书笔记/"
-                        data-title="Effective Objective-C 读书笔记"
-                        data-url="/2016/03/27/Effective Objective-C 读书笔记/" >
+                        data-thread-key="2016/05/16/CAShapeLayer 的简单介绍/"
+                        data-title="CAShapeLayer 的简单介绍"
+                        data-url="/2016/05/16/CAShapeLayer 的简单介绍/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->

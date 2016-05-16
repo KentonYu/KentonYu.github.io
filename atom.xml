@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-05-06T15:19:20.000Z</updated>
+  <updated>2016-05-16T14:52:10.000Z</updated>
   <id>/</id>
   
   <author>
@@ -14,6 +14,170 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CAShapeLayer 的简单介绍</title>
+    <link href="/2016/05/16/CAShapeLayer%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/"/>
+    <id>/2016/05/16/CAShapeLayer 的简单介绍/</id>
+    <published>2016-05-16T14:51:01.000Z</published>
+    <updated>2016-05-16T14:52:10.000Z</updated>
+    
+    <content type="html">&lt;h2 id=&quot;CAShapeLayer&quot;&gt;&lt;a href=&quot;#CAShapeLayer&quot; class=&quot;headerlink&quot; title=&quot;CAShapeLayer&quot;&gt;&lt;/a&gt;CAShapeLayer&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。可以指定颜色、线宽等属性，用CGPath 来定义想要绘制的图形，最后 CAShapeLayer 就会自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的 CALyer 的内容中绘制一个路径（&lt;code&gt;- drawLayer: inContext:&lt;/code&gt;），相比之下，使用 CAShapeLayer 有以下一些优点：    &lt;/p&gt;
+&lt;p&gt;&amp;gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。&lt;/li&gt;
+&lt;li&gt;高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。&lt;/li&gt;
+&lt;li&gt;不会被图层边界剪裁掉。一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉.&lt;/li&gt;
+&lt;li&gt;不会出现像素化。当你给 CAShapeLayer 做 3D 变换时，它不像一个有寄宿图的普通图层一样变得像素化。&lt;br&gt;&lt;br&gt;&lt;h4 id=&quot;主要属性&quot;&gt;&lt;a href=&quot;#主要属性&quot; class=&quot;headerlink&quot; title=&quot;主要属性&quot;&gt;&lt;/a&gt;主要属性&lt;/h4&gt;&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+// CAShapeLayer 绘制的路径
+@property(nullable) CGPathRef path;
+
+//路径中的填充颜色
+@property(nullable) CGColorRef fillColor;
+
+//填充规则
+@property(copy) NSString *fillRule;
+
+//画笔颜色（路径的颜色，边框颜色）
+@property(nullable) CGColorRef strokeColor;
+
+//这是一组范围值，路径绘制开始和结束的范围（0 -&gt; 1）
+@property CGFloat strokeStart;
+@property CGFloat strokeEnd;
+
+//设置虚线显示的起点距离，设置为8，则显示长度8之后的线
+@property CGFloat lineDashPhase;
+//设置虚线线段的长度和空格的长度，@[@20,@30,@40,@50],画20空30画40空50
+@property(nullable, copy) NSArray&lt;nsnumber *=&quot;&quot;&gt; *lineDashPattern;
+
+//以下属性参见 UIBezierPath 的介绍
+@property CGFloat lineWidth;
+@property CGFloat miterLimit;
+@property(copy) NSString *lineCap;
+@property(copy) NSString *lineJoin;
+
+&lt;/nsnumber&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&quot;Show-You-Code&quot;&gt;&lt;a href=&quot;#Show-You-Code&quot; class=&quot;headerlink&quot; title=&quot;Show You Code&quot;&gt;&lt;/a&gt;Show You Code&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;先上本 Demo 截图。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo.png&quot; alt=&quot;效果图&quot;&gt;&lt;/p&gt;
+&lt;p&gt;1.使用 CAShapeLayer 绘制一个圆角矩形：&lt;/p&gt;
+&lt;pre&gt;
+
+#pragma mark Getter
+
+- (UIBezierPath *)path {
+    if (!_path) {
+        _path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 100.f, CGRectGetWidth([UIScreen mainScreen].bounds), 44.f) cornerRadius:22.f];
+    }
+    return _path;
+}
+
+- (CAShapeLayer *)shapeLayer {
+    if (!_shapeLayer) {
+        _shapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path        = self.path.CGPath;
+            layer.lineWidth   = 2.f;
+            layer.strokeColor = [UIColor greenColor].CGColor;
+            layer.fillColor   = [UIColor redColor].CGColor;
+            // strokeStart 绘制起点 strokeEnd 绘制终点  取值是 0-1
+            layer.strokeStart = 0;
+            layer.strokeEnd   = 0.7f;
+            layer;
+        });
+    }
+    return _shapeLayer;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;2.绘制一根不同间隔，不同长度的虚线&lt;/p&gt;
+&lt;pre&gt;
+
+#pragma mark Getter
+
+- (UIBezierPath *)dashLinePath {
+    if (!_dashLinePath) {
+        _dashLinePath = ({
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(20.f, 180.f)];
+            [path addLineToPoint:CGPointMake(CGRectGetWidth(self.frame) - 20.f, 180.f)];
+            path;
+        });
+    }
+    return _dashLinePath;
+}
+
+- (CAShapeLayer *)dashLineShapeLayer {
+    if (!_dashLineShapeLayer) {
+        _dashLineShapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path = self.dashLinePath.CGPath;
+            layer.lineDashPhase   = 8;
+            layer.lineDashPattern = @[@10, @20, @30, @60];
+            layer.strokeColor = [UIColor greenColor].CGColor;
+            layer.lineWidth   = 2.f;
+            layer;
+        });
+    }
+    return _dashLineShapeLayer;
+}
+&lt;/pre&gt;   
+
+&lt;p&gt;lineDashPhase：绘制的虚线显示在屏幕上的起点，比如设置为10，则从整条线的 10 的位置开始才显示。&lt;br&gt;lineDashPattern：绘制虚线的格式，@[@10, @20, @30, @60],画10个点的线空20个点，以此类推。如果只设置一个元素，则线和间隔宽度相等。&lt;/p&gt;
+&lt;p&gt;3.使用 fillRule 属性，实现两个区域的取非&lt;/p&gt;
+&lt;pre&gt;
+
+# pragma mark Getter
+
+- (UIBezierPath *)fillRulePath {
+    if (!_fillRulePath) {
+        //这里先绘制哪个 Path 效果一样
+        _fillRulePath = [UIBezierPath bezierPathWithRect:CGRectMake(20.f, 200.f, CGRectGetWidth(self.frame)-40.f, 200.f)];
+        [_fillRulePath appendPath:[UIBezierPath bezierPathWithArcCenter:CGPointMake(CGRectGetWidth(self.frame)/2.f, 300.f) radius:50.f startAngle:0 endAngle:2*M_PI clockwise:NO]];
+    }
+    return _fillRulePath;
+}
+
+- (CAShapeLayer *)fillRuleShapeLayer {
+    if (!_fillRuleShapeLayer) {
+        _fillRuleShapeLayer = ({
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            layer.path = self.fillRulePath.CGPath;
+            layer.fillRule = kCAFillRuleEvenOdd;
+            layer.fillColor = [UIColor yellowColor].CGColor;
+            layer;
+        });
+    }
+    return _fillRuleShapeLayer;
+}
+
+&lt;/pre&gt;
+
+&lt;p&gt;填充规则介绍：&lt;/p&gt;
+&lt;p&gt;kCAFillRuleNonZero：默认值，非零规则，当这个点作任意方法的射线，然后看射线和路径的交点方向，选择一个作为基准方向，如果方向一致则加1，方向不一致则减1。为0时，点不在路径内。      &lt;/p&gt;
+&lt;p&gt;kCAFillRuleEvenOdd：奇偶规则，当这个点作任意方法的射线，射线和路径的交点数量是奇数则认为点在内部。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo-1.png&quot; alt=&quot;fillRule&quot;&gt;&lt;/p&gt;
+&lt;p&gt;如上图（不知道找什么画图软件好，就用了 Sketch ），如果使用 kCAFillRuleNonZero 规则，则该射线和两条路径相交，并且交点方向都是逆时针，所以点在路径内。&lt;br&gt;如果使用 kCAFillRuleEvenOdd 规则，则该射线与路径有两个交点，为偶数，所以该点不在范围内。&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 基本属性不多，主要还是需要通过不断的实践，结合贝塞尔曲线来实现不同的需求。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;CAShapeLayer&quot;&gt;&lt;a href=&quot;#CAShapeLayer&quot; class=&quot;headerlink&quot; title=&quot;CAShapeLayer&quot;&gt;&lt;/a&gt;CAShapeLayer&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 是一个通过矢量图形
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+      <category term="CALayer" scheme="/tags/CALayer/"/>
+    
+  </entry>
   
   <entry>
     <title>记一次奇怪的面试经历</title>

@@ -313,6 +313,8 @@ layer.contentsScale = [UIScreen mainScreen].scale;
 <p>总的来说，当使用寄宿了视图的图层的时候，不必实现<code>- displayLayer:</code>和<code>- drawLayer: inContext:</code>方法来绘制寄宿图。通常做法是实现 UIView 的<code>- drawRect:</code>方法，UIView 会做完剩下的工作，包括在需要重绘的时候调用<code>- display</code>方法。</p>
 
 <p>这是一篇关于 drawRect 的博文<a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/" target="_blank" style='color:#00d6cf'>《内存恶鬼 drawRect》</a> ，看完可以学到更多关于 drawRect 的知识。</p>  
+    
+<hr>        
         
 <h4>NSTimer  &amp;&amp;  CADisplayLink</h4>
 
