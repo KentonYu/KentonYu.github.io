@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-05-16T14:52:10.000Z</updated>
+  <updated>2016-05-16T14:59:15.000Z</updated>
   <id>/</id>
   
   <author>
@@ -20,16 +20,17 @@
     <link href="/2016/05/16/CAShapeLayer%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/"/>
     <id>/2016/05/16/CAShapeLayer 的简单介绍/</id>
     <published>2016-05-16T14:51:01.000Z</published>
-    <updated>2016-05-16T14:52:10.000Z</updated>
+    <updated>2016-05-16T14:59:15.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;CAShapeLayer&quot;&gt;&lt;a href=&quot;#CAShapeLayer&quot; class=&quot;headerlink&quot; title=&quot;CAShapeLayer&quot;&gt;&lt;/a&gt;CAShapeLayer&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。可以指定颜色、线宽等属性，用CGPath 来定义想要绘制的图形，最后 CAShapeLayer 就会自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的 CALyer 的内容中绘制一个路径（&lt;code&gt;- drawLayer: inContext:&lt;/code&gt;），相比之下，使用 CAShapeLayer 有以下一些优点：    &lt;/p&gt;
-&lt;p&gt;&amp;gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。&lt;/li&gt;
 &lt;li&gt;高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。&lt;/li&gt;
 &lt;li&gt;不会被图层边界剪裁掉。一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉.&lt;/li&gt;
-&lt;li&gt;不会出现像素化。当你给 CAShapeLayer 做 3D 变换时，它不像一个有寄宿图的普通图层一样变得像素化。&lt;br&gt;&lt;br&gt;&lt;h4 id=&quot;主要属性&quot;&gt;&lt;a href=&quot;#主要属性&quot; class=&quot;headerlink&quot; title=&quot;主要属性&quot;&gt;&lt;/a&gt;主要属性&lt;/h4&gt;&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;不会出现像素化。当你给 CAShapeLayer 做 3D 变换时，它不像一个有寄宿图的普通图层一样变得像素化。&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&quot;主要属性&quot;&gt;&lt;a href=&quot;#主要属性&quot; class=&quot;headerlink&quot; title=&quot;主要属性&quot;&gt;&lt;/a&gt;主要属性&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;pre&gt;
 // CAShapeLayer 绘制的路径
 @property(nullable) CGPathRef path;
@@ -164,6 +165,7 @@
 &lt;p&gt;如上图（不知道找什么画图软件好，就用了 Sketch ），如果使用 kCAFillRuleNonZero 规则，则该射线和两条路径相交，并且交点方向都是逆时针，所以点在路径内。&lt;br&gt;如果使用 kCAFillRuleEvenOdd 规则，则该射线与路径有两个交点，为偶数，所以该点不在范围内。&lt;/p&gt;
 &lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h4 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 基本属性不多，主要还是需要通过不断的实践，结合贝塞尔曲线来实现不同的需求。&lt;/p&gt;
+&lt;h4 id=&quot;代码&quot;&gt;&lt;a href=&quot;#代码&quot; class=&quot;headerlink&quot; title=&quot;代码&quot;&gt;&lt;/a&gt;代码&lt;/h4&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/KentonYu/SubLayersDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;传送门&lt;/a&gt;&lt;/p&gt;
 </content>
     
     <summary type="html">
