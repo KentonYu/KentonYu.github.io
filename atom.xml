@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-05-16T14:59:15.000Z</updated>
+  <updated>2016-05-17T05:10:43.000Z</updated>
   <id>/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="/2016/05/16/CAShapeLayer%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/"/>
     <id>/2016/05/16/CAShapeLayer 的简单介绍/</id>
     <published>2016-05-16T14:51:01.000Z</published>
-    <updated>2016-05-16T14:59:15.000Z</updated>
+    <updated>2016-05-17T05:10:43.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;CAShapeLayer&quot;&gt;&lt;a href=&quot;#CAShapeLayer&quot; class=&quot;headerlink&quot; title=&quot;CAShapeLayer&quot;&gt;&lt;/a&gt;CAShapeLayer&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。可以指定颜色、线宽等属性，用CGPath 来定义想要绘制的图形，最后 CAShapeLayer 就会自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的 CALyer 的内容中绘制一个路径（&lt;code&gt;- drawLayer: inContext:&lt;/code&gt;），相比之下，使用 CAShapeLayer 有以下一些优点：    &lt;/p&gt;
 &lt;ul&gt;
@@ -165,7 +165,12 @@
 &lt;p&gt;如上图（不知道找什么画图软件好，就用了 Sketch ），如果使用 kCAFillRuleNonZero 规则，则该射线和两条路径相交，并且交点方向都是逆时针，所以点在路径内。&lt;br&gt;如果使用 kCAFillRuleEvenOdd 规则，则该射线与路径有两个交点，为偶数，所以该点不在范围内。&lt;/p&gt;
 &lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h4 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;br&gt;CAShapeLayer 基本属性不多，主要还是需要通过不断的实践，结合贝塞尔曲线来实现不同的需求。&lt;/p&gt;
-&lt;h4 id=&quot;代码&quot;&gt;&lt;a href=&quot;#代码&quot; class=&quot;headerlink&quot; title=&quot;代码&quot;&gt;&lt;/a&gt;代码&lt;/h4&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/KentonYu/SubLayersDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;传送门&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&quot;代码及相关资料&quot;&gt;&lt;a href=&quot;#代码及相关资料&quot; class=&quot;headerlink&quot; title=&quot;代码及相关资料&quot;&gt;&lt;/a&gt;代码及相关资料&lt;/h4&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/KentonYu/SubLayersDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Code&lt;/a&gt;   &lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://bihongbo.com/2016/01/03/memoryGhostdrawRect/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;使用 CAShapeLayer 优化 drawRect 的一个例子&lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;
 </content>
     
     <summary type="html">
