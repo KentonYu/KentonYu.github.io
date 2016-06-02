@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-05-17T05:10:43.000Z</updated>
+  <updated>2016-06-02T02:37:48.000Z</updated>
   <id>/</id>
   
   <author>
@@ -14,6 +14,62 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ubuntu 上搭建 Shadowsocks</title>
+    <link href="/2016/06/02/Ubuntu%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Shadowsocks/"/>
+    <id>/2016/06/02/Ubuntu 上搭建 Shadowsocks/</id>
+    <published>2016-06-02T02:10:01.000Z</published>
+    <updated>2016-06-02T02:37:48.000Z</updated>
+    
+    <content type="html">&lt;p&gt;其实以前一直用 Centos 上搭的。有苦难言，之前想 10G disk 闲着，想搞个 gitlab 上去，然后在那上面一通搞，最后以为系统版本原因吧，就换成了 Ubuntu，虽然成功了，但是 502 ，请求了  gitlab 至少 1G 的内存，我的 VPS 512M ……典型的偷鸡不成蚀把米～&lt;/p&gt;
+&lt;p&gt;那原来的 SS 没了，得先把它搭起来，毕竟还是得靠它过日子的……&lt;br&gt;记得当时 Centos 上花了很久才搭好的，Ubuntu 上秒秒钟啊，奇怪。&lt;/p&gt;
+&lt;h3 id=&quot;前期准备&quot;&gt;&lt;a href=&quot;#前期准备&quot; class=&quot;headerlink&quot; title=&quot;前期准备&quot;&gt;&lt;/a&gt;前期准备&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;一台 VPS （Ubuntu）（我是在&lt;a href=&quot;http://banwagong.cn/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;搬瓦工&lt;/a&gt;上买的，蛮实惠）&lt;/li&gt;
+&lt;li&gt;基本的 linux 操作，vi 的操作（别担心，就用到没几个。。。）  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;正文&quot;&gt;&lt;a href=&quot;#正文&quot; class=&quot;headerlink&quot; title=&quot;正文&quot;&gt;&lt;/a&gt;正文&lt;/h3&gt;&lt;p&gt;1.先 ssh 到 VPS&lt;/p&gt;
+&lt;pre&gt;
+ssh -p 端口号 root@ip
+sudo passwd root   //第一次上去可以把 root 密码改了，搬瓦工初始密码随机的，并记不住
+&lt;/pre&gt;
+
+&lt;p&gt;2.更新下 apt ，安装 pip, ss&lt;/p&gt;
+&lt;pre&gt;
+apt-get update
+apt-get install python-pip
+pip install shadowsocks
+&lt;/pre&gt;
+
+&lt;p&gt;3.建一个 ss 配置文件&lt;/p&gt;
+&lt;pre&gt;
+vi shadowsocks.json
+//把下面这个 json 拷进去， 按 command + v 之前，先按 i 进入insert 模式
+{
+&quot;server&quot;:&quot;your ip&quot;,
+&quot;server_port&quot;:50003,
+&quot;local_port&quot;:1080,
+&quot;password&quot;:&quot;123456&quot;,
+&quot;timeout&quot;:600,
+&quot;method&quot;:&quot;aes-256-cfb&quot;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;4.Start&lt;/p&gt;
+&lt;pre&gt;
+ssserver -c shadowsocks.json -d start
+&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;其实以前一直用 Centos 上搭的。有苦难言，之前想 10G disk 闲着，想搞个 gitlab 上去，然后在那上面一通搞，最后以为系统版本原因吧，就换成了 Ubuntu，虽然成功了，但是 502 ，请求了  gitlab 至少 1G 的内存，我的 VPS 512M …
+    
+    </summary>
+    
+    
+      <category term="日常" scheme="/tags/%E6%97%A5%E5%B8%B8/"/>
+    
+  </entry>
   
   <entry>
     <title>CAShapeLayer 的简单介绍</title>
