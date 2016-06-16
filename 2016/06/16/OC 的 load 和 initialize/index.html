@@ -96,12 +96,12 @@
                     
 
                         
-                    
-
-                        
                         <li>
                             <a href="/portfolio/">Portfolio</a>
                         </li>
+                        
+                    
+
                         
                     
 
@@ -211,7 +211,7 @@
 </blockquote>
 <p>先执行所有的父类的 - load 方法，分类的 - load 方法将会是最后执行。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// Parent.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Parent load&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Child load&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child+Category.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Child Category load&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="http://upload-images.jianshu.io/upload_images/1155692-90f84ff2d315b242.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="load"></p>
+<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/20160616-1.png" alt="load"></p>
 <p>有兴趣的朋友可以自己去试试。</p>
 <h1 id="initialize"><a href="#initialize" class="headerlink" title="- initialize"></a>- initialize</h1><blockquote>
 <p>Initializes the class before it receives its first message.</p>
@@ -223,9 +223,9 @@
 <p>runtime 会线程安全地发送  initialize 消息给类。父类会比它的子类先收到这个消息。如果子类没有实现 initialize 这个方法，那么父类的 initialize 方法会被执行多次 —— 否则 runtime 将会调用子类实现 —— 除非子类明确调用 [super initialize] 。</p>
 <p>demo time。动手 ba 一 ba 。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// Parent.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Parent initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Child initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child+Category.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Child Category initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// main.m</span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        [Child new];</span><br><span class="line">        [Child new];</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="http://upload-images.jianshu.io/upload_images/1155692-27de6a0be9be5a39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="initialize"></p>
+<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/20160616-2.png" alt="initialize"></p>
 <p>结果中可以看出分类中的 initialize 会覆盖掉类中 initialize 方法，而父类的 initialize 方法仍旧会被执行。<br>接下来我们把子类中的 initialize 方法注释掉，重新跑一遍看看结果。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1155692-0f97c07360c8ea71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="initialize"></p>
+<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/20160616-3.png" alt="initialize"></p>
 <p>发现父类的 initialize 方法被调用了两遍，然后我们看文档中的这段话。</p>
 <blockquote>
 <p>The runtime sends initialize to each class in a program just before the class, or any class that inherits from it, is sent its first message from within the program. </p>
