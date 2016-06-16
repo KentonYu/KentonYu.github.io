@@ -13,11 +13,11 @@
 
     <title>
         
-          CAShapeLayer 的简单介绍 - KentonYu的博客 | KentonYu&#39;s Blog
+          OC 的 load 和 initialize - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="/2016/05/16/CAShapeLayer 的简单介绍/">
+    <link rel="canonical" href="/2016/06/16/OC 的 load 和 initialize/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -170,15 +170,13 @@
                         
                           <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
                         
-                          <a class="tag" href="/tags/#CALayer" title="CALayer">CALayer</a>
-                        
 
                     </div>
-                    <h1>CAShapeLayer 的简单介绍</h1>
+                    <h1>OC 的 load 和 initialize</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by KentonYu on
-                        2016-05-16
+                        2016-06-16
                     </span>
                 </div>
             </div>
@@ -197,155 +195,93 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="CAShapeLayer"><a href="#CAShapeLayer" class="headerlink" title="CAShapeLayer"></a>CAShapeLayer</h2><p><br><br>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。可以指定颜色、线宽等属性，用CGPath 来定义想要绘制的图形，最后 CAShapeLayer 就会自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的 CALyer 的内容中绘制一个路径（<code>- drawLayer: inContext:</code>），相比之下，使用 CAShapeLayer 有以下一些优点：    </p>
+                <p>其实有时间还是需要多补充下基础知识的，毕竟步子跨太大会扯到裆。</p>
+<h1 id="load"><a href="#load" class="headerlink" title="- load"></a>- load</h1><blockquote>
+<p>Invoked whenever a class or category is added to the Objective-C runtime; implement this method to perform class-specific behavior upon loading.</p>
+</blockquote>
+<p>这是 Apple Doc 上对 - load 的描述。（强行秀一波翻译，其实我是个英语渣，最好还是看英文吧）当一个类或分类被添加到运行时的时候会触发这个方法；实现这个方法可以在加载这个类时执行一些特定的操作。</p>
+<p>写下 demo 看看这个方法在继承树上是什么执行顺序，虽然文档里有写。</p>
+<blockquote>
 <ul>
-<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
-<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。</li>
-<li>不会被图层边界剪裁掉。一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉.</li>
-<li>不会出现像素化。当你给 CAShapeLayer 做 3D 变换时，它不像一个有寄宿图的普通图层一样变得像素化。</li>
+<li>A class’s +load method is called after all of its superclasses’ +load methods. </li>
+<li>A category +load method is called after the class’s own +load method.</li>
 </ul>
-<p><br></p>
-<h4 id="主要属性"><a href="#主要属性" class="headerlink" title="主要属性"></a>主要属性</h4><p><br></p>
-<pre>
-// CAShapeLayer 绘制的路径
-@property(nullable) CGPathRef path;
-
-//路径中的填充颜色
-@property(nullable) CGColorRef fillColor;
-
-//填充规则
-@property(copy) NSString *fillRule;
-
-//画笔颜色（路径的颜色，边框颜色）
-@property(nullable) CGColorRef strokeColor;
-
-//这是一组范围值，路径绘制开始和结束的范围（0 -> 1）
-@property CGFloat strokeStart;
-@property CGFloat strokeEnd;
-
-//设置虚线显示的起点距离，设置为8，则显示长度8之后的线
-@property CGFloat lineDashPhase;
-//设置虚线线段的长度和空格的长度，@[@20,@30,@40,@50],画20空30画40空50
-@property(nullable, copy) NSArray<nsnumber *=""> *lineDashPattern;
-
-//以下属性参见 UIBezierPath 的介绍
-@property CGFloat lineWidth;
-@property CGFloat miterLimit;
-@property(copy) NSString *lineCap;
-@property(copy) NSString *lineJoin;
-
-</nsnumber></pre>
-
-<p><br></p>
-<h4 id="Show-You-Code"><a href="#Show-You-Code" class="headerlink" title="Show You Code"></a>Show You Code</h4><p><br></p>
-<p>先上本 Demo 截图。</p>
-<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo.png" alt="效果图"></p>
-<p>1.使用 CAShapeLayer 绘制一个圆角矩形：</p>
-<pre>
-
-#pragma mark Getter
-
-- (UIBezierPath *)path {
-    if (!_path) {
-        _path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 100.f, CGRectGetWidth([UIScreen mainScreen].bounds), 44.f) cornerRadius:22.f];
-    }
-    return _path;
-}
-
-- (CAShapeLayer *)shapeLayer {
-    if (!_shapeLayer) {
-        _shapeLayer = ({
-            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
-            layer.path        = self.path.CGPath;
-            layer.lineWidth   = 2.f;
-            layer.strokeColor = [UIColor greenColor].CGColor;
-            layer.fillColor   = [UIColor redColor].CGColor;
-            // strokeStart 绘制起点 strokeEnd 绘制终点  取值是 0-1
-            layer.strokeStart = 0;
-            layer.strokeEnd   = 0.7f;
-            layer;
-        });
-    }
-    return _shapeLayer;
-}
-</pre>
-
-<p>2.绘制一根不同间隔，不同长度的虚线</p>
-<pre>
-
-#pragma mark Getter
-
-- (UIBezierPath *)dashLinePath {
-    if (!_dashLinePath) {
-        _dashLinePath = ({
-            UIBezierPath *path = [UIBezierPath bezierPath];
-            [path moveToPoint:CGPointMake(20.f, 180.f)];
-            [path addLineToPoint:CGPointMake(CGRectGetWidth(self.frame) - 20.f, 180.f)];
-            path;
-        });
-    }
-    return _dashLinePath;
-}
-
-- (CAShapeLayer *)dashLineShapeLayer {
-    if (!_dashLineShapeLayer) {
-        _dashLineShapeLayer = ({
-            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
-            layer.path = self.dashLinePath.CGPath;
-            layer.lineDashPhase   = 8;
-            layer.lineDashPattern = @[@10, @20, @30, @60];
-            layer.strokeColor = [UIColor greenColor].CGColor;
-            layer.lineWidth   = 2.f;
-            layer;
-        });
-    }
-    return _dashLineShapeLayer;
-}
-</pre>   
-
-<p>lineDashPhase：绘制的虚线显示在屏幕上的起点，比如设置为10，则从整条线的 10 的位置开始才显示。<br>lineDashPattern：绘制虚线的格式，@[@10, @20, @30, @60],画10个点的线空20个点，以此类推。如果只设置一个元素，则线和间隔宽度相等。</p>
-<p>3.使用 fillRule 属性，实现两个区域的取非</p>
-<pre>
-
-# pragma mark Getter
-
-- (UIBezierPath *)fillRulePath {
-    if (!_fillRulePath) {
-        //这里先绘制哪个 Path 效果一样
-        _fillRulePath = [UIBezierPath bezierPathWithRect:CGRectMake(20.f, 200.f, CGRectGetWidth(self.frame)-40.f, 200.f)];
-        [_fillRulePath appendPath:[UIBezierPath bezierPathWithArcCenter:CGPointMake(CGRectGetWidth(self.frame)/2.f, 300.f) radius:50.f startAngle:0 endAngle:2*M_PI clockwise:NO]];
-    }
-    return _fillRulePath;
-}
-
-- (CAShapeLayer *)fillRuleShapeLayer {
-    if (!_fillRuleShapeLayer) {
-        _fillRuleShapeLayer = ({
-            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
-            layer.path = self.fillRulePath.CGPath;
-            layer.fillRule = kCAFillRuleEvenOdd;
-            layer.fillColor = [UIColor yellowColor].CGColor;
-            layer;
-        });
-    }
-    return _fillRuleShapeLayer;
-}
-
-</pre>
-
-<p>填充规则介绍：</p>
-<p>kCAFillRuleNonZero：默认值，非零规则，当这个点作任意方法的射线，然后看射线和路径的交点方向，选择一个作为基准方向，如果方向一致则加1，方向不一致则减1。为0时，点不在路径内。      </p>
-<p>kCAFillRuleEvenOdd：奇偶规则，当这个点作任意方法的射线，射线和路径的交点数量是奇数则认为点在内部。</p>
-<p> <img src="http://7xtamz.com1.z0.glb.clouddn.com/CAShapeLayerDemo-1.png" alt="fillRule"></p>
-<p>如上图（不知道找什么画图软件好，就用了 Sketch ），如果使用 kCAFillRuleNonZero 规则，则该射线和两条路径相交，并且交点方向都是逆时针，所以点在路径内。<br>如果使用 kCAFillRuleEvenOdd 规则，则该射线与路径有两个交点，为偶数，所以该点不在范围内。</p>
-<p><br></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><br><br>CAShapeLayer 基本属性不多，主要还是需要通过不断的实践，结合贝塞尔曲线来实现不同的需求。</p>
-<p><br></p>
-<h4 id="代码及相关资料"><a href="#代码及相关资料" class="headerlink" title="代码及相关资料"></a>代码及相关资料</h4><p><br></p>
+</blockquote>
+<p>先执行所有的父类的 - load 方法，分类的 - load 方法将会是最后执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// Parent.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Parent load&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Child load&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child+Category.m</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    NSLog(@&quot;Child Category load&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/1155692-90f84ff2d315b242.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="load"></p>
+<p>有兴趣的朋友可以自己去试试。</p>
+<h1 id="initialize"><a href="#initialize" class="headerlink" title="- initialize"></a>- initialize</h1><blockquote>
+<p>Initializes the class before it receives its first message.</p>
+</blockquote>
+<p>在收到第一条消息之前初始化类，也就是说你 #import 了这个类，但是没有用到这个类，就不会初始化它（有点懒加载的味道）。</p>
+<blockquote>
+<p>The runtime sends the initialize message to classes in a thread-safe manner. Superclasses receive this message before their subclasses. The superclass implementation may be called multiple times if subclasses do not implement initialize—the runtime will call the inherited implementation—or if subclasses explicitly call [super initialize].</p>
+</blockquote>
+<p>runtime 会线程安全地发送  initialize 消息给类。父类会比它的子类先收到这个消息。如果子类没有实现 initialize 这个方法，那么父类的 initialize 方法会被执行多次 —— 否则 runtime 将会调用子类实现 —— 除非子类明确调用 [super initialize] 。</p>
+<p>demo time。动手 ba 一 ba 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// Parent.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Parent initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Child initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Child+Category.m</span><br><span class="line">+ (void)initialize &#123;</span><br><span class="line">    NSLog(@&quot;Child Category initialize&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// main.m</span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        [Child new];</span><br><span class="line">        [Child new];</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/1155692-27de6a0be9be5a39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="initialize"></p>
+<p>结果中可以看出分类中的 initialize 会覆盖掉类中 initialize 方法，而父类的 initialize 方法仍旧会被执行。<br>接下来我们把子类中的 initialize 方法注释掉，重新跑一遍看看结果。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1155692-0f97c07360c8ea71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="initialize"></p>
+<p>发现父类的 initialize 方法被调用了两遍，然后我们看文档中的这段话。</p>
+<blockquote>
+<p>The runtime sends initialize to each class in a program just before the class, or any class that inherits from it, is sent its first message from within the program. </p>
+</blockquote>
+<p>这段话的大致意思就是说 runtime 会发送 initialize 给这个类以及这个类的所有父类，因此当我们使用 Child 的时候，runtime 会先发送 initialize 消息给 Parent ，然后发送给 Child ，但是 Child 没有实现 initialize 方法，所以就再次执行了 Parent 的 initialize 。<br>所以如果使用一个 Grandson （没有实现 initialize），则 Parent 的 initialize 将会被调用三次。</p>
+<p>有时候我们可能需要这样的效果，但是大多数时间我们是不需要这样的，因此我们可以在实现 initialize 时，这样写来避免这个问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (void)initialize &#123;</span><br><span class="line">    if (self == [ClassName self]) &#123;</span><br><span class="line">         // ... do the initialization ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="用处（欢迎补充）"><a href="#用处（欢迎补充）" class="headerlink" title="用处（欢迎补充）"></a>用处（欢迎补充）</h1><ul>
+<li>load<br>在 load 中实现Method Swizzling：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+ (void)load &#123;</span><br><span class="line">    Method a = class_getInstanceMethod([self class], @selector(logA));</span><br><span class="line">    Method b = class_getInstanceMethod([self class], @selector(logB));</span><br><span class="line">    method_exchangeImplementations(a, b);</span><br><span class="line">&#125;</span><br><span class="line">- (void)logA &#123;</span><br><span class="line">    NSLog(@&quot;A&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)logB &#123;</span><br><span class="line">    NSLog(@&quot;B&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><a href="https://github.com/KentonYu/SubLayersDemo" target="_blank" rel="external">Code</a>   </li>
-<li><a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/" target="_blank" rel="external">使用 CAShapeLayer 优化 drawRect 的一个例子</a> </li>
+<li>initialize<br>初始化一些静态对象</li>
 </ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// static NSArray *array = @[@1, @2]; //这样是不行滴，编译器不接受，只有数据类型才能这样哦</span><br><span class="line">static NSArray *array;</span><br><span class="line">+ (void)initialize &#123; </span><br><span class="line">    if (self == [Parent class]) &#123; </span><br><span class="line">        array = @[@1, @2];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">load</th>
+<th style="text-align:center">initialize</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>调用时机</td>
+<td style="text-align:center">类被添加到 runtime 时</td>
+<td style="text-align:center">类第一次接收到消息之前</td>
+</tr>
+<tr>
+<td>调用顺序</td>
+<td style="text-align:center">父类-&gt;子类-&gt;分类</td>
+<td style="text-align:center">父类 -&gt; 子类（分类）</td>
+</tr>
+<tr>
+<td>调用次数</td>
+<td style="text-align:center">1次</td>
+<td style="text-align:center">多次</td>
+</tr>
+<tr>
+<td>显式调用父类</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td>分类中的实现</td>
+<td style="text-align:center">类和分类都执行</td>
+<td style="text-align:center">覆盖类的实现，执行分类的实现</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td style="text-align:center">安全</td>
+<td style="text-align:center">安全</td>
+</tr>
+</tbody>
+</table>
+<p>上表主要就是这两个方法的特点，因为是线程安全的，所以在这两个方法尽量少执行复杂的操作，防止阻塞线程。</p>
+<p>以上就是我对这两个方法的描述，如有不对望指正，给个喜欢以示支持。</p>
 
                 
                 <hr>
@@ -354,13 +290,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/06/02/Ubuntu 上搭建 Shadowsocks/" data-toggle="tooltip" data-placement="top" title="Ubuntu 上搭建 Shadowsocks">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/05/06/记一次奇怪的面试经历/" data-toggle="tooltip" data-placement="top" title="记一次奇怪的面试经历">Next Post &rarr;</a>
+                            <a href="/2016/06/02/Ubuntu 上搭建 Shadowsocks/" data-toggle="tooltip" data-placement="top" title="Ubuntu 上搭建 Shadowsocks">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -369,9 +301,9 @@
                 <!--多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/05/16/CAShapeLayer 的简单介绍/"
-                        data-title="CAShapeLayer 的简单介绍"
-                        data-url="/2016/05/16/CAShapeLayer 的简单介绍/" >
+                        data-thread-key="2016/06/16/OC 的 load 和 initialize/"
+                        data-title="OC 的 load 和 initialize"
+                        data-url="/2016/06/16/OC 的 load 和 initialize/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->

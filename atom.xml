@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-06-02T04:13:35.000Z</updated>
+  <updated>2016-06-16T08:05:46.000Z</updated>
   <id>/</id>
   
   <author>
@@ -14,6 +14,115 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>OC 的 load 和 initialize</title>
+    <link href="/2016/06/16/OC%20%E7%9A%84%20load%20%E5%92%8C%20initialize/"/>
+    <id>/2016/06/16/OC 的 load 和 initialize/</id>
+    <published>2016-06-16T08:05:01.000Z</published>
+    <updated>2016-06-16T08:05:46.000Z</updated>
+    
+    <content type="html">&lt;p&gt;其实有时间还是需要多补充下基础知识的，毕竟步子跨太大会扯到裆。&lt;/p&gt;
+&lt;h1 id=&quot;load&quot;&gt;&lt;a href=&quot;#load&quot; class=&quot;headerlink&quot; title=&quot;- load&quot;&gt;&lt;/a&gt;- load&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Invoked whenever a class or category is added to the Objective-C runtime; implement this method to perform class-specific behavior upon loading.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这是 Apple Doc 上对 - load 的描述。（强行秀一波翻译，其实我是个英语渣，最好还是看英文吧）当一个类或分类被添加到运行时的时候会触发这个方法；实现这个方法可以在加载这个类时执行一些特定的操作。&lt;/p&gt;
+&lt;p&gt;写下 demo 看看这个方法在继承树上是什么执行顺序，虽然文档里有写。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;A class’s +load method is called after all of its superclasses’ +load methods. &lt;/li&gt;
+&lt;li&gt;A category +load method is called after the class’s own +load method.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;先执行所有的父类的 - load 方法，分类的 - load 方法将会是最后执行。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;// Parent.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)load &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Parent load&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// Child.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)load &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Child load&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// Child+Category.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)load &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Child Category load&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/1155692-90f84ff2d315b242.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;load&quot;&gt;&lt;/p&gt;
+&lt;p&gt;有兴趣的朋友可以自己去试试。&lt;/p&gt;
+&lt;h1 id=&quot;initialize&quot;&gt;&lt;a href=&quot;#initialize&quot; class=&quot;headerlink&quot; title=&quot;- initialize&quot;&gt;&lt;/a&gt;- initialize&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Initializes the class before it receives its first message.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在收到第一条消息之前初始化类，也就是说你 #import 了这个类，但是没有用到这个类，就不会初始化它（有点懒加载的味道）。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The runtime sends the initialize message to classes in a thread-safe manner. Superclasses receive this message before their subclasses. The superclass implementation may be called multiple times if subclasses do not implement initialize—the runtime will call the inherited implementation—or if subclasses explicitly call [super initialize].&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;runtime 会线程安全地发送  initialize 消息给类。父类会比它的子类先收到这个消息。如果子类没有实现 initialize 这个方法，那么父类的 initialize 方法会被执行多次 —— 否则 runtime 将会调用子类实现 —— 除非子类明确调用 [super initialize] 。&lt;/p&gt;
+&lt;p&gt;demo time。动手 ba 一 ba 。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;// Parent.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)initialize &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Parent initialize&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// Child.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)initialize &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Child initialize&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// Child+Category.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)initialize &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;Child Category initialize&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;// main.m&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;int main(int argc, const char * argv[]) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    @autoreleasepool &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [Child new];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [Child new];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return 0;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/1155692-27de6a0be9be5a39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;initialize&quot;&gt;&lt;/p&gt;
+&lt;p&gt;结果中可以看出分类中的 initialize 会覆盖掉类中 initialize 方法，而父类的 initialize 方法仍旧会被执行。&lt;br&gt;接下来我们把子类中的 initialize 方法注释掉，重新跑一遍看看结果。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/1155692-0f97c07360c8ea71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;initialize&quot;&gt;&lt;/p&gt;
+&lt;p&gt;发现父类的 initialize 方法被调用了两遍，然后我们看文档中的这段话。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The runtime sends initialize to each class in a program just before the class, or any class that inherits from it, is sent its first message from within the program. &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这段话的大致意思就是说 runtime 会发送 initialize 给这个类以及这个类的所有父类，因此当我们使用 Child 的时候，runtime 会先发送 initialize 消息给 Parent ，然后发送给 Child ，但是 Child 没有实现 initialize 方法，所以就再次执行了 Parent 的 initialize 。&lt;br&gt;所以如果使用一个 Grandson （没有实现 initialize），则 Parent 的 initialize 将会被调用三次。&lt;/p&gt;
+&lt;p&gt;有时候我们可能需要这样的效果，但是大多数时间我们是不需要这样的，因此我们可以在实现 initialize 时，这样写来避免这个问题。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;+ (void)initialize &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    if (self == [ClassName self]) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;         // ... do the initialization ...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h1 id=&quot;用处（欢迎补充）&quot;&gt;&lt;a href=&quot;#用处（欢迎补充）&quot; class=&quot;headerlink&quot; title=&quot;用处（欢迎补充）&quot;&gt;&lt;/a&gt;用处（欢迎补充）&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;load&lt;br&gt;在 load 中实现Method Swizzling：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;+ (void)load &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Method a = class_getInstanceMethod([self class], @selector(logA));&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Method b = class_getInstanceMethod([self class], @selector(logB));&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    method_exchangeImplementations(a, b);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (void)logA &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;A&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (void)logB &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    NSLog(@&amp;quot;B&amp;quot;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;initialize&lt;br&gt;初始化一些静态对象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;// static NSArray *array = @[@1, @2]; //这样是不行滴，编译器不接受，只有数据类型才能这样哦&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;static NSArray *array;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ (void)initialize &amp;#123; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    if (self == [Parent class]) &amp;#123; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        array = @[@1, @2];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h1 id=&quot;小结&quot;&gt;&lt;a href=&quot;#小结&quot; class=&quot;headerlink&quot; title=&quot;小结&quot;&gt;&lt;/a&gt;小结&lt;/h1&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th style=&quot;text-align:center&quot;&gt;load&lt;/th&gt;
+&lt;th style=&quot;text-align:center&quot;&gt;initialize&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;调用时机&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;类被添加到 runtime 时&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;类第一次接收到消息之前&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;调用顺序&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;父类-&amp;gt;子类-&amp;gt;分类&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;父类 -&amp;gt; 子类（分类）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;调用次数&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;1次&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;多次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;显式调用父类&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;否&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;否&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;分类中的实现&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;类和分类都执行&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;覆盖类的实现，执行分类的实现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;线程安全&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;安全&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;安全&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;上表主要就是这两个方法的特点，因为是线程安全的，所以在这两个方法尽量少执行复杂的操作，防止阻塞线程。&lt;/p&gt;
+&lt;p&gt;以上就是我对这两个方法的描述，如有不对望指正，给个喜欢以示支持。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;其实有时间还是需要多补充下基础知识的，毕竟步子跨太大会扯到裆。&lt;/p&gt;
+&lt;h1 id=&quot;load&quot;&gt;&lt;a href=&quot;#load&quot; class=&quot;headerlink&quot; title=&quot;- load&quot;&gt;&lt;/a&gt;- load&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Invoke
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>Ubuntu 上搭建 Shadowsocks</title>
