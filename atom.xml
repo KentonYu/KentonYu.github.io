@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-07-03T13:57:40.000Z</updated>
+  <updated>2016-07-03T14:00:31.000Z</updated>
   <id>/</id>
   
   <author>
@@ -20,13 +20,13 @@
     <link href="/2016/07/03/CocoaPods%20%E9%A1%B9%E7%9B%AE%E2%80%9C%E6%A8%A1%E5%9D%97%E5%8C%96%E2%80%9D%E5%AE%9E%E6%88%98/"/>
     <id>/2016/07/03/CocoaPods 项目“模块化”实战/</id>
     <published>2016-07-03T13:05:01.000Z</published>
-    <updated>2016-07-03T13:57:40.000Z</updated>
+    <updated>2016-07-03T14:00:31.000Z</updated>
     
     <content type="html">&lt;p&gt;文题套用了现在系统设计中最火的词汇之一 —— 模块化，当然下文中的 “模块化” 只是杀鸡用牛刀了，不过在我的理解里大致意思差不多吧。   &lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;模块化设计是指在对一定范围内的不同功能或相同功能不同性能、不同规格的&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E4%BA%A7%E5%93%81&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;产品&lt;/a&gt;进行功能分析的基础上，划分并设计出一系列功能模块，通过模块的选择和组合可以构成不同的产品，以满足&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E5%B8%82%E5%9C%BA&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;市场&lt;/a&gt;的不同&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E9%9C%80%E6%B1%82&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;需求&lt;/a&gt;的设计方法。   —— WIKI&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/writer#/notebooks/2351958/notes/4567605/writing&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;完整文章的传送门&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/247ec798cce1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;完整文章的传送门&lt;/a&gt;&lt;/p&gt;
 </content>
     
     <summary type="html">
