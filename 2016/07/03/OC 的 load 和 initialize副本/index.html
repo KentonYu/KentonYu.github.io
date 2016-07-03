@@ -13,11 +13,11 @@
 
     <title>
         
-          About - KentonYu的博客 | KentonYu&#39;s Blog
+          CocoaPods 项目“模块化”实战 - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="/about/">
+    <link rel="canonical" href="/2016/07/03/OC 的 load 和 initialize副本/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -150,70 +150,129 @@
 
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    
+<!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1 style="color:#f4f4f4">About</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">Hey, this is KentonYu.</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+
+                    </div>
+                    <h1>CocoaPods 项目“模块化”实战</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by KentonYu on
+                        2016-07-03
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
-
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>文题套用了现在系统设计中最火的词汇之一 —— 模块化，当然下文中的 “模块化” 只是杀鸡用牛刀了，不过在我的理解里大致意思差不多吧。   </p>
+<blockquote>
+<p>模块化设计是指在对一定范围内的不同功能或相同功能不同性能、不同规格的<a href="http://wiki.mbalib.com/wiki/%E4%BA%A7%E5%93%81" target="_blank" rel="external">产品</a>进行功能分析的基础上，划分并设计出一系列功能模块，通过模块的选择和组合可以构成不同的产品，以满足<a href="http://wiki.mbalib.com/wiki/%E5%B8%82%E5%9C%BA" target="_blank" rel="external">市场</a>的不同<a href="http://wiki.mbalib.com/wiki/%E9%9C%80%E6%B1%82" target="_blank" rel="external">需求</a>的设计方法。   —— WIKI</p>
+</blockquote>
+<p><a href="http://www.jianshu.com/writer#/notebooks/2351958/notes/4567605/writing" target="_blank" rel="external">完整文章的传送门</a></p>
+
+                
+                <hr>
+
                 
 
-<!-- Chinese Version -->
-<div class="zh post-container">
-    <blockquote>
-<p>世界那么大，想出去看看</p>
-</blockquote>
-<hr>
-<hr>
-<h2 id="技能清单"><a href="#技能清单" class="headerlink" title="技能清单"></a>技能清单</h2><ul>
-<li>iOS开发：Objective-C / Xcode / Charles / SQLite / CocoaPods </li>
-<li>Web开发：ASP.NET MVC / Web API 2.0 / RESTful API 设计 / SQL Server / HTML / Bootstrap / Node.js</li>
-<li>其他：Git / MarkDown / PhotoShop  </li>
-</ul>
-<hr>
-<p>Contact Me: KentonYu@KentonYu.com</p>
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/16/OC 的 load 和 initialize/" data-toggle="tooltip" data-placement="top" title="OC 的 load 和 initialize">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+            
+                
+                <!--多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/07/03/OC 的 load 和 initialize副本/"
+                        data-title="CocoaPods 项目“模块化”实战"
+                        data-url="/2016/07/03/OC 的 load 和 initialize副本/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
 
-</div>
+                
 
+            </div>
 
+    <!-- Sidebar Container -->
 
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
+                <!-- Featured Tags -->
+<!--                -->
+<!--                <section>-->
+                    <!-- no hr -->
+<!--                    <h5><a href="/tags/">FEATURED TAGS</a></h5>-->
+<!--                    <div class="tags">-->
+<!--                        <a class="tag-link" href="/tags/CALayer/">CALayer<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Git/">Git<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Node-js/">Node.js<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Objective-C/">Objective-C<span class="tag-count">3</span></a><a class="tag-link" href="/tags/Socket-io/">Socket.io<span class="tag-count">1</span></a><a class="tag-link" href="/tags/SourceTree/">SourceTree<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Xcode/">Xcode<span class="tag-count">1</span></a><a class="tag-link" href="/tags/iOS/">iOS<span class="tag-count">8</span></a><a class="tag-link" href="/tags/日常/">日常<span class="tag-count">1</span></a><a class="tag-link" href="/tags/码字/">码字<span class="tag-count">2</span></a><a class="tag-link" href="/tags/读书笔记/">读书笔记<span class="tag-count">1</span></a><a class="tag-link" href="/tags/面试/">面试<span class="tag-count">1</span></a>-->
+<!--                    </div>-->
+<!--                </section>-->
+<!--                -->
 
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
 
-<!-- 多说评论框 start -->
-<div class="comment">
-    <div class="ds-thread"
-        data-thread-key="about/index.html"
-        data-title="About"
-        data-url="/about/index.html" >
+                    
+                        <li><a href="http://blog.intmaxdev.com">intMax</a></li>
+                    
+                        <li><a href="https://seewhy.me">闲池阁</a></li>
+                    
+                        <li><a href="http://bowen.ml">bowen</a></li>
+                    
+                        <li><a href="http://www.wwsnc.com">萝卜头</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
     </div>
-</div>
+</article>
+
+
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
     // dynamic User by Hux
@@ -237,164 +296,40 @@
 
 
 
-            </div>
-    <!-- Sidebar Container -->
-            <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                            
-                            <a href="/tags/#iOS" title="iOS" rel="8">iOS</a>
-                            
-                        
-                            
-                            <a href="/tags/#CALayer" title="CALayer" rel="1">CALayer</a>
-                            
-                        
-                            
-                            <a href="/tags/#Objective-C" title="Objective-C" rel="3">Objective-C</a>
-                            
-                        
-                            
-                            <a href="/tags/#读书笔记" title="读书笔记" rel="1">读书笔记</a>
-                            
-                        
-                            
-                            <a href="/tags/#码字" title="码字" rel="2">码字</a>
-                            
-                        
-                            
-                            <a href="/tags/#Node.js" title="Node.js" rel="1">Node.js</a>
-                            
-                        
-                            
-                            <a href="/tags/#Socket.io" title="Socket.io" rel="1">Socket.io</a>
-                            
-                        
-                            
-                            <a href="/tags/#日常" title="日常" rel="1">日常</a>
-                            
-                        
-                            
-                            <a href="/tags/#Xcode" title="Xcode" rel="1">Xcode</a>
-                            
-                        
-                            
-                            <a href="/tags/#Git" title="Git" rel="1">Git</a>
-                            
-                        
-                            
-                            <a href="/tags/#SourceTree" title="SourceTree" rel="1">SourceTree</a>
-                            
-                        
-                            
-                            <a href="/tags/#面试" title="面试" rel="1">面试</a>
-                            
-                        
-                    </div>
-                </section>
-                
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-
-                        
-                            <img src="/img/avatar.png" />
-                        
-
-                        
-                            <p>To Be A Full Stack Developer !</p>
-                        
-
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                                <li>
-                                    <a target="_blank"  href="https://github.com/KentonYu">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="http://www.jianshu.com/users/1c19630299ce/latest_articles">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa  fa-stack-1x fa-inverse">简</i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                    
-                            
-                            
-
-                            
-                                <li>
-                                    <a target="_blank" href="http://weibo.com/2696076574">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-
-                            
-
-                            
-                            
-                             
-                                <li>
-                                    <a href="/atom.xml">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                        </ul>
-                    </div>
-                </section>
-                
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://blog.intmaxdev.com">intMax</a></li>
-                    
-                        <li><a href="https://seewhy.me">闲池阁</a></li>
-                    
-                        <li><a href="http://bowen.ml">bowen</a></li>
-                    
-                        <li><a href="http://www.wwsnc.com">萝卜头</a></li>
-                    
-                </ul>
-                
-            </div>
-        
-    </div>
-</div>
 
 
     <!-- Footer -->

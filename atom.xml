@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-06-16T08:09:55.000Z</updated>
+  <updated>2016-07-03T13:57:40.000Z</updated>
   <id>/</id>
   
   <author>
@@ -14,6 +14,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CocoaPods 项目“模块化”实战</title>
+    <link href="/2016/07/03/OC%20%E7%9A%84%20load%20%E5%92%8C%20initialize%E5%89%AF%E6%9C%AC/"/>
+    <id>/2016/07/03/OC 的 load 和 initialize副本/</id>
+    <published>2016-07-03T13:05:01.000Z</published>
+    <updated>2016-07-03T13:57:40.000Z</updated>
+    
+    <content type="html">&lt;p&gt;文题套用了现在系统设计中最火的词汇之一 —— 模块化，当然下文中的 “模块化” 只是杀鸡用牛刀了，不过在我的理解里大致意思差不多吧。   &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;模块化设计是指在对一定范围内的不同功能或相同功能不同性能、不同规格的&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E4%BA%A7%E5%93%81&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;产品&lt;/a&gt;进行功能分析的基础上，划分并设计出一系列功能模块，通过模块的选择和组合可以构成不同的产品，以满足&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E5%B8%82%E5%9C%BA&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;市场&lt;/a&gt;的不同&lt;a href=&quot;http://wiki.mbalib.com/wiki/%E9%9C%80%E6%B1%82&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;需求&lt;/a&gt;的设计方法。   —— WIKI&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/writer#/notebooks/2351958/notes/4567605/writing&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;完整文章的传送门&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;文题套用了现在系统设计中最火的词汇之一 —— 模块化，当然下文中的 “模块化” 只是杀鸡用牛刀了，不过在我的理解里大致意思差不多吧。   &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;模块化设计是指在对一定范围内的不同功能或相同功能不同性能、不同规格的&lt;a href=&quot;http
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>OC 的 load 和 initialize</title>
