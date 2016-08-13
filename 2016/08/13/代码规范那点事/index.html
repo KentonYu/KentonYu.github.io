@@ -205,16 +205,54 @@
 </ol>
 <p>代码规范想必有部分同学会把它和个人习惯混为一谈，其实代码规范和个人习惯压根不是一个层面上的东西。代码规范针对的是团队，而个人习惯仅仅针对你自己。制定代码规范的目的是为了提高团队协作的效率以及代码的可维护性。因此，个人习惯和代码规范擦出火花的时候，很明显你应该遵守规范而不是你自己所谓的那些习惯。当然规范并不是一尘不变的，当产生火花的时候完全可以提议修改代码规范，但是在规范修改之前，你必须要遵守旧的规范。因为团队利益大于一切。     </p>
 <p>举个栗子，<br>A 习惯写 single line 的条件语句。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (a) return;    </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">而 B 自己的习惯是这样，并且 B 还会使用一些格式化代码（Xcode 的 clang-format，js 的 jsFormat 等）的插件来提升开发效率。</span><br></pre></td></tr></table></figure>
-<p>if (a) {<br>    return ;<br>}   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">那么当 B 去修改 A 的代码时，看着不顺眼，就会把 A 的所有 single line 都消灭掉，因为 B 有插件，秒秒钟解决战斗。这就会导致 A 和 B 冲突的概率大大增加，甚至会造成很多不必要代码合并的成本。想必大家看完这个栗子应该很清楚一个团队制定代码规范的重要性了。 </span><br><span class="line"></span><br><span class="line">一个团队的代码规范首先需要制定一份文档，当出现任何风格冲突的时候，以文档为准。因此团队在开始之初就制定了[一份规范](https://github.com/KentonYu/ProgrammingStandard_OC)。     </span><br><span class="line"></span><br><span class="line">制定规范文档这是第一步，在这个基础上能不能再提高些效率呢？</span><br><span class="line">大多数 iOS 开发者应该都知道 Xcode 的插件 [Clang Format](https://github.com/travisjeffery/ClangFormat-Xcode)。它是基于 clang-format 命令行工具的一个 Xcode 插件。      </span><br><span class="line">&gt; clang-format是基于clang的一个命令行工具。这个工具能够自动化格式C/C++/Obj-C代码，支持多种代码风格：Google, Chromium, LLVM, Mozilla, WebKit，也支持自定义风格（通过编写.clang-format文件）。     </span><br><span class="line"></span><br><span class="line">我们可以通过自定义 .clang-format 文件来实现自定义代码风格。这是目前使用的一份[配置文件](https://github.com/KentonYu/spacecommander/blob/master/.clang-format)。具体每项参数可以查阅[这份文档](http://clang.llvm.org/docs/ClangFormatStyleOptions.html)。      </span><br><span class="line"></span><br><span class="line">通过这个插件已经可以实现通过快捷键或者在文件保存时格式化代码了，其实做到这一步已经节省了很多开发成本，但是这种方案也是存在一定缺陷。如果通过快捷键去格式化，容易遗漏；保存的时候去格式化，对于像我这样时不时会按 Command + S 的人来说，Xcode 会变得稍显卡顿。那么有没有现成的方案可以进一步优化体验？既然之前的方案有问题，就有必要继续寻找更优解。    </span><br><span class="line"></span><br><span class="line">一轮 Google 之后，[spacecommander](https://github.com/square/spacecommander) 貌似符合大部分需求。它利用 [Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) 可以在 commit 之前验证代码风格符合规范，只有符合规范的代码才允许提交，同时也提供 Shell 脚本来格式化一个文件，或者一整个 Git 仓库。我猜想通过 spacecommander ，可以在不改变自己编码风格（当然只限于格式，具体的命名规范，注释规范还得参照具体规范文档）的前题下，可以实现代码风格统一。因为你开发过程中可以按照个人习惯来，commit 之前使用 spacecommander 提供的脚本对文件进行格式化。这样只需要所有开发人员统一 spacecommander 的 .clangformat 配置文件就可以了。看到这里是不是发现这个轮子是不是刚好命中痛点。那么接下来我就简单描述下使用步骤：      </span><br><span class="line"></span><br><span class="line">1. fork [spacecommander](https://github.com/square/spacecommander)；     </span><br><span class="line">2. 修改其中的 .clangformat 文件以满足自己团队的编码风格，当然有能力也可以修改其中的 Shell 脚本，自定义一些功能；    </span><br><span class="line">3. clone 到本地一个较为安全的目录（别一不小心删掉了...）；    </span><br><span class="line">4. 为了之后方便使用，可以把几个脚本对应设置一个 alias；   </span><br><span class="line">5. cd 到项目根目录，执行 clangformatinit ，进行初始化（添加了一个指向本地 spacecommander 仓库的 .clangformat 替身以及在 .git/hooks 中的 pre-commit， hook 相关的可以参见 [Pro Git](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)）</span><br><span class="line">6. 在提交代码之前，spacecommander 都会通过 pre-commit 这个 Hook 来校验修改过的文件，校验通过才允许提交。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如何设置 alias 简化命令</span><br></pre></td></tr></table></figure>
-<p>// 使用zsh 则修改 ~/.zshrc；bash 则修改~/.bash_profile<br>// 初始化<br>alias clangformatinit=”/Users/SpaceCommander_iOS/setup-repo.sh”<br>// 格式化对应文件<br>alias clangformat=”/Users/SpaceCommander_iOS/format-objc-file.sh”<br>// 格式化整个仓库<br>alias clangformatall=”/Users/SpaceCommander_iOS/format-objc-files-in-repo.sh    </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果需要 spacecommander 忽略某个目录下的文件的格式，则可以通过修改 spacecommander/lib/common-lib.sh 脚本来实现。默认它已经忽略了 Pods 和 Carthage 目录。</span><br></pre></td></tr></table></figure>
-<p>// common-lib.sh 简化版</p>
-<p>function objc_files_to_format() {<br>    optional_base_sha=”$1”<br>    directories_to_check<br>    files=$(git diff –cached –name-only $optional_base_sha –diff-filter=ACM – $locations_to_diff | grep -e ‘.m$’ -e ‘.mm$’ -e ‘.h$’ -e ‘.hh$’)<br>    directories_to_ignore<br>    echo “$files” | grep -v ‘Pods/‘ | grep -v ‘Carthage/‘ &gt;&amp;1<br>}</p>
-<p>function all_valid_objc_files_in_repo() {<br>    directories_to_check<br>    files=$(git ls-tree –name-only –full-tree -r HEAD – $locations_to_diff | grep -e ‘.m$’ -e ‘.mm$’ -e ‘.h$’ -e ‘.hh$’)<br>    directories_to_ignore<br>    echo “$files” | grep -v ‘Pods/‘ | grep -v ‘Carthage/‘ &gt;&amp;1<br>}    </p>
-<p>```</p>
-<p>就此初步解决了 iOS 开发的代码风格问题 ———— 一份代码规范以及自定义的 spacecommander。    </p>
+<pre><code>if (a) return;
+</code></pre><p>而 B 自己的习惯是这样，并且 B 还会使用一些格式化代码（Xcode 的 clang-format，js 的 jsFormat 等）的插件来提升开发效率。</p>
+<pre><code>if (a) {
+    return ;
+}
+</code></pre><p>那么当 B 去修改 A 的代码时，看着不顺眼，就会把 A 的所有 single line 都消灭掉，因为 B 有插件，秒秒钟解决战斗。这就会导致 A 和 B 冲突的概率大大增加，甚至会造成很多不必要代码合并的成本。想必大家看完这个栗子应该很清楚一个团队制定代码规范的重要性了。 </p>
+<p>一个团队的代码规范首先需要制定一份文档，当出现任何风格冲突的时候，以文档为准。因此团队在开始之初就制定了<a href="https://github.com/KentonYu/ProgrammingStandard_OC" target="_blank" rel="external">一份规范</a>。     </p>
+<p>制定规范文档这是第一步，在这个基础上能不能再提高些效率呢？<br>大多数 iOS 开发者应该都知道 Xcode 的插件 <a href="https://github.com/travisjeffery/ClangFormat-Xcode" target="_blank" rel="external">Clang Format</a>。它是基于 clang-format 命令行工具的一个 Xcode 插件。      </p>
+<blockquote>
+<p>clang-format是基于clang的一个命令行工具。这个工具能够自动化格式C/C++/Obj-C代码，支持多种代码风格：Google, Chromium, LLVM, Mozilla, WebKit，也支持自定义风格（通过编写.clang-format文件）。     </p>
+</blockquote>
+<p>我们可以通过自定义 .clang-format 文件来实现自定义代码风格。这是目前使用的一份<a href="https://github.com/KentonYu/spacecommander/blob/master/.clang-format" target="_blank" rel="external">配置文件</a>。具体每项参数可以查阅<a href="http://clang.llvm.org/docs/ClangFormatStyleOptions.html" target="_blank" rel="external">这份文档</a>。      </p>
+<p>通过这个插件已经可以实现通过快捷键或者在文件保存时格式化代码了，其实做到这一步已经节省了很多开发成本，但是这种方案也是存在一定缺陷。如果通过快捷键去格式化，容易遗漏；保存的时候去格式化，对于像我这样时不时会按 Command + S 的人来说，Xcode 会变得稍显卡顿。那么有没有现成的方案可以进一步优化体验？既然之前的方案有问题，就有必要继续寻找更优解。    </p>
+<p>一轮 Google 之后，<a href="https://github.com/square/spacecommander" target="_blank" rel="external">spacecommander</a> 貌似符合大部分需求。它利用 <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks" target="_blank" rel="external">Git Hooks</a> 可以在 commit 之前验证代码风格符合规范，只有符合规范的代码才允许提交，同时也提供 Shell 脚本来格式化一个文件，或者一整个 Git 仓库。我猜想通过 spacecommander ，可以在不改变自己编码风格（当然只限于格式，具体的命名规范，注释规范还得参照具体规范文档）的前题下，可以实现代码风格统一。因为你开发过程中可以按照个人习惯来，commit 之前使用 spacecommander 提供的脚本对文件进行格式化。这样只需要所有开发人员统一 spacecommander 的 .clangformat 配置文件就可以了。看到这里是不是发现这个轮子是不是刚好命中痛点。那么接下来我就简单描述下使用步骤：      </p>
+<ol>
+<li>fork <a href="https://github.com/square/spacecommander" target="_blank" rel="external">spacecommander</a>；     </li>
+<li>修改其中的 .clangformat 文件以满足自己团队的编码风格，当然有能力也可以修改其中的 Shell 脚本，自定义一些功能；    </li>
+<li>clone 到本地一个较为安全的目录（别一不小心删掉了…）；    </li>
+<li>为了之后方便使用，可以把几个脚本对应设置一个 alias；   </li>
+<li>cd 到项目根目录，执行 clangformatinit ，进行初始化（添加了一个指向本地 spacecommander 仓库的 .clangformat 替身以及在 .git/hooks 中的 pre-commit， hook 相关的可以参见 <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks" target="_blank" rel="external">Pro Git</a>）</li>
+<li>在提交代码之前，spacecommander 都会通过 pre-commit 这个 Hook 来校验修改过的文件，校验通过才允许提交。</li>
+</ol>
+<p>如何设置 alias 简化命令</p>
+<pre><code>// 使用zsh 则修改 ~/.zshrc；bash 则修改~/.bash_profile
+// 初始化
+alias clangformatinit=&quot;/Users/SpaceCommander_iOS/setup-repo.sh&quot;
+// 格式化对应文件
+alias clangformat=&quot;/Users/SpaceCommander_iOS/format-objc-file.sh&quot;
+// 格式化整个仓库
+alias clangformatall=&quot;/Users/SpaceCommander_iOS/format-objc-files-in-repo.sh
+</code></pre><p>如果需要 spacecommander 忽略某个目录下的文件的格式，则可以通过修改 spacecommander/lib/common-lib.sh 脚本来实现。默认它已经忽略了 Pods 和 Carthage 目录。</p>
+<pre><code>// common-lib.sh 简化版
+
+function objc_files_to_format() {
+    optional_base_sha=&quot;$1&quot;
+    directories_to_check
+    files=$(git diff --cached --name-only $optional_base_sha --diff-filter=ACM -- $locations_to_diff | grep -e &apos;\.m$&apos; -e &apos;\.mm$&apos; -e &apos;\.h$&apos; -e &apos;\.hh$&apos;)
+    directories_to_ignore
+    echo &quot;$files&quot; | grep -v &apos;Pods/&apos; | grep -v &apos;Carthage/&apos; &gt;&amp;1
+}
+
+function all_valid_objc_files_in_repo() {
+    directories_to_check
+    files=$(git ls-tree --name-only --full-tree -r HEAD -- $locations_to_diff | grep -e &apos;\.m$&apos; -e &apos;\.mm$&apos; -e &apos;\.h$&apos; -e &apos;\.hh$&apos;)
+    directories_to_ignore
+    echo &quot;$files&quot; | grep -v &apos;Pods/&apos; | grep -v &apos;Carthage/&apos; &gt;&amp;1
+}
+</code></pre><p>就此初步解决了 iOS 开发的代码风格问题 ———— 一份代码规范以及自定义的 spacecommander。    </p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这个问题看似有点微不足道，但的确花了毛一天的时间，才找到了较为合适的解决方案。但是在我看来是很值的。不仅能减少后续开发维护过程中由于代码风格引起的麻烦（感谢 spacecommander 这个轮子），而且在调研的过程中，也接触到了一些新的知识，比如 Shell 脚本语言。所以我很喜欢去干这种事情 🙄🙄。      </p>
 <p>有其它的解决方案，欢迎分享 🖐🖐</p>
 
