@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-08-13T16:29:07.000Z</updated>
+  <updated>2016-08-13T16:30:41.000Z</updated>
   <id>/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="/2016/08/13/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E9%82%A3%E7%82%B9%E4%BA%8B/"/>
     <id>/2016/08/13/代码规范那点事/</id>
     <published>2016-08-13T13:05:01.000Z</published>
-    <updated>2016-08-13T16:29:07.000Z</updated>
+    <updated>2016-08-13T16:30:41.000Z</updated>
     
     <content type="html">&lt;p&gt;最近这个月，从制作 CocoaPods 私有库，到搭建 Git 服务器，大多数时间都花在了调研和试错上。不过调研试错这个事总是能让你感觉到自己懂的只是皮毛这个事实（所以当你觉得天下无敌的时候那就去调研，TA 会让你爆棚的自信心损失殆尽 💔💔）。以下文字就先记录下关于团队统一代码风格这件事。    &lt;/p&gt;
 &lt;h2 id=&quot;正文&quot;&gt;&lt;a href=&quot;#正文&quot; class=&quot;headerlink&quot; title=&quot;正文&quot;&gt;&lt;/a&gt;正文&lt;/h2&gt;&lt;p&gt;对于团队统一代码风格的好处想必大家都应该清楚，以下我就罗列几点相对比较重要的：     &lt;/p&gt;
@@ -80,7 +80,7 @@ function all_valid_objc_files_in_repo() {
     echo &amp;quot;$files&amp;quot; | grep -v &amp;apos;Pods/&amp;apos; | grep -v &amp;apos;Carthage/&amp;apos; &amp;gt;&amp;amp;1
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;就此初步解决了 iOS 开发的代码风格问题 ———— 一份代码规范以及自定义的 spacecommander。    &lt;/p&gt;
-&lt;h2 id=&quot;小结&quot;&gt;&lt;a href=&quot;#小结&quot; class=&quot;headerlink&quot; title=&quot;小结&quot;&gt;&lt;/a&gt;小结&lt;/h2&gt;&lt;p&gt;这个问题看似有点微不足道，但的确花了毛一天的时间，才找到了较为合适的解决方案。但是在我看来是很值的。不仅能减少后续开发维护过程中由于代码风格引起的麻烦（感谢 spacecommander 这个轮子），而且在调研的过程中，也接触到了一些新的知识，比如 Shell 脚本语言。所以我很喜欢去干这种事情 🙄🙄。      &lt;/p&gt;
+&lt;h2 id=&quot;小结&quot;&gt;&lt;a href=&quot;#小结&quot; class=&quot;headerlink&quot; title=&quot;小结&quot;&gt;&lt;/a&gt;小结&lt;/h2&gt;&lt;p&gt;这个问题看似有点微不足道，但的确花了毛一天的时间，才找到了较为合适的解决方案。但是在我看来是很值的。不仅能减少后续开发维护过程中由于代码风格引起的麻烦（感谢 spacecommander 这个轮子），而且在调研的过程中，也接触到了一些新的知识，比如 Shell 脚本语言。所以我很喜欢去干这种事情 🙄🙄。 接下来有时间会整理一篇 CocoaPods 私有库相关的博客 ⛳️⛳️。  &lt;/p&gt;
 &lt;p&gt;有其它的解决方案，欢迎分享 🖐🖐&lt;/p&gt;
 </content>
     
