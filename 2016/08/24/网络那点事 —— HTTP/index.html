@@ -13,11 +13,11 @@
 
     <title>
         
-          对 Git Flow 开发模型的理解 - KentonYu的博客 | KentonYu&#39;s Blog
+          网络那点事 —— HTTP - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="/2016/03/05/git-Flow-开发模型/">
+    <link rel="canonical" href="/2016/08/24/网络那点事 —— HTTP/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -168,19 +168,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
-                        
-                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
-                        
-                          <a class="tag" href="/tags/#SourceTree" title="SourceTree">SourceTree</a>
+                          <a class="tag" href="/tags/#HTTP" title="HTTP">HTTP</a>
                         
 
                     </div>
-                    <h1>对 Git Flow 开发模型的理解</h1>
+                    <h1>网络那点事 —— HTTP</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by KentonYu on
-                        2016-03-05
+                        2016-08-24
                     </span>
                 </div>
             </div>
@@ -199,31 +195,62 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>又是一段时间没写博客了。。一直生活在甲方的世界里。。。可能也是自己懒癌复发了吧。。<br>ps:图片无法显示请点击：<a href="http://www.jianshu.com/p/c9d7e16744e0" target="_blank" rel="external">“传送门”</a><br>最近一个项目，因为需求上比较容易（开发时间比较充裕），所以尝试了通过Git Flow来管理项目源代码，从而探索下是否可以提高整体开发效率。在这之前，公司用的只是dev + master，几个开发同时在dev上开发，时不时就会有冲突，特别是项目中的xib文件较多时，很容易发生xib冲突（头疼。。。当然只要在commit之前看下文件变更记录，把不需要的变更放弃掉，但是难免会有疏忽的时候）。</p>
-<h1 id="Git-Flow-介绍"><a href="#Git-Flow-介绍" class="headerlink" title="Git Flow 介绍"></a>Git Flow 介绍</h1><blockquote>
-<p>Git Flow是构建在Git之上的一个组织软件开发活动的模型，是在Git之上构建的一项软件开发最佳实践。Git Flow是一套使用Git进行源代码管理时的一套行为规范和简化部分Git操作的工具。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow01YiLAQQnlPV.jpg" alt="Git Flow 全貌"></p>
-</blockquote>
-<p>其实学习Git Flow，主要还是理解几个分支的用处，在使用时通过严格的分割，将冲突概率降到最低，提高开发效率。下面我就按自己的理解来描述下主要的几种分支。</p>
-<ul>
-<li><p>master<br>这个分支上只存在上线版本，每个commit都应该对应一个版本号。</p>
-<blockquote>
-<p>仅在发布新的可供部署的代码时才更新master分支上的代码</p>
-</blockquote>
-</li>
-<li><p>develop<br>dev分支简单来说就是开发分支，它保存着开发过程中的最新版本。也就是说每当完成一个需求（feature）就应该合并到dev分支上。</p>
-</li>
-<li><p>feature<br>feature：功能。这个分支显而易见，是用来存每一个新功能（需求）的。每一个功能模块（较复杂的最好拆分下）可以做为一个feature。一般情况，每一轮迭代结束后的feature分支都应被合到dev分支上。这类分支也可以是做为实验性分支，比如在上面尝试一些开发，如果达不到预期效果也可以放弃该分支。</p>
-</li>
-<li><p>release<br>release分支可以看做是存储上线版本之前的分支。用一个实际情况来描述下，第二轮sprint结束，需要上线一个版本（还未进行测试和fix bugs），这时候第三轮sprint又要开始了。根据之前master的原则，是只存在上线版本的，因此我们可以用release分支，存一个待上线版本，然后dev就可以进行sprint3迭代了。这时候sprint2的bug 就可以在release上修复，当测试通过之后，就可以将release合进master上，同时dev需要merge下release分支。</p>
-</li>
-<li><p>hotfix<br>hotfix：热补丁。它的作用是线上版本出现bug时，可以通过hotfix来fix，然后产生一个新的发布版本，合并到master上，同时dev需要merge hotfix。这样的好处是可以打断dev上正在开发的进度。</p>
-</li>
+                <p>接下来你将会花费 10 分钟左右了解到如下内容：</p>
+<ol>
+<li>HTTP 的来世今生</li>
+<li>HTTPS 简介</li>
+<li>HTTP 请求方法介绍</li>
+<li>常见复用连接方案</li>
+</ol>
+<hr>
+<h2 id="HTTP-的来世今生"><a href="#HTTP-的来世今生" class="headerlink" title="HTTP 的来世今生"></a>HTTP 的来世今生</h2><p>HTTP（超文本传输协议），是应用最广泛的一种应用层网络协议，建立在 TCP/IP 协议簇之上，默认端口 80。目前位置一共有 4 个版本，分别是：HTTP/0.9，HTTP/1.0，HTTP/1.1，HTTP/2。其中 HTTP/0.9 版本（已过时）比较特殊，它只接受 GET 的请求方法，在请求中不指定版本号，且没有请求头。其之后的三个版本，目前都在广泛应用（HTTP/2 目前还未得到广泛普及）。接下来就一一介绍下目前在使用的三个版本的异同。</p>
+<h4 id="HTTP-1-0"><a href="#HTTP-1-0" class="headerlink" title="HTTP/1.0"></a>HTTP/1.0</h4><p>HTTP/1.0 是第一个在请求中指定版本号的协议版本，目前主要应用在代理服务器中。支持 GET、POST、HEAD 三种请求方法。</p>
+<h4 id="HTTP-1-1"><a href="#HTTP-1-1" class="headerlink" title="HTTP/1.1"></a>HTTP/1.1</h4><p> HTTP/1.1 继承了 HTTP/1.0 的优点，并对 HTTP/1.0 进行了性能上的优化，以及功能的扩展。主要体现在以下几点：</p>
+<ol>
+<li>增加 Host 域<br> HTTP/1.0 默认每台服务器绑定一个 IP，因此请求中只有 URI，不带 Host （可能认为建立 TCP 连接的时候指定了 IP 地址，这个 IP 已经指定了一个 Host）。但随着技术发展，一台服务器上可以部署多个服务站点并且共享一个 IP，因此 HTTP/1.1 在请求头中添加了 Host 字段（字段值可以为空，但<strong>字段缺失</strong>会报告错误，400 Bad Request）。<br> <img src="DraggedImage.png" alt="" title="HTTP/1.1 普通 GET 请求 Header"> </li>
+<li>持久连接（Persistent Connection）<br> HTTP/1.0 每一个 Request 都必须建立一个 TCP 连接，假设一个 HTML 页面里有 10 张图片，加载这个页面时，就需要建立 10 TCP 连接，这对于服务器和用户来说都是很不好的体验，当然还要考虑浏览器对并发连接数的限制和服务端对 TCP 连接数的限制，因此加载复杂页面的时候响应时间过长，资源利用率低。<br>HTTP/1.1 支持一个 TCP 连接可以响应多个请求，降低 TCP 的连接成本。它在请求头中增加了 Connection 字段，默认值是 Keep-Alive。当然在 HTTP/1.0 的请求头中设置 Connection:Keep-Alive 也可以实现在一段时间内复用（由服务端控制，Apache 2.0 默认 15s, Apache 2.2 默认 5s，防止因为连接保持时间过长，导致服务器资源浪费）。当然这对于 App 端来说，短时间 TCP 复用对网络请求优化效果不大。</li>
+<li>ETag（entity tag）<br> HTTP 协议提供的一种 Web 缓存验证机制，并且允许客户端进行缓存协商。ETag 是根据 URL 上的资源的特定版本而指定的，如果 URL 指定的资源改变了，那么新的 ETag 就会被分配。ETag 的比较只针对同一个 URL 有意义。<br> 以下两个 URL ETag 值的比较结果无意义，因为不是同一个 URL<br>  <code>https://www.domain.com/userInfo/1</code><br>  <code>https://www.domain.com/userInfo/2</code></li>
+<li>分块传输编码（Chunked transfer encoding）<br> HTTP/1.1 协议中的一种数据传输机制，允许数据分块传输。通过在 Request Header 中指明 Transfer-Encoding: chunked ，此时 Content-Length 是无效的。</li>
+<li>Range 和 Content-Range<br> HTTP/1.1 支持传送内容的一部分。在 Request Header 中引入了 Range，它允许只请求资源的某个部分。在 Response Header 中的 Content-Range 声明了返回的这部分对象的偏移值和长度。如果服务端返回的是请求的 Range 范围的内容，则响应码是 206（Partial Content）。利用这两个字段可以是实现断点下载。</li>
+<li>100 Status （Continue）<br>  HTTP/1.1 新加入了状态码 100，当 Request Body 比较大时，可以通过先发送一个只带 Header 的请求来验证权限，服务端返回 100（Continue） 时，说明可以继续请求，反之返回 401（Unauthorized）。</li>
+<li>新增请求方法<br> HTTP/1.1 新增支持 OPTIONS、PUT、 DELETE、 TRACE、 CONNECT 五种请求方法，后续又扩展了一些方法，其中 PATCH 使用较多。<h4 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP/2"></a>HTTP/2</h4>2015 年 5 月作为 HTTP 标准正式发布。主要以 Google 基于 TCP 开发的应用层协议 SPDY/3（speedy，2016 年停止维护）的技术为主。作为新版协议，细节上的改动一定很多，不过对开发者来说，影响较大的大致就以下几点：</li>
+<li>二进制格式（Binary Format）<br> HTTP/1.x 的请求的解析是基于文本的解析，主要由三部分组成：start line（request line），header，body。而 HTTP/2 则主要分为 Length、Type、Flags、Stream ID、Payload 五部分，Length 定义了该 frame 的开始到结束， Type 定义 frame 的类型，Flags 定义了一些重要参数， Stream ID 用作流的控制，Payload 是 Request 的正文。<br>  <img src="DraggedImage-1.png" alt=""></li>
+<li>多路复用（MultiPlexing）<br>  多路复用即连接共享，二进制格式中的 Stream ID 就是用在多路复用的。一个 Request 对应一个 Stream 并分配一个 ID，这样一个连接上可以有多个 Stream，每个 Stream 的 Frame 可以随机的混合在一起，接收方可以根据 Stream ID 将 Frame 再整合到不同的 Request 里。<br> 连接共享会造成某些关键请求会被阻塞，因此提供了优先级（Priority）和请求依赖（Dependency）的机制。通过这两个机制，优先级高或者被依赖的 Stream 会被 Server 优先处理并响应。</li>
+<li>Request Header 压缩和缓存<br> HTTP/1.x 的 Header 由于 Cookie 和 User Agent 体积容易膨胀，而且每次请求都会重新发送，因此 HTTP/2 压缩 Header 的同时，服务端和客户端都会缓存一份 Request Header 表，这样既减少了体积，还避免了相同的 Header 重复发送。</li>
+<li>Server Push<br> HTTP/2.0 允许通过服务端推送的方式将客户端需要的内容预先推送过去。比如在用户第一次打开网站首页的时候，将必须资源主动推送到客户端，这样可以极大的提升用户体验。</li>
+</ol>
+<hr>
+<h2 id="HTTP-请求方法介绍"><a href="#HTTP-请求方法介绍" class="headerlink" title="HTTP 请求方法介绍"></a>HTTP 请求方法介绍</h2><h4 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h4><p>GET，幂等操作，请求会显式地请求指定的资源。一般来说 GET 方法应该只用于数据的读取。之前一直以为 GET 在 HTTP 协议中有请求长度的限制，其实 HTTP 协议并没有规定具体的长度，具体长度是由浏览器或服务器决定和设置的。</p>
+<h4 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h4><p>HEAD，请求指定的资源，但是服务端响应 HEAD 请求时不会回传具体的内容（Body）。</p>
+<h4 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h4><p>POST，非幂等操作，请求会向指定资源提交数据（数据包含在Request Body 中），请求服务器进行处理。如：表单处理，文件上传等。</p>
+<h4 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h4><p>PUT，幂等操作，请求会向指定资源位置上传最新的内容（更新资源）。</p>
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>DELETE，幂等操作，请求服务器删除 URI 标识的资源。</p>
+<h4 id="CONNECT"><a href="#CONNECT" class="headerlink" title="CONNECT"></a>CONNECT</h4><p>CONNECT，HTTP/1.1协议预留的，能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接与非加密的HTTP代理服务器的通信。</p>
+<h4 id="OPTIONS"><a href="#OPTIONS" class="headerlink" title="OPTIONS"></a>OPTIONS</h4><p>OPTIONS，返回 URI 标识资源所支持的所有 HTTP 请求方法。类似 HEAD ，也可以通过发送 OPTIONS 请求判断是否有权限请求该资源。</p>
+<h4 id="TRACE"><a href="#TRACE" class="headerlink" title="TRACE"></a>TRACE</h4><p>TRACE，服务器返回收到的请求信息，该方法主要用户 HTTP 请求的测试和诊断。</p>
+<h4 id="PATCH"><a href="#PATCH" class="headerlink" title="PATCH"></a>PATCH</h4><p>PATCH, 在 2010 年 <a href="https://tools.ietf.org/html/rfc5789" target="_blank" rel="external">RFC 5789</a> 标准中被定义。与 PUT 请求类似，用于资源的更新，但是有两点不同：</p>
+<ol>
+<li>PATCH 一般用于资源的部分更新，而 PUT 一般用于资源整体的更新；</li>
+<li>当资源不存在时，PATCH 会创建一个新的资源，而 PUT 只会对已有的资源进行更新。</li>
+</ol>
+<hr>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>HTTPS（Hypertext Transfer Protocol Secure）是一种网络安全传输协议。HTTPS 经过 HTTP 进行通信，但是利用 SSL/TLS 来对数据包进行加密，默认端口 443。HTTPS 可以防止攻击者抓包，中间人攻击等（调试 HTTPS 接口时，可以通过给 Charles 配置 HTTPS 私钥来进行抓包）。</p>
+<h4 id="TLS-SSL"><a href="#TLS-SSL" class="headerlink" title="TLS/SSL"></a>TLS/SSL</h4><p>TLS（传输层安全协议，Transport Layer Security）是一种安全协议，前身是 SSL（安全套接层，Secure Sockets Layer）。</p>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>详见<a href="http://www.ruanyifeng.com/blog/2014/02/ssl%5C_tls.html" target="_blank" rel="external">SSL/TLS协议运行机制的概述</a>。</p>
+<hr>
+<h2 id="常见复用连接方案"><a href="#常见复用连接方案" class="headerlink" title="常见复用连接方案"></a>常见复用连接方案</h2><p>虽然 HTTP/1.x 可以通过设置 Connection:Keep-Alive，但是只能在一段时间里复用该连接，具体时间由服务器控制。这对浏览器端的体验提升比较大，因为请求基本集中在页面刷新那几秒里。但是相对于 App 端，优化的体验并不是很有效果，App 端的请求较为分散，而且时间跨度上一般比较长（服务器端默认连接保持时间 15s 左右）。因此 App 端一般只能从应用层寻找其他解决方案。</p>
+<h4 id="TCP-长连接"><a href="#TCP-长连接" class="headerlink" title="TCP 长连接"></a>TCP 长连接</h4><p>基于 TCP 协议建立长连接通道。但是 TCP 的 Socket 编程技术难度相对复杂很多，而且需要自己制定协议。当然，这样做带来的收益也很明显，信息的传递实时性以及并发请求量对服务器的压力都将得到很好的解决（普通 HTTP 连接在高并发的情况下，频繁创建/销毁连接对资源消耗很大）。</p>
+<h4 id="HTTP-long-polling"><a href="#HTTP-long-polling" class="headerlink" title="HTTP long-polling"></a>HTTP long-polling</h4><p>客户端发送一个 polling 请求到服务器，服务器只有产生新的数据时才会返回数据，不然这个连接会一直保持住。当服务器数据返回后，客户端又将会重新发送一个 polling 请求，如此循环。<br>long-polling 方式每次接收到数据都会重新发起一个相同的请求，因此每次都会带上 Header 以及不能向服务器发送数据，数据通道是单项的，主动权是在服务器。</p>
+<h4 id="HTTP-streaming"><a href="#HTTP-streaming" class="headerlink" title="HTTP streaming"></a>HTTP streaming</h4><p>和 HTTP long-polling 相比，最大的不同在于 streaming 方式在服务端响应了数据之后，并不会断开这个连接，而是持续的通过这个通道传输数据给客户端（显然是单项数据通道，并且不会重复发送 Header 数据）。streaming 利用的就是 HTTP/1.1 的 Transfer Encoding ，通过在 Response  里设置 Transfer Encoding: chunked 告诉客户端后续还有数据，不要中断连接。</p>
+<h4 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h4><p>WebSocket 和 TCP 长连接相似，基于 TCP 协议，有双向的数据通道。WebSocket 的优势在于提供了 Message 的概念，而不是 TCP 长连接的基于字节流。但是 Web Socket 在 2010 年猜才起草，相对来说还比较新，不过新的浏览器都是支持的。Nodejs 中的 <a href="http://socket.io/" target="_blank" rel="external">Socket.IO</a> 就是基于 WebSocket 实现的，但是同时还支持 Adobe Flash Socket、AJAX 长轮询、AJAX multipart streaming、持久Iframe、JSONP轮询等。Socket.IO 能够根据浏览器对通讯机制的支持情况自动地选择最佳的方式来实现网络实时应用。</p>
+<hr>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>文中如有错误，望能指出。以上这些基本都是对网络基础的一个回顾和整理，但是在这个过程中也补了很多洞，当然很多内容都没有深入去分析、实战，也有一些必要的知识点没有提及，希望大家能指出。<br>最后的最后，希望大家轻按下方二维码，关注 He 码 🚀🚀 —— 一群年幼无知的码农 boy 的日记 ！<br><img src="qrcode_for_gh_ea339e6e1708_430.jpg" alt="">     </p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki" target="_blank" rel="external">Wiki</a></li>
+<li><a href="http://stackoverflow.com/questions/246859/http-1-0-vs-1-1" target="_blank" rel="external">stackoverflow</a></li>
+<li><a href="http://mrpeak.cn/blog/http2/" target="_blank" rel="external">HTTP 2.0 那点事</a></li>
+<li>etc.</li>
 </ul>
-<p>以上就是Git Flow模型的大致概念。在实际开发过程中，这个模型并不是一成不变的，根据每个开发团队或每个项目可以进行一定的变化。</p>
-<h1 id="Git-Flow-实际使用"><a href="#Git-Flow-实际使用" class="headerlink" title="Git Flow 实际使用"></a>Git Flow 实际使用</h1><p>日常开发中，使用SourceTree来操作Git居多。SourceTree中自带Git 工作流模型，简单的使用只需要点击应用即可。<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlow26571850-6A6C-4863-80CF-1E2706FD846A.png" alt="SourceTree 自带工作流"></p>
-<p>当然这边也可以进行自定义，或者说不使用这个模型，自己通过新建分支来实现Git Flow。<br>我实际运用中，大致是这样的：<br><img src="http://7xno6f.com1.z0.glb.clouddn.com/blog-GitFlowA73C5C4C-5ADD-4044-908C-D0C659C26440.png" alt="利用group"></p>
-<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>1.dev有更新时，feature分支及时rebase（变基，衍合），不然当合并该feature时可能会出现很多冲突（Q_A_Q）。<br>2.可以复用页面的一些功能模块应该分配给同一个开发去做，不然在页面复用上会有问题。因为每个feature是分割开的。</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p>1.基于git的源代码管理模型——git flow <a href="http://www.ituring.com.cn/article/56870" target="_blank" rel="external">http://www.ituring.com.cn/article/56870</a></p>
 
                 
                 <hr>
@@ -232,13 +259,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/03/27/Effective Objective-C 读书笔记/" data-toggle="tooltip" data-placement="top" title="Effective Objective-C 读书笔记">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2015/11/22/Objective-C-三大新特性/" data-toggle="tooltip" data-placement="top" title="Objective-C 三大新特性">Next Post &rarr;</a>
+                            <a href="/2016/08/13/代码规范那点事/" data-toggle="tooltip" data-placement="top" title="代码规范那点事">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -247,9 +270,9 @@
                 <!--多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/03/05/git-Flow-开发模型/"
-                        data-title="对 Git Flow 开发模型的理解"
-                        data-url="/2016/03/05/git-Flow-开发模型/" >
+                        data-thread-key="2016/08/24/网络那点事 —— HTTP/"
+                        data-title="网络那点事 —— HTTP"
+                        data-url="/2016/08/24/网络那点事 —— HTTP/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->

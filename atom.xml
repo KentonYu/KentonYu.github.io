@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="/"/>
-  <updated>2016-08-13T16:30:41.000Z</updated>
+  <updated>2016-08-24T13:27:37.000Z</updated>
   <id>/</id>
   
   <author>
@@ -14,6 +14,90 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>网络那点事 —— HTTP</title>
+    <link href="/2016/08/24/%E7%BD%91%E7%BB%9C%E9%82%A3%E7%82%B9%E4%BA%8B%20%E2%80%94%E2%80%94%20HTTP/"/>
+    <id>/2016/08/24/网络那点事 —— HTTP/</id>
+    <published>2016-08-24T13:05:01.000Z</published>
+    <updated>2016-08-24T13:27:37.000Z</updated>
+    
+    <content type="html">&lt;p&gt;接下来你将会花费 10 分钟左右了解到如下内容：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;HTTP 的来世今生&lt;/li&gt;
+&lt;li&gt;HTTPS 简介&lt;/li&gt;
+&lt;li&gt;HTTP 请求方法介绍&lt;/li&gt;
+&lt;li&gt;常见复用连接方案&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;HTTP-的来世今生&quot;&gt;&lt;a href=&quot;#HTTP-的来世今生&quot; class=&quot;headerlink&quot; title=&quot;HTTP 的来世今生&quot;&gt;&lt;/a&gt;HTTP 的来世今生&lt;/h2&gt;&lt;p&gt;HTTP（超文本传输协议），是应用最广泛的一种应用层网络协议，建立在 TCP/IP 协议簇之上，默认端口 80。目前位置一共有 4 个版本，分别是：HTTP/0.9，HTTP/1.0，HTTP/1.1，HTTP/2。其中 HTTP/0.9 版本（已过时）比较特殊，它只接受 GET 的请求方法，在请求中不指定版本号，且没有请求头。其之后的三个版本，目前都在广泛应用（HTTP/2 目前还未得到广泛普及）。接下来就一一介绍下目前在使用的三个版本的异同。&lt;/p&gt;
+&lt;h4 id=&quot;HTTP-1-0&quot;&gt;&lt;a href=&quot;#HTTP-1-0&quot; class=&quot;headerlink&quot; title=&quot;HTTP/1.0&quot;&gt;&lt;/a&gt;HTTP/1.0&lt;/h4&gt;&lt;p&gt;HTTP/1.0 是第一个在请求中指定版本号的协议版本，目前主要应用在代理服务器中。支持 GET、POST、HEAD 三种请求方法。&lt;/p&gt;
+&lt;h4 id=&quot;HTTP-1-1&quot;&gt;&lt;a href=&quot;#HTTP-1-1&quot; class=&quot;headerlink&quot; title=&quot;HTTP/1.1&quot;&gt;&lt;/a&gt;HTTP/1.1&lt;/h4&gt;&lt;p&gt; HTTP/1.1 继承了 HTTP/1.0 的优点，并对 HTTP/1.0 进行了性能上的优化，以及功能的扩展。主要体现在以下几点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;增加 Host 域&lt;br&gt; HTTP/1.0 默认每台服务器绑定一个 IP，因此请求中只有 URI，不带 Host （可能认为建立 TCP 连接的时候指定了 IP 地址，这个 IP 已经指定了一个 Host）。但随着技术发展，一台服务器上可以部署多个服务站点并且共享一个 IP，因此 HTTP/1.1 在请求头中添加了 Host 字段（字段值可以为空，但&lt;strong&gt;字段缺失&lt;/strong&gt;会报告错误，400 Bad Request）。&lt;br&gt; &lt;img src=&quot;DraggedImage.png&quot; alt=&quot;&quot; title=&quot;HTTP/1.1 普通 GET 请求 Header&quot;&gt; &lt;/li&gt;
+&lt;li&gt;持久连接（Persistent Connection）&lt;br&gt; HTTP/1.0 每一个 Request 都必须建立一个 TCP 连接，假设一个 HTML 页面里有 10 张图片，加载这个页面时，就需要建立 10 TCP 连接，这对于服务器和用户来说都是很不好的体验，当然还要考虑浏览器对并发连接数的限制和服务端对 TCP 连接数的限制，因此加载复杂页面的时候响应时间过长，资源利用率低。&lt;br&gt;HTTP/1.1 支持一个 TCP 连接可以响应多个请求，降低 TCP 的连接成本。它在请求头中增加了 Connection 字段，默认值是 Keep-Alive。当然在 HTTP/1.0 的请求头中设置 Connection:Keep-Alive 也可以实现在一段时间内复用（由服务端控制，Apache 2.0 默认 15s, Apache 2.2 默认 5s，防止因为连接保持时间过长，导致服务器资源浪费）。当然这对于 App 端来说，短时间 TCP 复用对网络请求优化效果不大。&lt;/li&gt;
+&lt;li&gt;ETag（entity tag）&lt;br&gt; HTTP 协议提供的一种 Web 缓存验证机制，并且允许客户端进行缓存协商。ETag 是根据 URL 上的资源的特定版本而指定的，如果 URL 指定的资源改变了，那么新的 ETag 就会被分配。ETag 的比较只针对同一个 URL 有意义。&lt;br&gt; 以下两个 URL ETag 值的比较结果无意义，因为不是同一个 URL&lt;br&gt;  &lt;code&gt;https://www.domain.com/userInfo/1&lt;/code&gt;&lt;br&gt;  &lt;code&gt;https://www.domain.com/userInfo/2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;分块传输编码（Chunked transfer encoding）&lt;br&gt; HTTP/1.1 协议中的一种数据传输机制，允许数据分块传输。通过在 Request Header 中指明 Transfer-Encoding: chunked ，此时 Content-Length 是无效的。&lt;/li&gt;
+&lt;li&gt;Range 和 Content-Range&lt;br&gt; HTTP/1.1 支持传送内容的一部分。在 Request Header 中引入了 Range，它允许只请求资源的某个部分。在 Response Header 中的 Content-Range 声明了返回的这部分对象的偏移值和长度。如果服务端返回的是请求的 Range 范围的内容，则响应码是 206（Partial Content）。利用这两个字段可以是实现断点下载。&lt;/li&gt;
+&lt;li&gt;100 Status （Continue）&lt;br&gt;  HTTP/1.1 新加入了状态码 100，当 Request Body 比较大时，可以通过先发送一个只带 Header 的请求来验证权限，服务端返回 100（Continue） 时，说明可以继续请求，反之返回 401（Unauthorized）。&lt;/li&gt;
+&lt;li&gt;新增请求方法&lt;br&gt; HTTP/1.1 新增支持 OPTIONS、PUT、 DELETE、 TRACE、 CONNECT 五种请求方法，后续又扩展了一些方法，其中 PATCH 使用较多。&lt;h4 id=&quot;HTTP-2&quot;&gt;&lt;a href=&quot;#HTTP-2&quot; class=&quot;headerlink&quot; title=&quot;HTTP/2&quot;&gt;&lt;/a&gt;HTTP/2&lt;/h4&gt;2015 年 5 月作为 HTTP 标准正式发布。主要以 Google 基于 TCP 开发的应用层协议 SPDY/3（speedy，2016 年停止维护）的技术为主。作为新版协议，细节上的改动一定很多，不过对开发者来说，影响较大的大致就以下几点：&lt;/li&gt;
+&lt;li&gt;二进制格式（Binary Format）&lt;br&gt; HTTP/1.x 的请求的解析是基于文本的解析，主要由三部分组成：start line（request line），header，body。而 HTTP/2 则主要分为 Length、Type、Flags、Stream ID、Payload 五部分，Length 定义了该 frame 的开始到结束， Type 定义 frame 的类型，Flags 定义了一些重要参数， Stream ID 用作流的控制，Payload 是 Request 的正文。&lt;br&gt;  &lt;img src=&quot;DraggedImage-1.png&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;li&gt;多路复用（MultiPlexing）&lt;br&gt;  多路复用即连接共享，二进制格式中的 Stream ID 就是用在多路复用的。一个 Request 对应一个 Stream 并分配一个 ID，这样一个连接上可以有多个 Stream，每个 Stream 的 Frame 可以随机的混合在一起，接收方可以根据 Stream ID 将 Frame 再整合到不同的 Request 里。&lt;br&gt; 连接共享会造成某些关键请求会被阻塞，因此提供了优先级（Priority）和请求依赖（Dependency）的机制。通过这两个机制，优先级高或者被依赖的 Stream 会被 Server 优先处理并响应。&lt;/li&gt;
+&lt;li&gt;Request Header 压缩和缓存&lt;br&gt; HTTP/1.x 的 Header 由于 Cookie 和 User Agent 体积容易膨胀，而且每次请求都会重新发送，因此 HTTP/2 压缩 Header 的同时，服务端和客户端都会缓存一份 Request Header 表，这样既减少了体积，还避免了相同的 Header 重复发送。&lt;/li&gt;
+&lt;li&gt;Server Push&lt;br&gt; HTTP/2.0 允许通过服务端推送的方式将客户端需要的内容预先推送过去。比如在用户第一次打开网站首页的时候，将必须资源主动推送到客户端，这样可以极大的提升用户体验。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;HTTP-请求方法介绍&quot;&gt;&lt;a href=&quot;#HTTP-请求方法介绍&quot; class=&quot;headerlink&quot; title=&quot;HTTP 请求方法介绍&quot;&gt;&lt;/a&gt;HTTP 请求方法介绍&lt;/h2&gt;&lt;h4 id=&quot;GET&quot;&gt;&lt;a href=&quot;#GET&quot; class=&quot;headerlink&quot; title=&quot;GET&quot;&gt;&lt;/a&gt;GET&lt;/h4&gt;&lt;p&gt;GET，幂等操作，请求会显式地请求指定的资源。一般来说 GET 方法应该只用于数据的读取。之前一直以为 GET 在 HTTP 协议中有请求长度的限制，其实 HTTP 协议并没有规定具体的长度，具体长度是由浏览器或服务器决定和设置的。&lt;/p&gt;
+&lt;h4 id=&quot;HEAD&quot;&gt;&lt;a href=&quot;#HEAD&quot; class=&quot;headerlink&quot; title=&quot;HEAD&quot;&gt;&lt;/a&gt;HEAD&lt;/h4&gt;&lt;p&gt;HEAD，请求指定的资源，但是服务端响应 HEAD 请求时不会回传具体的内容（Body）。&lt;/p&gt;
+&lt;h4 id=&quot;POST&quot;&gt;&lt;a href=&quot;#POST&quot; class=&quot;headerlink&quot; title=&quot;POST&quot;&gt;&lt;/a&gt;POST&lt;/h4&gt;&lt;p&gt;POST，非幂等操作，请求会向指定资源提交数据（数据包含在Request Body 中），请求服务器进行处理。如：表单处理，文件上传等。&lt;/p&gt;
+&lt;h4 id=&quot;PUT&quot;&gt;&lt;a href=&quot;#PUT&quot; class=&quot;headerlink&quot; title=&quot;PUT&quot;&gt;&lt;/a&gt;PUT&lt;/h4&gt;&lt;p&gt;PUT，幂等操作，请求会向指定资源位置上传最新的内容（更新资源）。&lt;/p&gt;
+&lt;h4 id=&quot;DELETE&quot;&gt;&lt;a href=&quot;#DELETE&quot; class=&quot;headerlink&quot; title=&quot;DELETE&quot;&gt;&lt;/a&gt;DELETE&lt;/h4&gt;&lt;p&gt;DELETE，幂等操作，请求服务器删除 URI 标识的资源。&lt;/p&gt;
+&lt;h4 id=&quot;CONNECT&quot;&gt;&lt;a href=&quot;#CONNECT&quot; class=&quot;headerlink&quot; title=&quot;CONNECT&quot;&gt;&lt;/a&gt;CONNECT&lt;/h4&gt;&lt;p&gt;CONNECT，HTTP/1.1协议预留的，能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接与非加密的HTTP代理服务器的通信。&lt;/p&gt;
+&lt;h4 id=&quot;OPTIONS&quot;&gt;&lt;a href=&quot;#OPTIONS&quot; class=&quot;headerlink&quot; title=&quot;OPTIONS&quot;&gt;&lt;/a&gt;OPTIONS&lt;/h4&gt;&lt;p&gt;OPTIONS，返回 URI 标识资源所支持的所有 HTTP 请求方法。类似 HEAD ，也可以通过发送 OPTIONS 请求判断是否有权限请求该资源。&lt;/p&gt;
+&lt;h4 id=&quot;TRACE&quot;&gt;&lt;a href=&quot;#TRACE&quot; class=&quot;headerlink&quot; title=&quot;TRACE&quot;&gt;&lt;/a&gt;TRACE&lt;/h4&gt;&lt;p&gt;TRACE，服务器返回收到的请求信息，该方法主要用户 HTTP 请求的测试和诊断。&lt;/p&gt;
+&lt;h4 id=&quot;PATCH&quot;&gt;&lt;a href=&quot;#PATCH&quot; class=&quot;headerlink&quot; title=&quot;PATCH&quot;&gt;&lt;/a&gt;PATCH&lt;/h4&gt;&lt;p&gt;PATCH, 在 2010 年 &lt;a href=&quot;https://tools.ietf.org/html/rfc5789&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;RFC 5789&lt;/a&gt; 标准中被定义。与 PUT 请求类似，用于资源的更新，但是有两点不同：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;PATCH 一般用于资源的部分更新，而 PUT 一般用于资源整体的更新；&lt;/li&gt;
+&lt;li&gt;当资源不存在时，PATCH 会创建一个新的资源，而 PUT 只会对已有的资源进行更新。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;HTTPS&quot;&gt;&lt;a href=&quot;#HTTPS&quot; class=&quot;headerlink&quot; title=&quot;HTTPS&quot;&gt;&lt;/a&gt;HTTPS&lt;/h2&gt;&lt;p&gt;HTTPS（Hypertext Transfer Protocol Secure）是一种网络安全传输协议。HTTPS 经过 HTTP 进行通信，但是利用 SSL/TLS 来对数据包进行加密，默认端口 443。HTTPS 可以防止攻击者抓包，中间人攻击等（调试 HTTPS 接口时，可以通过给 Charles 配置 HTTPS 私钥来进行抓包）。&lt;/p&gt;
+&lt;h4 id=&quot;TLS-SSL&quot;&gt;&lt;a href=&quot;#TLS-SSL&quot; class=&quot;headerlink&quot; title=&quot;TLS/SSL&quot;&gt;&lt;/a&gt;TLS/SSL&lt;/h4&gt;&lt;p&gt;TLS（传输层安全协议，Transport Layer Security）是一种安全协议，前身是 SSL（安全套接层，Secure Sockets Layer）。&lt;/p&gt;
+&lt;h4 id=&quot;工作原理&quot;&gt;&lt;a href=&quot;#工作原理&quot; class=&quot;headerlink&quot; title=&quot;工作原理&quot;&gt;&lt;/a&gt;工作原理&lt;/h4&gt;&lt;p&gt;详见&lt;a href=&quot;http://www.ruanyifeng.com/blog/2014/02/ssl%5C_tls.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;SSL/TLS协议运行机制的概述&lt;/a&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;常见复用连接方案&quot;&gt;&lt;a href=&quot;#常见复用连接方案&quot; class=&quot;headerlink&quot; title=&quot;常见复用连接方案&quot;&gt;&lt;/a&gt;常见复用连接方案&lt;/h2&gt;&lt;p&gt;虽然 HTTP/1.x 可以通过设置 Connection:Keep-Alive，但是只能在一段时间里复用该连接，具体时间由服务器控制。这对浏览器端的体验提升比较大，因为请求基本集中在页面刷新那几秒里。但是相对于 App 端，优化的体验并不是很有效果，App 端的请求较为分散，而且时间跨度上一般比较长（服务器端默认连接保持时间 15s 左右）。因此 App 端一般只能从应用层寻找其他解决方案。&lt;/p&gt;
+&lt;h4 id=&quot;TCP-长连接&quot;&gt;&lt;a href=&quot;#TCP-长连接&quot; class=&quot;headerlink&quot; title=&quot;TCP 长连接&quot;&gt;&lt;/a&gt;TCP 长连接&lt;/h4&gt;&lt;p&gt;基于 TCP 协议建立长连接通道。但是 TCP 的 Socket 编程技术难度相对复杂很多，而且需要自己制定协议。当然，这样做带来的收益也很明显，信息的传递实时性以及并发请求量对服务器的压力都将得到很好的解决（普通 HTTP 连接在高并发的情况下，频繁创建/销毁连接对资源消耗很大）。&lt;/p&gt;
+&lt;h4 id=&quot;HTTP-long-polling&quot;&gt;&lt;a href=&quot;#HTTP-long-polling&quot; class=&quot;headerlink&quot; title=&quot;HTTP long-polling&quot;&gt;&lt;/a&gt;HTTP long-polling&lt;/h4&gt;&lt;p&gt;客户端发送一个 polling 请求到服务器，服务器只有产生新的数据时才会返回数据，不然这个连接会一直保持住。当服务器数据返回后，客户端又将会重新发送一个 polling 请求，如此循环。&lt;br&gt;long-polling 方式每次接收到数据都会重新发起一个相同的请求，因此每次都会带上 Header 以及不能向服务器发送数据，数据通道是单项的，主动权是在服务器。&lt;/p&gt;
+&lt;h4 id=&quot;HTTP-streaming&quot;&gt;&lt;a href=&quot;#HTTP-streaming&quot; class=&quot;headerlink&quot; title=&quot;HTTP streaming&quot;&gt;&lt;/a&gt;HTTP streaming&lt;/h4&gt;&lt;p&gt;和 HTTP long-polling 相比，最大的不同在于 streaming 方式在服务端响应了数据之后，并不会断开这个连接，而是持续的通过这个通道传输数据给客户端（显然是单项数据通道，并且不会重复发送 Header 数据）。streaming 利用的就是 HTTP/1.1 的 Transfer Encoding ，通过在 Response  里设置 Transfer Encoding: chunked 告诉客户端后续还有数据，不要中断连接。&lt;/p&gt;
+&lt;h4 id=&quot;WebSocket&quot;&gt;&lt;a href=&quot;#WebSocket&quot; class=&quot;headerlink&quot; title=&quot;WebSocket&quot;&gt;&lt;/a&gt;WebSocket&lt;/h4&gt;&lt;p&gt;WebSocket 和 TCP 长连接相似，基于 TCP 协议，有双向的数据通道。WebSocket 的优势在于提供了 Message 的概念，而不是 TCP 长连接的基于字节流。但是 Web Socket 在 2010 年猜才起草，相对来说还比较新，不过新的浏览器都是支持的。Nodejs 中的 &lt;a href=&quot;http://socket.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Socket.IO&lt;/a&gt; 就是基于 WebSocket 实现的，但是同时还支持 Adobe Flash Socket、AJAX 长轮询、AJAX multipart streaming、持久Iframe、JSONP轮询等。Socket.IO 能够根据浏览器对通讯机制的支持情况自动地选择最佳的方式来实现网络实时应用。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;结束语&quot;&gt;&lt;a href=&quot;#结束语&quot; class=&quot;headerlink&quot; title=&quot;结束语&quot;&gt;&lt;/a&gt;结束语&lt;/h2&gt;&lt;p&gt;文中如有错误，望能指出。以上这些基本都是对网络基础的一个回顾和整理，但是在这个过程中也补了很多洞，当然很多内容都没有深入去分析、实战，也有一些必要的知识点没有提及，希望大家能指出。&lt;br&gt;最后的最后，希望大家轻按下方二维码，关注 He 码 🚀🚀 —— 一群年幼无知的码农 boy 的日记 ！&lt;br&gt;&lt;img src=&quot;qrcode_for_gh_ea339e6e1708_430.jpg&quot; alt=&quot;&quot;&gt;     &lt;/p&gt;
+&lt;h2 id=&quot;Reference&quot;&gt;&lt;a href=&quot;#Reference&quot; class=&quot;headerlink&quot; title=&quot;Reference&quot;&gt;&lt;/a&gt;Reference&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/246859/http-1-0-vs-1-1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;stackoverflow&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://mrpeak.cn/blog/http2/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;HTTP 2.0 那点事&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;etc.&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;接下来你将会花费 10 分钟左右了解到如下内容：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;HTTP 的来世今生&lt;/li&gt;
+&lt;li&gt;HTTPS 简介&lt;/li&gt;
+&lt;li&gt;HTTP 请求方法介绍&lt;/li&gt;
+&lt;li&gt;常见复用连接方案&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;HTTP-的来
+    
+    </summary>
+    
+    
+      <category term="HTTP" scheme="/tags/HTTP/"/>
+    
+  </entry>
   
   <entry>
     <title>代码规范那点事</title>
