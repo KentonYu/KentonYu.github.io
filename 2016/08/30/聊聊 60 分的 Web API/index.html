@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="FFJVCLeI9I2W9EuE-FlfDWQ6Xo_yL2l2s4q3fSmrHbw" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="日常笔记">
+    <meta name="keyword"  content="KentonYu iOS Node.js">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          聊聊 60 分的 Web API - KentonYu的博客 | KentonYu&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="/2016/08/30/聊聊 60 分的 Web API/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">KentonYu&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/portfolio/">Portfolio</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#API" title="API">API</a>
+                        
+
+                    </div>
+                    <h1>聊聊 60 分的 Web API</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by KentonYu on
+                        2016-08-30
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="扯-dan"><a href="#扯-dan" class="headerlink" title="扯 dan"></a>扯 dan</h2><blockquote>
+<p>应用程序接口（英语：Application Programming Interface，简称：API），又称为应用编程接口，就是软件系统不同组成部分衔接的约定。由于近年来软件的规模日益庞大，常常需要把复杂的系统划分成小的组成部分，编程接口的设计十分重要。程序设计的实践中，编程接口的设计首先要使软件系统的职责得到合理划分。良好的接口设计可以降低系统各部分的相互依赖，提高组成单元的内聚性，降低组成单元间的耦合程度，从而提高系统的维护性和扩展性。 </p>
+</blockquote>
+<p>以上是 WiKi 对 API 的描述，日常开发中笔者通常以 API（接口） 来狭义地指代 Web API（Web Service）。当然这种现象可能只存在于移动互联网行业里（甚至 Only me ？有其它称呼可以留言哦），毕竟人家做硬件也会提供 API 。反正下文中笔者以 API 来指代 Web API ，少按 5 次键盘 🕵。<br>聊聊 60 分的 Web API ，这个 Topic 其实也是笔者 YY 出来的，实在是墨水有限。为何只是“聊聊 60 分的”，笔者认怂，自认只了解 60 分的水平（实际 30？及格分总要给吧 😳），希望大 🐂🐂 能不吝指导一二。接下来笔者会先简单描述下了解的三种 API 类型，然后再写下对于 60 分 API 应该具有的“素质”。</p>
+<hr>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h4 id="API-风格"><a href="#API-风格" class="headerlink" title="API 风格"></a>API 风格</h4><p>笔者了解到的 API 协议/架构风格主要有三种 —— RPC &amp; SOAP &amp; REST。  其中对于 RPC 和 SOAP 协议了解不够深入，下文着重描述 REST。 </p>
+<h5 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h5><p>RPC，Remote Procedure Call 是一种计算机编程协议，该协议允许一套计算机调用另一台计算机上的子程序。RPC 定义了结构化的 Request 和 Response，以 GET 、POST 作为主要请求方法。请求数据格式可以是 XML，也支持更轻量的 JSON。</p>
+<pre><code>// XML RPC Request
+&lt;?xml version = &quot;1.0&quot;?&gt;
+&lt;methodCall&gt;
+    &lt;methodName&gt;getUserName&lt;/methodName&gt;
+    &lt;params&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;id&gt;40&lt;/id&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+    &lt;/params&gt;
+&lt;/methodCall&gt;
+
+// XML RPC Response
+&lt;?xml version = &quot;1.0&quot;?&gt;
+&lt;methodResponse&gt;
+    &lt;params&gt;
+         &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;KentonYu&lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+    &lt;/params&gt;
+&lt;/methodResponse&gt;
+</code></pre><h5 id="SOAP"><a href="#SOAP" class="headerlink" title="SOAP"></a>SOAP</h5><p>SOAP，Simple Object Access Protocol 是 Web Service 交换数据的一种协议，基于 XML-RPC 进行优化修改。它不仅支持 HTTP/HTTPS，还支持 SMTP 协议。它比 XML-RPC 更强大，但是数据格式只支持 XML。<br><img src="http://7xtamz.com1.z0.glb.clouddn.com/SOAP.png" alt="SOAP XML 请求格式" title="SOAP XML 请求格式"></p>
+<h5 id="REST"><a href="#REST" class="headerlink" title="REST"></a>REST</h5><p>REST，Representational State Transfer（表述性状态转移）是一种架构风格，而不是协议。它是 Roy Thomas Fielding 博士于 2000 年在他的博士论文 “Architectural Styles and the Design of Network-based Software Architectures” 中提出来的，但是在 5 年后才开始受到关注。REST 通常基于 HTTP，URI 以及 JSON、XML 等协议和标准实现。当 REST 风格应用在 API 上时，我们称之为 RESTful API。<br>REST 并没有具体的规范，它只是一种风格。何为风格？提供一系列约束，但是不强制性要求必须满足这些约束。<br>REST 架构风格的形成，主要遵循了以下几点：</p>
+<ol>
+<li>关注点分离；</li>
+<li>可见性、可靠性和可伸缩性；</li>
+<li>网络性能、效率；</li>
+<li>统一接口；<br>总得来说，REST 是为了让 Web 服务更加高效、可靠、通用。</li>
+</ol>
+<p>相对于 RPC（面向动作）、SOAP（消息机制），REST 是面向资源。资源，可以是服务器数据库的一张表，一张图片，或者说更加抽象的东西（当然这个东西要便于客户端开发理解）。<br>它主要是从以下三个方面来标识资源：</p>
+<ol>
+<li>直观简短描述性的 URI；</li>
+<li>传输的资源格式（JSON，XML，HTML.etc.）;</li>
+<li>对资源的操作，一般通过 HTTP 的一系列请求方法来表示；<br><img src="http://7xtamz.com1.z0.glb.clouddn.com/REST%20HTTP%20Method.png" alt="HTTP 请求方法在 RESTful API 中的典型应用" title="HTTP 请求方法在 RESTful API 中的典型应用"></li>
+</ol>
+<p>那么 RESTful API 具体长什么样子？接下来我们就来看看 Github 的 API 设计，它是遵循 REST 风格的。<br><img src="http://7xtamz.com1.z0.glb.clouddn.com/Github%20RESTful%20API%201.png" alt="Github API 获取用户邮箱地址" title="Github API 获取用户邮箱地址"><br>这就是一个简单的遵循 REST 的 API，使用 HTTP 的 GET 方法指出是读取服务器资源，通过 URI “/user/emails”  来定位到具体的资源。REST 是面向资源的，因此在设计 URI 时是不会出现类似 “getEmails” 这样的动词。响应结果通过状态码（Status Code）来标识，具体响应数据通过 JSON 格式传输，当然也可以使用 XML 格式，甚至 HTML。   </p>
+<p><img src="http://7xtamz.com1.z0.glb.clouddn.com/Github%20RESTful%20API%202.png" alt="Github API 添加用户邮箱地址" title="Github API 添加用户邮箱地址"><br>增加用户邮箱地址，采用 POST 请求方法，URI 仍旧是 “/user/emails”，因为这两个 API 操作的资源都是 Emails，因此 URI 是一致的。它们通过使用的请求方法（GET、POST、PUT、DELETE .etc.）来区分不同的动作。  </p>
+<h5 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h5><p>以上简略地描述了下 RPC、SOAP、REST 的概念，它们三者的目的是一致的 —— 作为客户端和服务端沟通桥梁。但是它们之间也是各有特点，比如 RPC 面向动作，SOAP 以消息作为通讯机制，REST 则面向资源。在实际开发的技术选型中，了解这三种的优劣势，在其中权衡，选择最高效、最适合的技术方案即可。当然，技术思想都是在不断发展进步的，后起之秀 REST 综合指数一定是比 RPC/SOAP 更具优势，它更适合一个新产品、新公司的技术选型，因为 REST 紧密贴合 HTTP，扩展性和兼容性更强，并且通过描述性的 URI 调用，客户端开发效率更高。</p>
+<h4 id="60-分-API-的素质"><a href="#60-分-API-的素质" class="headerlink" title="60 分 API 的素质"></a>60 分 API 的素质</h4><h5 id="API-的一致性"><a href="#API-的一致性" class="headerlink" title="API 的一致性"></a>API 的一致性</h5><p>一致性，大致可以分为两类：风格一致性和数据一致性。<br>风格一致性可能对于优化 API 的性能来说起不到实质性的作用，但是它的确可以提高团队的开发效率。如果一套 API 保持一致的风格，并且正确使用自描述性的命名，将会很大程度上提高 API 使用者的开发效率以及降低后续的维护成本。为了保持风格一致性团队必须有一份 API 规范文档来约束，这是必要的。<br>数据一致性主要提现在 API 的幂等性上，HTTP 的请求方法中 GET 、PUT、DELETE 应该保证是幂等的 —— 相同条件下，多次请求不会产生副作用。</p>
+<h5 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h5><p>API 的安全性在整个开发过程中毋庸置疑是最重要的环节之一，一套没有安全性可言的 API 对于用户或老板来说都是不负责任的表现。因为 API 是数据和用户连接的桥梁，API 的安全性直接关系到用户信息的安全性以及整个应用的安全性。因此一个 <strong>60 分的 API 应该具有一定的自我保护能力</strong>。 </p>
+<ol>
+<li><p>数据合法性验证<br> 记得学封装的概念时看到的一句话，大致意思是暴露的 API 都必须保证数据的合法性，因为你永远不知道调用者会传什么数据给你。对于 Web API 来讲，它更不可能知道调用者会是谁（iOS、Andriod、模拟请求工具、黑客.etc.），会传什么数据给你，因此对于每一个 API 都应该进行数据合法性验证。一次请求包括 URI QueryString、 Request Header、Body ，API 应该一步步的判定这些数据的合法性，它们之间应该是“与”的关系。<br> 最基础的数据验证应该做到过滤无效（或不合常理）数据，比如 API 入参有一个 age（interger） 字段，当某个请求传入 -1 时，就应该将拒绝这次不合法的请求，因为 age 不可能存在负数。<br> 做到以上这一步只能说保护了数据库不会被写入不符合预期的数据，但是也要考虑到一些数据符合我们的约定，但是它本身具有攻击性，比如脚本注入，SQL 注入等。这些常见的攻击手段都应该在这一环节屏蔽掉。   </p>
+</li>
+<li><p>数据完整性验证<br> 请求数据需要经过网络的传输才能到达服务器端，在这过程中，API 需要确保请求数据是否完整（相对于客户端发送请求时的数据）。比如从云盘下载文件时，如果你的文件在传输过程中丢了一些包，那么这个文件将不能打开，并且这次下载是无效的。因此 API 要确保每一次请求的数据都是完整的，这可以通过请求的参数生成一个 MD5 验证字符串，在服务端验证数据完整性。<br> 传输过程中请求数据可能会丢包或者被修改，那么数据库中的数据也可能会被其它请求修改，因此<strong>修改数据库数据</strong>时要确保数据的完整性，当客户端使用和数据库不一致的数据时，应该拒绝这次请求。这可以通过使用 ETag（某个资源的一个唯一的版本号，也可以用来实现 Cache ）来防止错误更新，使用 “If-Match” 头来提供客户端的 ETag，判断和服务器资源当前版本是否一致（当然高并发时会存在 A 请求正在准备写入数据库，而 B 刚进入 ETag 验证，并且恰好通过）。</p>
+</li>
+<li><p>API 访问控制<br> 对于大多数应用，它的 API 一定是不想公开被其它人使用的，尤其是竞争对手。一套合格的 API 应该具有一个合理的访问控制。目前较为普遍的是使用 HMAC 验证，通过一个密钥对请求信息进行算法处理，生成一个摘要信息，然后服务端通过同样的密钥进行处理，比对摘要信息是否一致来确定是否是合法请求。通过 HMAC 可以防止不合法的请求，并且保证数据没有受到“中间人”攻击。<br> 除了 HMAC，还有 OAuth、HTTP BASIC Auth 等访问控制手段，当然你也可以自定义一些逻辑算法，比如可以将请求参数按首字母排序，加上请求时间戳（请求的实时性，防止一个 Request 在不同时间里重复请求）利用 DES、3DES、AES 等对称加密算法进行加密，生成一个请求密钥，服务端通过相同的逻辑算法来比对请求密钥，从而实现访问控制。<br> 访问控制可以很大程度上避免 DDOS 攻击，防止服务器资源被“榨干”。</p>
+</li>
+</ol>
+<h5 id="API-日志收集"><a href="#API-日志收集" class="headerlink" title="API 日志收集"></a>API 日志收集</h5><p>API 应该收集每个请求的到达时间，处理时间，请求数据，响应数据，请求客户端信息等。日志的收集，有助于解决一些 bug，对于一些 API 的性能优化，以及运营人员的分析等。</p>
+<h5 id="丰富的-API-文档"><a href="#丰富的-API-文档" class="headerlink" title="丰富的 API 文档"></a>丰富的 API 文档</h5><p>一份丰富的 API 文档可以让客户端开发变的更加容易。把容易留给别人，那你就是佛祖，否则你就是人渣。文档中应该包含对所有 API 的一些通用描述，每个 API 都应该对应有 URI，请求头、参数，响应数据等，当然最好附带一个接口调试工具。这部分应该是服务端开发最头疼的事情了，每个 API 都要对应维护一份文档，但是目前有很多工具可以通过维护代码里的注释生成文档，从而减少开发的工作量，比如 swagger 、apidoc .etc.。</p>
+<h5 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h5><p>除此之外，API 还应该支持例如 API 版本管理、事件处理回调等，具有良好的扩展性、后期可维护性等。针对安全性较高的 API，可以考虑使用 HTTPS ，在你的 API 外面再套一层壳。</p>
+<hr>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>笔者只是通过查阅相关的文献、博客等，总结了以上的内容。如有补充，欢迎留言。希望后续开发中，能将这些一一应用，码一套 60 分的 API。</p>
+<hr>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="http://www.infoq.com/cn/articles/understanding-restful-style" target="_blank" rel="external">理解本真的 REST 架构风格</a>（<a href="http://www.infoq.com/cn/articles/understanding-restful-style）" target="_blank" rel="external">http://www.infoq.com/cn/articles/understanding-restful-style）</a></li>
+<li><a href="http://www.infoq.com/resource/minibooks/web-based-apps-archit-design/zh/pdf/Fielding-PhD-thesis-on-REST.pdf" target="_blank" rel="external">Roy Fielding博士论文中文版</a>（<a href="http://www.infoq.com/resource/minibooks/web-based-apps-archit-design/zh/pdf/Fielding-PhD-thesis-on-REST.pdf）" target="_blank" rel="external">http://www.infoq.com/resource/minibooks/web-based-apps-archit-design/zh/pdf/Fielding-PhD-thesis-on-REST.pdf）</a></li>
+<li><a href="https://developer.github.com/v3/" title="Github API v3" target="_blank" rel="external"> Github API v3 </a>（<a href="https://developer.github.com/v3/）" target="_blank" rel="external">https://developer.github.com/v3/）</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/homepage?__biz=MzA3NDM0ODQwMw==&amp;hid=2&amp;sn=a01f85f4d8bbb41664640fa813775201&amp;uin=MTkwNjIzMDE0MQ%3D%3D&amp;key=8dcebf9e179c9f3a3316cbe93ab40d7e0fb364480ccc3067e1bc6e62e55d269af8e74cab47c903d518a7f63e65c2814d&amp;devicetype=iPhone+OS9.3.4&amp;version=16031712&amp;lang=zh_CN&amp;nettype=WIFI&amp;fontScale=94&amp;pass_ticket=EWrTRODW6mjqojfJWoSj7hEwhvI76gJmIARMBfzr0KwMpMhTvowFt2xn1pPMHp1u&amp;scene=1" target="_blank" rel="external">程序人生</a>（<a href="https://mp.weixin.qq.com/mp/homepage?\_\_biz=MzA3NDM0ODQwMw==&amp;hid=2&amp;sn=a01f85f4d8bbb41664640fa813775201&amp;uin=MTkwNjIzMDE0MQ%3D%3D&amp;key=8dcebf9e179c9f3a3316cbe93ab40d7e0fb364480ccc3067e1bc6e62e55d269af8e74cab47c903d518a7f63e65c2814d&amp;devicetype=iPhone+OS9.3.4&amp;version=16031712&amp;lang=zh\_CN&amp;nettype=WIFI&amp;fontScale=94&amp;pass\_ticket=EWrTRODW6mjqojfJWoSj7hEwhvI76gJmIARMBfzr0KwMpMhTvowFt2xn1pPMHp1u&amp;scene=1）" target="_blank" rel="external">https://mp.weixin.qq.com/mp/homepage?\_\_biz=MzA3NDM0ODQwMw==&amp;hid=2&amp;sn=a01f85f4d8bbb41664640fa813775201&amp;uin=MTkwNjIzMDE0MQ%3D%3D&amp;key=8dcebf9e179c9f3a3316cbe93ab40d7e0fb364480ccc3067e1bc6e62e55d269af8e74cab47c903d518a7f63e65c2814d&amp;devicetype=iPhone+OS9.3.4&amp;version=16031712&amp;lang=zh\_CN&amp;nettype=WIFI&amp;fontScale=94&amp;pass\_ticket=EWrTRODW6mjqojfJWoSj7hEwhvI76gJmIARMBfzr0KwMpMhTvowFt2xn1pPMHp1u&amp;scene=1）</a></li>
+</ul>
+
+                
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/08/24/网络那点事 —— HTTP/" data-toggle="tooltip" data-placement="top" title="网络那点事 —— HTTP">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+            
+                
+                <!--多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/08/30/聊聊 60 分的 Web API/"
+                        data-title="聊聊 60 分的 Web API"
+                        data-url="/2016/08/30/聊聊 60 分的 Web API/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+<!--                -->
+<!--                <section>-->
+                    <!-- no hr -->
+<!--                    <h5><a href="/tags/">FEATURED TAGS</a></h5>-->
+<!--                    <div class="tags">-->
+<!--                        <a class="tag-link" href="/tags/API/">API<span class="tag-count">1</span></a><a class="tag-link" href="/tags/CALayer/">CALayer<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Git/">Git<span class="tag-count">1</span></a><a class="tag-link" href="/tags/HTTP/">HTTP<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Node-js/">Node.js<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Objective-C/">Objective-C<span class="tag-count">3</span></a><a class="tag-link" href="/tags/Socket-io/">Socket.io<span class="tag-count">1</span></a><a class="tag-link" href="/tags/SourceTree/">SourceTree<span class="tag-count">1</span></a><a class="tag-link" href="/tags/Xcode/">Xcode<span class="tag-count">1</span></a><a class="tag-link" href="/tags/iOS/">iOS<span class="tag-count">9</span></a><a class="tag-link" href="/tags/日常/">日常<span class="tag-count">1</span></a><a class="tag-link" href="/tags/码字/">码字<span class="tag-count">2</span></a><a class="tag-link" href="/tags/读书笔记/">读书笔记<span class="tag-count">1</span></a><a class="tag-link" href="/tags/面试/">面试<span class="tag-count">1</span></a>-->
+<!--                    </div>-->
+<!--                </section>-->
+<!--                -->
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.intmaxdev.com">intMax</a></li>
+                    
+                        <li><a href="https://seewhy.me">闲池阁</a></li>
+                    
+                        <li><a href="http://bowen.ml">bowen</a></li>
+                    
+                        <li><a href="http://www.wwsnc.com">萝卜头</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'kentonyu';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                <li>
+                    <a target="_blank"  href="https://github.com/KentonYu">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+                
+                    
+                
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/1c19630299ce/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                
+                    
+                
+                    
+                
+                       
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/2696076574">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    
+                
+                <li>
+                    <a href="/atom.xml">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+                
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; KentonYu&#39;s Blog 2016 
+                    <br>
+<!--
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+-->
+                    Ported by <a href="https://KentonYu.github.io">KentonYu</a> | <a>Hexo 强力驱动</a>
+                    <br>
+                    <a href="http://icp.chinaz.com/info?q=kentonyu.com">浙ICP备16014884号</a>
+                    
+<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://KentonYu.github.io" >
+                    </iframe>
+-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '2818009ca36e39f2776c315158b8d95c';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Image to hack wechat -->
+<!--<img src="/img/icon_wechat.png" width="0" height="0" />-->
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
