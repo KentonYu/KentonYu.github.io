@@ -13,11 +13,11 @@
 
     <title>
         
-          Objective-C 三大新特性 - KentonYu的博客 | KentonYu&#39;s Blog
+          URI&#39;s Fragment identifier - KentonYu的博客 | KentonYu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="/2015/11/22/Objective-C-三大新特性/">
+    <link rel="canonical" href="/2017/07/09/URI&#39;s Fragment identifier/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -158,7 +158,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('Objective-C-三大新特性.jpg')
+        background-image: url('/img/home-bg.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -168,17 +168,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
-                        
-                          <a class="tag" href="/tags/#Objective-C" title="Objective-C">Objective-C</a>
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
                         
 
                     </div>
-                    <h1>Objective-C 三大新特性</h1>
+                    <h1>URI&#39;s Fragment identifier</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by KentonYu on
-                        2015-11-22
+                        2017-07-09
                     </span>
                 </div>
             </div>
@@ -197,89 +195,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>2015年的 WWDC 中介绍了几个 Objective-C 语言的新特性，有新特性，那么我们就去了解它们下吧。</p>
-<a id="more"></a>
-<h1 id="Nullability"><a href="#Nullability" class="headerlink" title="Nullability"></a>Nullability</h1><p>Nullability其实在Xcode6.3里就已经出现了。</p>
-<pre><code>@property (nonatomic, copy, nonnull) NSString *str;
-@property (nonatomic, copy, readonly, nullable) NSArray *arr;
-+ (nullable NSString *)confirmWithString:(nonnull NSString *)str;
-</code></pre><p>上面的两个属性和一个方法的声明中添加了 <code>nonnull</code> 和 <code>nullable</code> ,很明显，前者是不可空，后者是可空的意思。<br>当然在给变量添加修饰时，就能在前面加上两个下划线了，就如   <code> __nullable </code> 一样。例：</p>
-<pre><code>@interface TestClass() {
-   NSString * __nullable str;
-}
-</code></pre><p>除此之外还有一个 <code>null_resettable</code> ,它意思是setter nullable，但是 getter nonnull。简单来说就是可以赋值为nil，但是你获取的值必定不是nil。</p>
-<p>在代码里重复写nonnull一定是一件非常蛋疼的事情，毕竟coding的原则是DRY，所以 <code> NS_ASSUME_NONNULL_BEGIN </code> , <code> NS_ASSUME_NONNULL_END </code> 这对宏就出现了。它的意思是把它们之间的对象都设置为nonnull，如果是nullable，那么我们得显式声明下。</p>
-<pre><code>NS_ASSUME_NONNULL_BEGIN
-@interface TestClass : NSObject
-@property (nonatomic, copy, nullable) NSString *str;
-@property (nonatomic, copy) NSArray *arr;
-- (nullable NSString *)getString;
-@end
-NS_ASSUME_NONNULL_END
-</code></pre><blockquote>
-<p>Nullability 在编译器层面提供了空值的类型检查，在类型不符时给出 warning，方便开发者第一时间发现潜在问题。不过我想更大的意义在于能够更加清楚的描述接口，是主调者和被调者间的一个协议，比多少句文档描述都来得清晰。</p>
+                <h2 id="URI-amp-URL"><a href="#URI-amp-URL" class="headerlink" title="URI &amp; URL"></a>URI &amp; URL</h2><p>URI，Uniform Resource Identifier，统一资源标识符。<br>URL，Uniform Resource Location，统一资源定位符。<br>URI 简单来理解就是标识/定义了一个资源，而 URL 在定义/标识资源的同时还需要描述如何访问到该资源。可以认为 URL 是 URI 的一个子集。<br>举个例子：<br>公司里每个人都有一个内部唯一的花名，这个花名其实就可以认为是 URI，它对应了公司内部唯一的一个人（资源）。当我需要找这个人时，虽然我知道了花名（URI），但是并找不到他人，因为我不知道他的工位，这时候就需要知道他的工位号如 13B-11 ，工位号+花名其实就是一个 URL，它指定了一个人以及怎么找到这个人的位置。<br>其实现在我们不必刻意去区分 URI / URL / URN 。在 [RFC3986]上已经明确说明这个点：</p>
+<blockquote>
+<p>Future specifications and related documentation should<br>use the general term “URI” rather than the more restrictive terms<br>“URL” and “URN”.</p>
 </blockquote>
-<h1 id="Lightweight-Generics"><a href="#Lightweight-Generics" class="headerlink" title="Lightweight Generics"></a>Lightweight Generics</h1><blockquote>
-<p>Lightweight Generics 轻量级泛型，轻量是因为这是个纯编译器的语法支持（llvm 7.0），和 Nullability 一样，没有借助任何 objc runtime 的升级，也就是说，这个新语法在 Xcode 7 上可以使用且完全向下兼容（更低的 iOS 版本）</p>
-</blockquote>
-<p>看到上面对 Lightweight Generics 的描述，是不是特别爽，以后可以用泛型拉！泛型拉！！泛型拉！！！因为之前学过用C#写web，超级享受泛型带来的代码智能提醒。那么Objective-C的泛型会不会带来这种体验，Let’s try it！</p>
-<p>类ClassOne</p>
-<pre><code>@interface ClassOne : NSObject
-@property (nonatomic, copy) NSString *classOneDes;
-@end
-</code></pre><p>ViewController</p>
-<pre><code>@interface ViewController ()
-@property (nonatomic, strong) NSMutableArray&lt;ClassOne *&gt; *testArr;
-@end
-</code></pre><p><img src="http://i5.tietuku.com/2c321fc78fe04018.jpg" alt="智能提醒"></p>
-<p>竟然真的支持智能提醒！！爽的不要不要的。再也不用担心强转了！！！！</p>
-<p>竟然在取值有智能提醒了，那么在赋值时，会不会有提醒呢？仍旧是上面的属性：</p>
-<pre><code>[self.testArr addObject:&lt;#(nonnull ClassOne *)#&gt;]
-</code></pre><p>提示我们 <code>self.testArr</code>中必须是添加一个 <code>ClassOne</code>对象。假设我们添加一个NSString：</p>
-<pre><code>[self.testArr addObject:@&quot;1&quot;];
-</code></pre><p>接着，编译器出现警告啦。<br><img src="http://i12.tietuku.com/3fdc5654795063d3.jpg" alt="警告"></p>
-<p>其实泛型和之前的 Nullability最重要的作用是丰富了接口描述信息，例如</p>
-<pre><code>@property (readonly) NSArray&lt;NSString *&gt; *imageURLs;
-@property (readonly) NSArray&lt;NSURL *&gt; *avatarURLs;
-</code></pre><p>这样就可以描述清楚 imageURLs 存的是NSString，而 avatarURLs 存的则是 NSURL 。</p>
-<p>在Objective-C中常用的容器类型都增加了泛型支持，甚至连 NSEnumerator 都支持了。那么我们是否可以自定义泛型类呢？？？try try try。</p>
-<p>我们先看一下NSArray的头文件定义的属性：</p>
-<pre><code> @interface NSArray&lt;__covariant ObjectType&gt; : NSObject &lt;NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration&gt;
-
- @property (readonly) NSUInteger count;
- - (ObjectType)objectAtIndex:(NSUInteger)index;
- - (instancetype)init NS_DESIGNATED_INITIALIZER;
- - (instancetype)initWithObjects:(const ObjectType [])objects count:(NSUInteger)cnt NS_DESIGNATED_INITIALIZER;
- - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
-@end
-</code></pre><p>NSArray的头文件中，多了一个 ObjectType ，从字面意思来讲是<strong>对象类型</strong>，在NSArray中声明的方法中也使用到了 ObjectType ，猜测它的作用类似C#泛型中的 <strong>T</strong> 。<br>那么我们来验证下，按照NSArray的定义方式来自定义一个容器类。</p>
-<pre><code>@interface Container &lt;ObjectType&gt; : NSObject
-- (void)pushObject:(ObjectType)object;
-- (ObjectType)popObject;
-@property (nonatomic, readonly) NSArray&lt;ObjectType&gt; *allObjects;
-@end
-</code></pre><p>定义这样一个头文件，并实现。然后我们尝试使用这个自定义泛型类。</p>
-<pre><code>@interface ViewController ()
-@property (nonatomic, strong) Contanier&lt;NSString *&gt; *contanier;
-@end
-</code></pre><p><img src="http://i5.tietuku.com/ad95ccf490d0adad.jpg" alt="哇塞，可以，可以"></p>
-<p>的确，可以实现自定义泛型，具体的使用，大家可以尝试下。<br>自定义泛型类中的 ObjectType 在 @interface 和 @end 区间的作用域有效，可以把它作为入参、出参、甚至内部 NSArray 属性的泛型类型。</p>
-<p>大家一定看到了 NSArray 的头文件中ObjectType前面有一个 <code> __covariant </code> 修饰符，那么这个是什么意思呢？<br>不指定泛型类型的 Stack 可以和任意泛型类型转化，但指定了泛型类型后，两个不同类型间是不可以强转的，假如你希望主动控制转化关系，就需要使用泛型的协变性和逆变性修饰符了：</p>
-<h3 id="协变性"><a href="#协变性" class="headerlink" title="协变性"></a>协变性</h3><p>__covariant - 协变性，子类型可以强转到父类型。</p>
-<h3 id="逆变性"><a href="#逆变性" class="headerlink" title="逆变性"></a>逆变性</h3><p>__contravariant - 逆变性，父类型可以强转到子类型。</p>
-<p>协变性用的比较多，例如将 NSArray <nsstring *=""> <em> 类型的对象赋值给 NSArray </em> ，假设不设置NSArray泛型的协变性那将会导致警告。当然NSArray泛型带有协变性，所以这样转换是没有问题的。</nsstring></p>
-<p>那么逆变性呢？将一个父类型转换成子类型。这是一个具有风险的事情。比如 你将一个NSArray <em> 的对象赋值给NSArray&lt;NSNumber </em>&gt; * 对象，很明显，前者的对象中可能是 NSString 类型，这时如果设置具有逆变性，那么赋值将会出现问题。</p>
-<p>所以逆变性慎用！！！</p>
-<h1 id="kindof"><a href="#kindof" class="headerlink" title=" __kindof "></a><code> __kindof </code></h1><blockquote>
-<p><code><strong>kindof</strong></code> 这修饰符还是很实用的，解决了一个长期以来的小痛点，拿原来的 UITableView 的这个方法来说：<br><code>- (id)dequeueReusableCellWithIdentifier:(NSString *)identifier;</code><br>使用时前面基本会使用 UITableViewCell 子类型的指针来接收返回值，所以这个 API 为了让开发者不必每次都蛋疼的写显式强转，把返回值定义成了 id 类型，而这个 API 实际上的意思是返回一个 UITableViewCell 或 UITableViewCell 子类的实例，于是新的 kindof 关键字解决了这个问题：<br><code>- (__kindof UITableViewCell <em>)dequeueReusableCellWithIdentifier:(NSString </em>)identifier;</code><br>既明确表明了返回值，又让使用者不必写强转。再举个带泛型的例子，UIView 的 subviews 属性被修改成了：<br><code>@property (nonatomic, readonly, copy) NSArray <em>subviews;</em></code><br>这样，写下面的代码时就没有任何警告了：<br><code><br>UIButton button = view.subviews.lastObject;<br></code></p>
-</blockquote>
-<p>References:</p>
-<ul>
-<li><p><a href="http://www.cocoachina.com/ios/20150615/12148.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20150615/12148.html</a></p>
+<h2 id="Fragment-identifier"><a href="#Fragment-identifier" class="headerlink" title="Fragment identifier"></a>Fragment identifier</h2><p>主要资源是由 URI 进行标识，URI 中的 Fragment identifier 用来标识次级资源。<br>在 URI 的末尾通过 hash mark（#）作为 Fragment identifier 的开头。其中 # 不属于 Fragment identifier 的值。<br><code>https://domain/index#L18</code><br>这个 URI 中 <code>L18</code> 就是 Fragment identifier 的值。这有哪些特殊的地方呢？</p>
+<ol>
+<li><code>#</code> 有别于 <code>?</code>，<code>?</code> 后面的查询字符串会被网络请求带上服务器，而 Fragment identifier 不会被发送的服务器；<ol>
+<li>Fragment identifier 的改变不会触发浏览器刷新页面，但是会生成浏览历史；</li>
+</ol>
 </li>
-<li><p><a href="https://msdn.microsoft.com/zh-cn/library/dd799517.aspx" target="_blank" rel="external">https://msdn.microsoft.com/zh-cn/library/dd799517.aspx</a></p>
-</li>
-</ul>
+<li>Fragment identifier 会被浏览器根据文件媒体类型（MIME type）进行对应的处理；</li>
+<li>Google 的搜索引擎会忽略 <code>#</code> 及其后面的字符串。</li>
+</ol>
+<p>针对以上几点特性，分别介绍下 URI Fragment identifier 的应用。</p>
+<h3 id="特性-1-amp-2-单页面路由"><a href="#特性-1-amp-2-单页面路由" class="headerlink" title="特性 1 &amp; 2  单页面路由"></a>特性 1 &amp; 2  单页面路由</h3><p>针对 1、2 这两个特性，目前主要的应用就是单页面路由。具体原理简单描述如下：<br>JavaScript 提供了 <code>location.hash</code> 来操作当前 URI 的 Fragment identifier，同时提供了 <code>Hashchange</code> 事件监听 Fragment identifier 的变化。利用这两个 API 再结合上述特性 1、2 就可以实现一个简单前端路由。具体流程如下图：<br><img src="https://mmbiz.qlogo.cn/mmbiz_png/xboTseEBtjPpNmyazgtE6p18oUTiamaq7RR45HcKCHFkb12qO3USTlR1MItgMl57gQiajYSTXkuKTxvfwEjolFIQ/0?wx_fmt=png" alt="示意图"><br>修改 location.hash 值，触发 hashchange 事件，JS 处理对应的逻辑，改变页面 UI 实现页面的跳转，并在浏览器中产生历史记录。<br>具体代码实现可以参考 vue-router hash 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。</a><br><code>hashchange event</code> 目前的兼容性表现较好，主流浏览器都支持【[caniuse]】。<br>实现单页面路由还会使用 H5 为 history 新增的两个 API <code>History.pushState() &amp; Histroy. replaceState ()</code>。虽然在 URL 美观度上很令人满意，但是也存在缺点，如兼容性表现、对 Web 容器配置的额外要求 —— 直接使用 pushState 的 URL 访问应用，则会 404，需要 Web 容器对这些 URL 进行处理，重写到对应的 HTML 页面上。<br>具体代码实现可以参考 vue-router histroy 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。</a></p>
+<h3 id="特性-3-HTML-锚点"><a href="#特性-3-HTML-锚点" class="headerlink" title="特性 3 HTML 锚点"></a>特性 3 HTML 锚点</h3><p>在 HTML 中比较常见的一个应用 —— 页面内定位。在页面中通过设置标签的 id 属性来定义锚点，从而实现锚点定位。实际上锚点定位的实现正是依赖了 Fragment identifier 的特性 3。如这个 URI <code>https://domain/index.html#L18</code>，假设返回的文件类型是 text/html，则浏览器会读取 URI’s Fragment identifier，然后在页面中寻找 L18 这个锚点，并将页面滚动到该锚点的位置。<br>因此我们当点击 <code>&lt;a href=&quot;#top&quot;&gt;top&lt;/a&gt;</code>时，实际上处理过程是 URI 的 hash 发生变化，然后浏览器读取新的 Fragment identifier，并寻找 DOM 中是否存在对应的锚点，将该锚点显示到页面中。<br>在 MIME Type 为 HTML 或 XML 时，如<code>https://domain/index.html#</code>这个 URI 中是空的 identifier，则浏览器默认显示页面的最顶端。<br>URI 对应的资源类型不同，浏览器对该 URI’s Fragment identifier 的处理方式就不一样，具体不同类型的处理方式可以参阅：[<a href="https://en.wikipedia.org/wiki/Fragment\_identifier#Examples" target="_blank" rel="external">https://en.wikipedia.org/wiki/Fragment\_identifier#Examples</a>] 。</p>
+<h3 id="特性-4"><a href="#特性-4" class="headerlink" title="特性 4"></a>特性 4</h3><p>特性4 其实是针对 hash 模式前端路由来说的一个缺点。因为 Fragment identifier 会被 Google 搜索引擎忽略掉，因此对于用 hash 模式前端路由的应用的 SEO 来说是很不友好的。不过 Google 给了一个方案，就是在 <code>#</code> 紧跟一个 <code>!</code> ，这样Google 搜索引擎就会将这个 URI 进行转换，如 <code>https://domain/index.html#!L18</code>转换后就成为了 <code>https://domain/index.html?_escaped_fragment_=L18</code>。这样搜索引擎就会携带上 URI’s Fragment identifier 直接去访问这个 URI，开发者可以利用这个 trick 优化网站的 SEO。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ol>
+<li>Fragment identifier 对于 HTML 文档来说就是页面内的定位标识符，可以实现 HTML 页面内的定位。当然浏览器针对不同类型的资源会有区分的处理 Fragment identifier；</li>
+<li>利用  Fragment identifier 实现前端页面无刷新修改 Brower’s URI；</li>
+<li>根据搜索引擎规则，可以优化无刷新修改页面的 SEO；</li>
+</ol>
+<p>对于  Fragment identifier 的探究也就到这里，附上下关的参考 Links：</p>
+<ol>
+<li>[<a href="http://www.ietf.org/rfc/rfc3986.txt" target="_blank" rel="external">http://www.ietf.org/rfc/rfc3986.txt</a>]</li>
+<li>[<a href="https://en.wikipedia.org/wiki/Fragment\_identifier" target="_blank" rel="external">https://en.wikipedia.org/wiki/Fragment\_identifier</a>]</li>
+<li>[<a href="http://www.ruanyifeng.com/blog/2011/03/url\_hash.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/03/url\_hash.html</a>]</li>
+</ol>
+<p>—————END—————–</p>
 
                 
                 <hr>
@@ -288,13 +232,9 @@ NS_ASSUME_NONNULL_END
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/03/05/git-Flow-开发模型/" data-toggle="tooltip" data-placement="top" title="对 Git Flow 开发模型的理解">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2015/11/17/Nodejs-Socket-io实现服务器反推/" data-toggle="tooltip" data-placement="top" title="Nodejs&Socket.io实现简单的服务器反推">Next Post &rarr;</a>
+                            <a href="/2016/08/30/聊聊 60 分的 Web API/" data-toggle="tooltip" data-placement="top" title="聊聊 60 分的 Web API">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -303,9 +243,9 @@ NS_ASSUME_NONNULL_END
                 <!--多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2015/11/22/Objective-C-三大新特性/"
-                        data-title="Objective-C 三大新特性"
-                        data-url="/2015/11/22/Objective-C-三大新特性/" >
+                        data-thread-key="2017/07/09/URI&#39;s Fragment identifier/"
+                        data-title="URI&#39;s Fragment identifier"
+                        data-url="/2017/07/09/URI&#39;s Fragment identifier/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
