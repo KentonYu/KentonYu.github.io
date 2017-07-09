@@ -97,14 +97,14 @@
 
                         
                         <li>
-                            <a href="/portfolio/">Portfolio</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/portfolio/">Portfolio</a>
                         </li>
                         
                     
@@ -209,7 +209,7 @@
 <li>Google 的搜索引擎会忽略 <code>#</code> 及其后面的字符串。</li>
 </ol>
 <p>针对以上几点特性，分别介绍下 URI Fragment identifier 的应用。</p>
-<h3 id="特性-1-amp-2-单页面路由"><a href="#特性-1-amp-2-单页面路由" class="headerlink" title="特性 1 &amp; 2  单页面路由"></a>特性 1 &amp; 2  单页面路由</h3><p>针对 1、2 这两个特性，目前主要的应用就是单页面路由。具体原理简单描述如下：<br>JavaScript 提供了 <code>location.hash</code> 来操作当前 URI 的 Fragment identifier，同时提供了 <code>Hashchange</code> 事件监听 Fragment identifier 的变化。利用这两个 API 再结合上述特性 1、2 就可以实现一个简单前端路由。具体流程如下图：<br><img src="https://mmbiz.qlogo.cn/mmbiz_png/xboTseEBtjPpNmyazgtE6p18oUTiamaq7RR45HcKCHFkb12qO3USTlR1MItgMl57gQiajYSTXkuKTxvfwEjolFIQ/0?wx_fmt=png" alt="示意图"><br>修改 location.hash 值，触发 hashchange 事件，JS 处理对应的逻辑，改变页面 UI 实现页面的跳转，并在浏览器中产生历史记录。<br>具体代码实现可以参考 vue-router hash 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。</a><br><code>hashchange event</code> 目前的兼容性表现较好，主流浏览器都支持【[caniuse]】。<br>实现单页面路由还会使用 H5 为 history 新增的两个 API <code>History.pushState() &amp; Histroy. replaceState ()</code>。虽然在 URL 美观度上很令人满意，但是也存在缺点，如兼容性表现、对 Web 容器配置的额外要求 —— 直接使用 pushState 的 URL 访问应用，则会 404，需要 Web 容器对这些 URL 进行处理，重写到对应的 HTML 页面上。<br>具体代码实现可以参考 vue-router histroy 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。</a></p>
+<h3 id="特性-1-amp-2-单页面路由"><a href="#特性-1-amp-2-单页面路由" class="headerlink" title="特性 1 &amp; 2  单页面路由"></a>特性 1 &amp; 2  单页面路由</h3><p>针对 1、2 这两个特性，目前主要的应用就是单页面路由。具体原理简单描述如下：<br>JavaScript 提供了 <code>location.hash</code> 来操作当前 URI 的 Fragment identifier，同时提供了 <code>Hashchange</code> 事件监听 Fragment identifier 的变化。利用这两个 API 再结合上述特性 1、2 就可以实现一个简单前端路由。具体流程如下图：<br><img src="http://7xtamz.com1.z0.glb.clouddn.com/url-hash.png" alt="示意图"><br>修改 location.hash 值，触发 hashchange 事件，JS 处理对应的逻辑，改变页面 UI 实现页面的跳转，并在浏览器中产生历史记录。<br>具体代码实现可以参考 vue-router hash 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js]。</a><br><code>hashchange event</code> 目前的兼容性表现较好，主流浏览器都支持【[caniuse]】。<br>实现单页面路由还会使用 H5 为 history 新增的两个 API <code>History.pushState() &amp; Histroy. replaceState ()</code>。虽然在 URL 美观度上很令人满意，但是也存在缺点，如兼容性表现、对 Web 容器配置的额外要求 —— 直接使用 pushState 的 URL 访问应用，则会 404，需要 Web 容器对这些 URL 进行处理，重写到对应的 HTML 页面上。<br>具体代码实现可以参考 vue-router histroy 模式下的实现 [<a href="https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。" target="_blank" rel="external">https://github.com/vuejs/vue-router/blob/dev/src/history/html5.js]。</a></p>
 <h3 id="特性-3-HTML-锚点"><a href="#特性-3-HTML-锚点" class="headerlink" title="特性 3 HTML 锚点"></a>特性 3 HTML 锚点</h3><p>在 HTML 中比较常见的一个应用 —— 页面内定位。在页面中通过设置标签的 id 属性来定义锚点，从而实现锚点定位。实际上锚点定位的实现正是依赖了 Fragment identifier 的特性 3。如这个 URI <code>https://domain/index.html#L18</code>，假设返回的文件类型是 text/html，则浏览器会读取 URI’s Fragment identifier，然后在页面中寻找 L18 这个锚点，并将页面滚动到该锚点的位置。<br>因此我们当点击 <code>&lt;a href=&quot;#top&quot;&gt;top&lt;/a&gt;</code>时，实际上处理过程是 URI 的 hash 发生变化，然后浏览器读取新的 Fragment identifier，并寻找 DOM 中是否存在对应的锚点，将该锚点显示到页面中。<br>在 MIME Type 为 HTML 或 XML 时，如<code>https://domain/index.html#</code>这个 URI 中是空的 identifier，则浏览器默认显示页面的最顶端。<br>URI 对应的资源类型不同，浏览器对该 URI’s Fragment identifier 的处理方式就不一样，具体不同类型的处理方式可以参阅：[<a href="https://en.wikipedia.org/wiki/Fragment\_identifier#Examples" target="_blank" rel="external">https://en.wikipedia.org/wiki/Fragment\_identifier#Examples</a>] 。</p>
 <h3 id="特性-4"><a href="#特性-4" class="headerlink" title="特性 4"></a>特性 4</h3><p>特性4 其实是针对 hash 模式前端路由来说的一个缺点。因为 Fragment identifier 会被 Google 搜索引擎忽略掉，因此对于用 hash 模式前端路由的应用的 SEO 来说是很不友好的。不过 Google 给了一个方案，就是在 <code>#</code> 紧跟一个 <code>!</code> ，这样Google 搜索引擎就会将这个 URI 进行转换，如 <code>https://domain/index.html#!L18</code>转换后就成为了 <code>https://domain/index.html?_escaped_fragment_=L18</code>。这样搜索引擎就会携带上 URI’s Fragment identifier 直接去访问这个 URI，开发者可以利用这个 trick 优化网站的 SEO。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ol>
